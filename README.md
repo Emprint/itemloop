@@ -121,8 +121,15 @@ npm start
 ---
 
 ## 🔐 License
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
-Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)**.
+You are free to use, modify, and redistribute this software under the following conditions:
+
+- Any modifications must be published under the same license (AGPL-3.0).
+- If you run the app as a service (e.g., website), the source code must be made available to users.
+- Commercial use is allowed for your own operations, but reselling the code under a proprietary license is strictly forbidden.
+
+See [LICENSE](./LICENSE) for full terms.
 
 ---
 
