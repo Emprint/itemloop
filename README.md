@@ -130,4 +130,6 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 
 Itemloop is developed as a community-driven project. Pull requests, feedback, and translations are welcome.
 
+This app is developed with the help of GitHub Copilot.
+
 Before contributing, please read the [LICENSE](./LICENSE) (AGPL-3.0) and respect the spirit of fair and open collaboration.
