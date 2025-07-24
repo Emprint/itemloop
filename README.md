@@ -15,7 +15,7 @@ This project is open source and welcomes contributions under the AGPL v3 license
 - **Backend**: PHP 8+ (Laravel API)
 - **Database**: MySQL
 - **Image processing**: Server-side resizing and WebP conversion
-- **Hosting target**: Shared hosting on OVH (PHP/MySQL compatible)
+- **Hosting target**: Compatible with inexpensive hosting providers supporting PHP and MySQL (no need for complex cloud infrastructure)
 
 ---
 
@@ -106,8 +106,8 @@ npm start
 
 ## 🖼️ Image Handling
 - Multiple images per product
-- Images resized on upload to max 1920x1920 px (future: 1600x1200)
-- Images converted to WebP (JPEG fallback if needed)
+- Images resized on upload to max 1920x1920 px
+- Images converted to WebP
 - Optimized for fast load and reduced hosting usage
 
 ---
