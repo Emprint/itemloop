@@ -46,6 +46,8 @@ composer install
 ```
 
 ### 3. Set up environment
+
+**Tip:** Developers can use the [DevDB extension](https://marketplace.visualstudio.com/items?itemName=damms005.devdb) to manage the MySQL database directly from within Visual Studio Code.
 Copy `.env.example` to `.env` and set your database credentials:
 ```sh
 cp .env.example .env

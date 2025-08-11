@@ -53,6 +53,8 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US19 | Admin            | As an admin, I want to **manage the list of storage locations** so the inventory stays organized.  | Medium   | 🟡 Medium  |
 | US20 | User             | As a user, I want the app interface to automatically detect my system language and allow me to manually switch between English and French (with the possibility to add more languages later), so I can use the app in my preferred language. | High | 🟡 Medium |
 | US21 | User             | As a user, I want to assign products to structured locations (Building → Zone → Shelf) and manage these locations myself, so that inventory stays organized and easy to find. | High | 🟡 Medium |
+| US22 | System/User      | As a user, I want the app to support different account types: customer, editor, and admin. Customers can see public items and (when available) add them to a cart and place orders. Editors can manage items and view customer orders. Admins have all editor permissions and can also manage user accounts. | High | 🔴 Complex |
+| US23 | System           | As the system, if there are no user accounts in the database, I want the app to prompt to create a new account on first start, and this account will be of type admin. | High | 🟡 Medium |
 
 ---
 
