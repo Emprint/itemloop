@@ -55,9 +55,14 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US21 | User             | As a user, I want to assign products to structured locations (Building → Zone → Shelf) and manage these locations myself, so that inventory stays organized and easy to find. | High | 🟡 Medium |
 | US22 | System/User      | As a user, I want the app to support different account types: customer, editor, and admin. Customers can see public items and (when available) add them to a cart and place orders. Editors can manage items and view customer orders. Admins have all editor permissions and can also manage user accounts. | High | 🔴 Complex |
 | US23 | System           | As the system, if there are no user accounts in the database, I want the app to prompt to create a new account on first start, and this account will be of type admin. | High | 🟡 Medium |
+| US24 | User/System      | As a user or visitor, I want the frontend navigation to show Products, Cart, and Login when not logged in, and to update contextually after login: all users see Products and Cart, editors/admins see Locations, and admins see a Users link to manage accounts. | High | 🟡 Medium |
+| US25 | User             | As a user, I want to set a password that is secure but flexible, requiring at least 8 characters, one letter, one digit, and one special character, so I can easily create a password that fits my needs while keeping my account safe. | High | 🟡 Medium |
 
 ---
 
+## ⚡ State Management
+- The frontend should use Angular signals for state management wherever possible, including authentication, navigation, and feature modules, to ensure modern, reactive, and efficient UI updates.
+---
 
 ## 📌 Roadmap Ideas
 - Public item browsing with reservation requests

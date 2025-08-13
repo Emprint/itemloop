@@ -1,0 +1,19 @@
+<nav class="navbar">
+	<div class="navbar-brand">
+			<a routerLink="/" aria-label="Itemloop Home">
+				<img src="assets/itemloop-logo.svg" alt="Itemloop logo" height="40" width="40" style="vertical-align: middle;" />
+			</a>
+	</div>
+	<ul class="navbar-links">
+			@for (link of links(); track link.label) {
+				<li>
+					<ng-container *ngIf="link.label !== 'Logout'; else logoutLink">
+						<a [routerLink]="link.route">{{ link.label }}</a>
+					</ng-container>
+					<ng-template #logoutLink>
+						<a href="#" (click)="$event.preventDefault(); logout()">Logout</a>
+					</ng-template>
+				</li>
+			}
+	</ul>
+</nav>
