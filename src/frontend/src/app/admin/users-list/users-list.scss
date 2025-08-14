@@ -1,0 +1,6 @@
+/* Make the new user button inline and visually smaller */
+.users-list button {
+	display: inline-block;
+	width: auto;
+	margin: 0.5em 0.5em 0.5em 0;
+}

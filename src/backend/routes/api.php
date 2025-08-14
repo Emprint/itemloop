@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\ProductImageController;
+use App\Http\Controllers\Api\UserController;
 
 Route::get('/ping', function () {
     return response()->json(['message' => 'pong']);
@@ -15,7 +16,15 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    // User management (admin only)
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users/save', [UserController::class, 'save']);
+    Route::post('/users/delete', [UserController::class, 'delete']);
+
+    // Get me to reactivate session
     Route::get('/me', [AuthController::class, 'me']);
+
+    // Products management
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/{id}', [ProductController::class, 'show']);
     Route::post('/products', [ProductController::class, 'store']);
@@ -26,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/products/{id}/images', [ProductImageController::class, 'store']);
     Route::delete('/products/{id}/images/{image_id}', [ProductImageController::class, 'destroy']);
 
+    // Locations management
     Route::get('/locations', [LocationController::class, 'index']);
     Route::post('/locations', [LocationController::class, 'store']);
     Route::put('/locations/{id}', [LocationController::class, 'update']);

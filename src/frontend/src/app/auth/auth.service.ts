@@ -1,8 +1,9 @@
-
 import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthResponse } from './auth-response';
 import { environment } from '../../environments/environment';
+import { switchMap } from 'rxjs';
+import { Router } from '@angular/router';
 
 export type UserRole = 'customer' | 'editor' | 'admin' | null;
 export interface UserState {
@@ -16,15 +17,19 @@ export class AuthService {
   private _user = signal<UserState>({ isLoggedIn: false, role: null });
   readonly user = this._user;
 
-
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   loginApi(email: string, password: string) {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/login`, { email, password });
+    // First, get CSRF cookie
+    return this.http.get(`${environment.backendUrl}sanctum/csrf-cookie`).pipe(
+      switchMap(() => {
+        return this.http.post<AuthResponse>(`${environment.backendUrl}login`, { email, password });
+      })
+    );
   }
 
   registerApi(data: { name: string; email: string; password: string }) {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/register`, data);
+    return this.http.post<AuthResponse>(`${environment.backendUrl}api/register`, data);
   }
 
   setSession(token: string, user: any) {
@@ -63,6 +68,7 @@ export class AuthService {
     this._user.set({ isLoggedIn: false, role: null });
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
+    this.router.navigate(['/']);
   }
 
   getUser(): UserState {
@@ -72,9 +78,12 @@ export class AuthService {
   restoreSession() {
     const token = this.getToken();
     if (!token) return;
-    this.http.get<AuthResponse>(`${environment.apiUrl}/me`, {
-      headers: this.authHeaders()
-    }).subscribe({
+    // First, get CSRF cookie
+    return this.http.get(`${environment.backendUrl}sanctum/csrf-cookie`).pipe(
+      switchMap(() => {
+        return this.http.get<AuthResponse>(`${environment.backendUrl}api/me`);
+      })
+    ).subscribe({
       next: (res: AuthResponse) => {
         this.login(res.user.role, res.user.name, token, res.user);
       },
@@ -82,5 +91,11 @@ export class AuthService {
         this.logout();
       }
     });
+  }
+
+  // Utility to get cookie value by name
+  getCookie(name: string): string | null {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : null;
   }
 }

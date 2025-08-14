@@ -1,1 +1,41 @@
-<p>users-list works!</p>
+<div class="users-list">
+	<h2>User Management</h2>
+	<button (click)="newUserForm()">New User</button>
+		<ul>
+			@for (user of users(); track user.id) {
+				<li>
+					<span>{{ user.name }} ({{ user.email }}) - {{ user.role }}</span>
+					<button (click)="selectUser(user)">Edit</button>
+					<button (click)="deleteUser(user)">Delete</button>
+				</li>
+			}
+		</ul>
+
+			@if (showForm) {
+				<div class="form-card">
+					<h3>{{ selectedUser ? 'Edit User' : 'New User' }}</h3>
+					<form [formGroup]="form" (ngSubmit)="saveUser()" autocomplete="off">
+						<label for="name">Name:</label>
+						<input formControlName="name" id="name" type="text" required autocomplete="off">
+
+						<label for="email">Email:</label>
+						<input formControlName="email" id="email" type="email" required autocomplete="off">
+
+						<label for="role">Role:</label>
+						<select formControlName="role" id="role" autocomplete="off">
+							<option value="customer">Customer</option>
+							<option value="editor">Editor</option>
+							<option value="admin">Admin</option>
+						</select>
+
+						<label for="password">Password:</label>
+						<div style="position:relative;">
+						  <input formControlName="password" id="password" [type]="showPassword ? 'text' : 'password'" autocomplete="new-password">
+						  <button type="button" (click)="togglePassword()" style="position:absolute; right:0; padding:0.3em 0.7em; font-size:0.9em;">{{ showPassword ? 'Hide' : 'Show' }}</button>
+						</div>
+
+						<button type="submit">Save</button>
+						<button type="button" (click)="newUserForm()">Cancel</button>
+					</form>
+				</div>
+			}
