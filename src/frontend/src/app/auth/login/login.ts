@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
-import { AuthResponse } from '../auth-response';
 import { signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -12,30 +11,34 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
   standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './login.html',
-  styleUrl: './login.scss'
+  styleUrl: './login.scss',
 })
 export class Login {
+  private auth = inject(AuthService);
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
+
   form: FormGroup;
   error = signal('');
 
-  constructor(private auth: AuthService, private fb: FormBuilder, private router: Router) {
+  constructor() {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
     });
   }
 
   submit() {
+    this.error.set('');
     const { email, password } = this.form.value;
-    this.auth.loginApi(email, password).subscribe({
-      next: (res: AuthResponse) => {
-        this.auth.login(res.user.role, res.user.name, res.access_token, res.user);
+    this.auth.login(email, password).subscribe({
+      next: () => {
         this.router.navigate(['/products']);
       },
       error: (err) => {
         const msg = err?.error?.message || 'Invalid credentials';
         this.error.set(msg);
-      }
+      },
     });
   }
 }

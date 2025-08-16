@@ -1,12 +1,18 @@
 <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
   <h2>Login</h2>
   <div>
-    <label>Email</label>
-    <input type="email" formControlName="email" required />
+    <label for="email">Email</label>
+    <input type="email" formControlName="email" id="email" required autocomplete="email" />
   </div>
   <div>
-    <label>Password</label>
-    <input type="password" formControlName="password" required />
+    <label for="password">Password</label>
+    <input
+      type="password"
+      formControlName="password"
+      id="password"
+      required
+      autocomplete="current-password"
+    />
   </div>
   <button type="submit">Login</button>
   @if (error()) {

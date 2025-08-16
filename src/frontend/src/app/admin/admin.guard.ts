@@ -6,10 +6,11 @@ import { Router } from '@angular/router';
 export const adminGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
   const router = inject(Router);
-  const user = auth.getUser();
-  if (user.isLoggedIn && user.role === 'admin') {
-    return true;
+  const user = auth.user();
+  if (!user || user.role !== 'admin') {
+    router.navigate(['/']);
+    return false;
   }
-  router.navigate(['/']);
-  return false;
+
+  return true;
 };

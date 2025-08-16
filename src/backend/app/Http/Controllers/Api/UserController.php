@@ -69,6 +69,13 @@ class UserController extends Controller
 
         $user = User::find($validated['id']);
         if ($user) {
+            // Prevent deletion of last admin
+            if ($user->role === 'admin') {
+                $adminCount = User::where('role', 'admin')->count();
+                if ($adminCount <= 1) {
+                    return response()->json(['error' => 'Cannot delete the last admin account.'], 403);
+                }
+            }
             $user->delete();
             return response()->json(['success' => true]);
         }

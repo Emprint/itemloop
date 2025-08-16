@@ -1,0 +1,13 @@
+@if (show) {
+  <div class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-content">
+        <p>{{ message }}</p>
+        <div class="modal-actions">
+          <button (click)="onCancel()">Cancel</button>
+          <button class="danger" (click)="onConfirm()">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

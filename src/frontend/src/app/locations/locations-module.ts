@@ -3,12 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { LocationsRoutingModule } from './locations-routing-module';
 
-
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    LocationsRoutingModule
-  ]
+  imports: [CommonModule, LocationsRoutingModule],
 })
-export class LocationsModule { }
+export class LocationsModule {}

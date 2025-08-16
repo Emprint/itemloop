@@ -1,77 +1,83 @@
 :root {
-	--primary-color: #28a745;
-	font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --primary-color: #28a745;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
+input[type='text'],
+input[type='email'],
+input[type='password'],
 select,
 button {
-	width: 100%;
-	box-sizing: border-box;
-	padding: 0.5rem;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	font-family: inherit;
-	font-size: 1rem;
-	background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+  background: #fff;
 }
 
 button {
-	background: var(--primary-color);
-	color: #fff;
-	border: none;
-	padding: 0.75rem;
-	cursor: pointer;
-	margin-bottom: 1rem;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 0.75rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+button:disabled {
+  background: #e0e0e0 !important;
+  color: #888 !important;
+  border: 1px solid #ccc !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
 }
 
 .form-card {
-	max-width: 400px;
-	margin: 2rem auto;
-	padding: 2rem;
-	background: #fff;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-	font-family: inherit;
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  font-family: inherit;
 
-		h2 {
-			margin-bottom: 1rem;
-		}
+  h2 {
+    margin-bottom: 1rem;
+  }
 
-		label {
-			display: block;
-			margin-bottom: 0.5rem;
-		}
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
 
-		input {
-			margin-bottom: 1rem;
-		}
+  input,
+  button,
+  select {
+    margin-bottom: 1rem;
+  }
 
-		button {
-			margin-bottom: 1rem;
-		}
+  .error {
+    color: #d00;
+    margin-top: 1rem;
+  }
 
-		.error {
-			color: #d00;
-			margin-top: 1rem;
-		}
+  .link {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    font-size: 0.95rem;
 
-		.link {
-			display: flex;
-			gap: 0.5rem;
-			justify-content: center;
-			align-items: center;
-			margin-top: 1rem;
-			font-size: 0.95rem;
-
-			a {
-				color: var(--primary-color);
-				text-decoration: underline;
-				font-weight: 500;
-			}
-		}
+    a {
+      color: var(--primary-color);
+      text-decoration: underline;
+      font-weight: 500;
+    }
+  }
 }
 
 select {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
@@ -11,17 +11,17 @@ export interface User {
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   getUsers() {
-  return this.http.get<User[]>(`${environment.backendUrl}api/users`);
+    return this.http.get<User[]>(`${environment.apiUrl}users`);
   }
 
   saveUser(user: Partial<User> & { password?: string }) {
-  return this.http.post<User>(`${environment.backendUrl}api/users/save`, user);
+    return this.http.post<User>(`${environment.apiUrl}users/save`, user);
   }
 
   deleteUser(id: number) {
-  return this.http.post<{ success: boolean }>(`${environment.backendUrl}api/users/delete`, { id });
+    return this.http.post<{ success: boolean }>(`${environment.apiUrl}users/delete`, { id });
   }
 }

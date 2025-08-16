@@ -78,6 +78,13 @@ npm install
 npm start
 ```
 
+**Before committing changes, ensure the solution is formatted and linted:**
+
+```sh
+npx prettier --write src
+ng lint
+```
+
 ---
 
 ## 📋 API Endpoints
@@ -102,7 +109,7 @@ npm start
 ### Authentication
 - Register: `POST /api/register`
 - Login: `POST /api/login`
-- Logout: `POST /api/logout` (requires Bearer token)
+- Logout: `POST /api/logout`
 
 ---
 

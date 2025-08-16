@@ -1,101 +1,91 @@
-import { Injectable, signal } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthResponse } from './auth-response';
+import { Injectable, signal, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { AuthResponse, User } from './auth-response';
 import { environment } from '../../environments/environment';
-import { switchMap } from 'rxjs';
+import { map, Observable, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
-
-export type UserRole = 'customer' | 'editor' | 'admin' | null;
-export interface UserState {
-  isLoggedIn: boolean;
-  role: UserRole;
-  name?: string;
-}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private _user = signal<UserState>({ isLoggedIn: false, role: null });
+  private http = inject(HttpClient);
+  private router = inject(Router);
+
+  private _user = signal<User | null>(null);
   readonly user = this._user;
 
-  constructor(private http: HttpClient, private router: Router) {}
-
-  loginApi(email: string, password: string) {
-    // First, get CSRF cookie
-    return this.http.get(`${environment.backendUrl}sanctum/csrf-cookie`).pipe(
-      switchMap(() => {
-        return this.http.post<AuthResponse>(`${environment.backendUrl}login`, { email, password });
-      })
+  register(name: string, email: string, password: string) {
+    return this.registerApi({ name, email, password }).pipe(
+      tap((res) => {
+        this.setUser(res);
+      }),
+      map(() => void 0),
     );
   }
 
-  registerApi(data: { name: string; email: string; password: string }) {
-    return this.http.post<AuthResponse>(`${environment.backendUrl}api/register`, data);
-  }
-
-  setSession(token: string, user: any) {
-    localStorage.setItem('access_token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('access_token');
-  }
-
-  getStoredUser(): UserState {
-    const user = localStorage.getItem('user');
-    if (user) {
-      const u = JSON.parse(user);
-      return { isLoggedIn: true, role: u.role, name: u.name };
-    }
-    return { isLoggedIn: false, role: null };
-  }
-
-  authHeaders(): HttpHeaders {
-    const token = this.getToken();
-    return new HttpHeaders({
-      Authorization: token ? `Bearer ${token}` : ''
-    });
-  }
-
-  login(role: UserRole, name?: string, token?: string, user?: any) {
-    this._user.set({ isLoggedIn: true, role, name });
-    if (token && user) {
-      this.setSession(token, user);
-    }
+  login(email: string, password: string) {
+    return this.loginApi(email, password).pipe(
+      tap((res) => {
+        this.setUser(res);
+      }),
+      map(() => void 0),
+    );
   }
 
   logout() {
-    this._user.set({ isLoggedIn: false, role: null });
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user');
-    this.router.navigate(['/']);
+    return this.logoutApi().pipe(
+      tap(() => {
+        this.softLogout();
+        this.router.navigate(['/']);
+      }),
+      map(() => void 0),
+    );
   }
 
-  getUser(): UserState {
-    return this._user();
+  softLogout() {
+    this._user.set(null);
+    localStorage.removeItem('user');
   }
 
   restoreSession() {
-    const token = this.getToken();
+    const token = this.getCsrfCookie();
     if (!token) return;
     // First, get CSRF cookie
-    return this.http.get(`${environment.backendUrl}sanctum/csrf-cookie`).pipe(
-      switchMap(() => {
-        return this.http.get<AuthResponse>(`${environment.backendUrl}api/me`);
-      })
-    ).subscribe({
+    return this.http.get<AuthResponse>(`${environment.apiUrl}me`).subscribe({
       next: (res: AuthResponse) => {
-        this.login(res.user.role, res.user.name, token, res.user);
+        this.setUser(res);
       },
       error: () => {
         this.logout();
-      }
+      },
     });
   }
 
-  // Utility to get cookie value by name
-  getCookie(name: string): string | null {
-    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    return match ? decodeURIComponent(match[2]) : null;
+  private loginApi(email: string, password: string) {
+    return this.getCsrfCookie().pipe(
+      switchMap(() => {
+        return this.http.post<AuthResponse>(`${environment.apiUrl}auth/login`, { email, password });
+      }),
+    );
+  }
+
+  private registerApi(data: { name: string; email: string; password: string }) {
+    return this.getCsrfCookie().pipe(
+      switchMap(() => {
+        return this.http.post<AuthResponse>(`${environment.apiUrl}auth/register`, data);
+      }),
+    );
+  }
+
+  private getCsrfCookie(): Observable<void> {
+    return this.http.get<void>(`${environment.apiUrl}csrf-cookie`);
+  }
+
+  private logoutApi() {
+    return this.http.get(`${environment.apiUrl}auth/logout`);
+  }
+
+  private setUser(res: AuthResponse) {
+    this._user.set(res.user);
+    localStorage.setItem('user', JSON.stringify(res.user));
   }
 }

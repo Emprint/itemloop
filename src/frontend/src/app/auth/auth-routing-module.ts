@@ -11,13 +11,13 @@ const routes: Routes = [
     component: Layout,
     children: [
       { path: 'login', component: Login },
-      { path: 'register', component: Register }
-    ]
-  }
+      { path: 'register', component: Register },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AuthRoutingModule { }
+export class AuthRoutingModule {}

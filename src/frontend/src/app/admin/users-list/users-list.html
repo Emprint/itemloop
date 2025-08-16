@@ -1,41 +1,95 @@
 <div class="users-list">
-	<h2>User Management</h2>
-	<button (click)="newUserForm()">New User</button>
-		<ul>
-			@for (user of users(); track user.id) {
-				<li>
-					<span>{{ user.name }} ({{ user.email }}) - {{ user.role }}</span>
-					<button (click)="selectUser(user)">Edit</button>
-					<button (click)="deleteUser(user)">Delete</button>
-				</li>
-			}
-		</ul>
+  <h2>User Management</h2>
+  @if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  }
 
-			@if (showForm) {
-				<div class="form-card">
-					<h3>{{ selectedUser ? 'Edit User' : 'New User' }}</h3>
-					<form [formGroup]="form" (ngSubmit)="saveUser()" autocomplete="off">
-						<label for="name">Name:</label>
-						<input formControlName="name" id="name" type="text" required autocomplete="off">
+  @if (showReLoginNotice) {
+    <div class="error">
+      You have updated your password. Please <a href="/auth/login">login again</a> to continue using
+      the app.
+    </div>
+  }
 
-						<label for="email">Email:</label>
-						<input formControlName="email" id="email" type="email" required autocomplete="off">
+  @if (showForm) {
+    <div class="form-card">
+      <h3>{{ selectedUser ? 'Edit User' : 'New User' }}</h3>
+      <form [formGroup]="form" (ngSubmit)="saveUser()" autocomplete="off">
+        <label for="name">Name:</label>
+        <input formControlName="name" id="name" type="text" required autocomplete="off" />
 
-						<label for="role">Role:</label>
-						<select formControlName="role" id="role" autocomplete="off">
-							<option value="customer">Customer</option>
-							<option value="editor">Editor</option>
-							<option value="admin">Admin</option>
-						</select>
+        <label for="email">Email:</label>
+        <input formControlName="email" id="email" type="email" required autocomplete="off" />
 
-						<label for="password">Password:</label>
-						<div style="position:relative;">
-						  <input formControlName="password" id="password" [type]="showPassword ? 'text' : 'password'" autocomplete="new-password">
-						  <button type="button" (click)="togglePassword()" style="position:absolute; right:0; padding:0.3em 0.7em; font-size:0.9em;">{{ showPassword ? 'Hide' : 'Show' }}</button>
-						</div>
+        <label for="role">Role:</label>
+        <select formControlName="role" id="role" autocomplete="off">
+          <option value="customer">Customer</option>
+          <option value="editor">Editor</option>
+          <option value="admin">Admin</option>
+        </select>
 
-						<button type="submit">Save</button>
-						<button type="button" (click)="newUserForm()">Cancel</button>
-					</form>
-				</div>
-			}
+        <label for="password">{{ selectedUser ? 'Change Password' : 'Password' }}:</label>
+        <div style="position: relative">
+          <input
+            formControlName="password"
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            (click)="togglePassword()"
+            style="position: absolute; right: 0; padding: 0.3em 0.7em; font-size: 0.9em"
+          >
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+
+        <button type="button" (click)="cancel()">Cancel</button>
+        <button type="submit">Save</button>
+      </form>
+    </div>
+  }
+
+  @if (!showForm && !showReLoginNotice) {
+    <button (click)="newUserForm()">New User</button>
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th style="width: 90px">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track user.id) {
+          <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+              <span style="display: flex; gap: 0.3em; align-items: center">
+                <button class="compact" (click)="selectUser(user)">Edit</button>
+                <button
+                  class="compact"
+                  (click)="confirmDeleteUser(user)"
+                  [disabled]="isLastAdmin(user)"
+                >
+                  Delete
+                </button>
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
+
+<app-confirm-modal
+  [show]="showDeleteModal"
+  [message]="'Are you sure you want to delete this user?'"
+  (confirmEvent)="deleteUserConfirmed()"
+  (cancelEvent)="cancelDeleteUser()"
+></app-confirm-modal>

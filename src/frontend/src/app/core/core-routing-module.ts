@@ -7,18 +7,18 @@ import { Home } from './home/home';
 const routes: Routes = [
   {
     path: '',
-  component: Layout,
+    component: Layout,
     children: [
       {
         path: '',
-  component: Home
-      }
-    ]
-  }
+        component: Home,
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class CoreRoutingModule { }
+export class CoreRoutingModule {}

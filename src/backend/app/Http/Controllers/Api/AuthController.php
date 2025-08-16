@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -37,44 +39,65 @@ class AuthController extends Controller
             'role' => $role,
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // $token = $user->createToken('auth_token')->plainTextToken;
 
+        $request->session()->regenerate();
+        Auth::login($user);
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
+            // 'access_token' => $token,
+            // 'token_type' => 'Bearer',
             'user' => $user,
         ], 201);
     }
 
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $credentials = $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+        if (Auth::attempt($credentials)) {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                Auth::logout();
+                $request->session()->invalidate();
+                return response()->json(['message' => 'Invalid credentials'], 401);
+            }
+
+            $request->session()->regenerate();
+            return response()->json(['user' => $user], 200);
         }
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user,
+        throw ValidationException::withMessages([
+            'email' => ['The provided credentials are incorrect.'],
         ]);
+
+        // if ($validator->fails()) {
+        //     return response()->json(['errors' => $validator->errors()], 422);
+        // }
+
+        // $user = User::where('email', $request->email)->first();
+
+        // if (!$user || !Hash::check($request->password, $user->password)) {
+        //     return response()->json(['message' => 'Invalid credentials'], 401);
+        // }
+
+        // $token = $user->createToken('auth_token')->plainTextToken;
+
+        // return response()->json([
+        //     // 'access_token' => $token,
+        //     // 'token_type' => 'Bearer',
+        //     'user' => $user,
+        // ]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
+        // $request->user()->tokens()->delete();
+        // Auth::logout();
+        $request->session()->invalidate();
         return response()->json(['message' => 'Logged out']);
     }
 

@@ -7,13 +7,11 @@ use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\ProductImageController;
 use App\Http\Controllers\Api\UserController;
 
-Route::get('/ping', function () {
-    return response()->json(['message' => 'pong']);
+Route::prefix('auth')->as('auth.')->group(function() {
+    Route::post('login', [AuthController::class, 'login'])->name('login');
+    Route::post('register', [AuthController::class, 'register'])->name('register');
+    Route::middleware('auth:sanctum')->get('logout', [AuthController::class, 'logout'])->name('logout');
 });
-
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // User management (admin only)
