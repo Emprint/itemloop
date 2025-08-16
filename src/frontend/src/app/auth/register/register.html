@@ -1,35 +1,35 @@
 <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
-  <h2>Register</h2>
+  <h2>{{ 'REGISTER' | translate }}</h2>
   <div>
-    <label for="name">Name</label>
+    <label for="name">{{ 'NAME' | translate }}</label>
     <input type="text" formControlName="name" id="name" required />
   </div>
   <div>
-    <label for="email">Email</label>
+    <label for="email">{{ 'EMAIL' | translate }}</label>
     <input type="email" formControlName="email" id="email" required />
   </div>
   <div>
-    <label for="password">Password</label>
+    <label for="password">{{ 'PASSWORD' | translate }}</label>
     <input type="password" formControlName="password" id="password" required />
     <small class="helper-text">
-      Password must be at least 8 characters and include:
+      {{ 'PASSWORD_HELPER' | translate }}
       <ul>
-        <li>At least one letter</li>
-        <li>At least one digit</li>
-        <li>At least one special character</li>
+        <li>{{ 'PASSWORD_LETTER' | translate }}</li>
+        <li>{{ 'PASSWORD_DIGIT' | translate }}</li>
+        <li>{{ 'PASSWORD_SPECIAL' | translate }}</li>
       </ul>
     </small>
   </div>
   <div>
-    <label for="confirmPassword">Confirm Password</label>
+    <label for="confirmPassword">{{ 'CONFIRM_PASSWORD' | translate }}</label>
     <input type="password" formControlName="confirmPassword" id="confirmPassword" required />
   </div>
-  <button type="submit">Register</button>
+  <button type="submit">{{ 'REGISTER' | translate }}</button>
   @if (error()) {
-    <div class="error">{{ error() }}</div>
+    <div class="error">{{ error() | translate }}</div>
   }
   <div class="link">
-    <span>Already have an account?</span>
-    <a routerLink="/auth/login">Back to login</a>
+    <span>{{ 'ALREADY_ACCOUNT' | translate }}</span>
+    <a routerLink="/auth/login">{{ 'BACK_TO_LOGIN' | translate }}</a>
   </div>
 </form>

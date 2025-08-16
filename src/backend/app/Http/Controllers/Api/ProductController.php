@@ -47,7 +47,7 @@ class ProductController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation failed',
+                'error' => 'ERROR_VALIDATION',
                 'errors' => $validator->errors()
             ], 422);
         }
@@ -72,7 +72,7 @@ class ProductController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation failed',
+                'error' => 'ERROR_VALIDATION',
                 'errors' => $validator->errors()
             ], 422);
         }
@@ -85,6 +85,6 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $product->delete();
-        return response()->json(['message' => 'Product deleted']);
+    return response()->json(['success' => true]);
     }
 }

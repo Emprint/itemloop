@@ -14,7 +14,7 @@ class UserController extends Controller
     {
         $authUser = $request->user();
         if (!$authUser || !$authUser->isAdmin()) {
-            return response()->json(['error' => 'Unauthorized'], 403);
+            return response()->json(['error' => 'ERROR_UNAUTHORIZED'], 403);
         }
         $users = User::all();
         return response()->json($users);
@@ -32,7 +32,7 @@ class UserController extends Controller
         ]);
             $authUser = $request->user();
             if (!$authUser || !$authUser->isAdmin()) {
-                return response()->json(['error' => 'Unauthorized'], 403);
+                return response()->json(['error' => 'ERROR_UNAUTHORIZED'], 403);
             }
 
         if (isset($validated['id'])) {
@@ -73,7 +73,7 @@ class UserController extends Controller
             if ($user->role === 'admin') {
                 $adminCount = User::where('role', 'admin')->count();
                 if ($adminCount <= 1) {
-                    return response()->json(['error' => 'Cannot delete the last admin account.'], 403);
+                    return response()->json(['error' => 'ERROR_LAST_ADMIN'], 403);
                 }
             }
             $user->delete();

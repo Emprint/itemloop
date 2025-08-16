@@ -1,11 +1,11 @@
 <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
-  <h2>Login</h2>
+  <h2>{{ 'LOGIN' | translate }}</h2>
   <div>
-    <label for="email">Email</label>
+    <label for="email">{{ 'EMAIL' | translate }}</label>
     <input type="email" formControlName="email" id="email" required autocomplete="email" />
   </div>
   <div>
-    <label for="password">Password</label>
+    <label for="password">{{ 'PASSWORD' | translate }}</label>
     <input
       type="password"
       formControlName="password"
@@ -14,12 +14,12 @@
       autocomplete="current-password"
     />
   </div>
-  <button type="submit">Login</button>
+  <button type="submit">{{ 'LOGIN' | translate }}</button>
   @if (error()) {
     <div class="error">{{ error() }}</div>
   }
   <div class="link">
-    <span>Don't have an account?</span>
-    <a routerLink="/auth/register">Register</a>
+    <span>{{ 'NO_ACCOUNT' | translate }}</span>
+    <a routerLink="/auth/register">{{ 'REGISTER' | translate }}</a>
   </div>
 </form>

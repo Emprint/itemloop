@@ -1,4 +1,5 @@
 import { Component, signal, inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './auth/auth.service';
 import { RouterOutlet } from '@angular/router';
 
@@ -15,5 +16,9 @@ export class App {
 
   constructor() {
     this.auth.restoreSession();
+    const translate = inject(TranslateService);
+    const browserLang = translate.getBrowserLang() ?? 'en';
+    const lang = ['fr', 'en'].includes(browserLang) ? browserLang : 'en';
+    translate.use(lang);
   }
 }

@@ -1,18 +1,21 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { UserService, User } from '../user.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { emailTldValidator } from '../../shared/email-tld.validator';
 import { CommonModule } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../auth/auth.service';
 import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ConfirmModal],
+  imports: [CommonModule, ReactiveFormsModule, ConfirmModal, TranslateModule],
   templateUrl: './users-list.html',
   styleUrl: './users-list.scss',
 })
 export class UsersList implements OnInit {
+  private translate = inject(TranslateService);
   private userService = inject(UserService);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
@@ -31,7 +34,7 @@ export class UsersList implements OnInit {
     this.form = this.fb.group({
       id: [null],
       name: ['', [Validators.required, Validators.maxLength(255)]],
-      email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
+      email: ['', [Validators.required, emailTldValidator, Validators.maxLength(255)]],
       role: ['customer', [Validators.required]],
       password: [''],
     });
@@ -48,7 +51,7 @@ export class UsersList implements OnInit {
         this.errorMessage.set(null);
       },
       error: () => {
-        this.errorMessage.set('Failed to load users.');
+        this.errorMessage.set(this.translate.instant('ERRORS.FAILED_LOAD_USERS'));
       },
     });
   }
@@ -60,7 +63,15 @@ export class UsersList implements OnInit {
   }
 
   saveUser() {
-    if (!this.form.valid) return;
+    if (!this.form.valid) {
+      const emailControl = this.form.get('email');
+      if (emailControl?.errors?.['email']) {
+        this.errorMessage.set(this.translate.instant('ERRORS.EMAIL_INVALID'));
+      } else {
+        this.errorMessage.set(this.translate.instant('ERRORS.REQUIRED_FIELDS'));
+      }
+      return;
+    }
     this.userService.saveUser(this.form.value).subscribe({
       next: (user) => {
         if (user.id === this.authService.user()?.id && this.form.get('password')?.value) {
@@ -75,7 +86,12 @@ export class UsersList implements OnInit {
         this.errorMessage.set(null);
       },
       error: (err) => {
-        this.errorMessage.set(err?.error?.error || 'Failed to save user.');
+        const code = err?.error?.error;
+        if (code) {
+          this.errorMessage.set(this.translate.instant('ERRORS.' + code));
+        } else {
+          this.errorMessage.set(this.translate.instant('ERRORS.FAILED_SAVE_USER'));
+        }
       },
     });
   }
@@ -97,10 +113,13 @@ export class UsersList implements OnInit {
         },
         error: (err) => {
           this.showDeleteModal = false;
-          if (err.status === 403) {
-            this.errorMessage.set(err?.error?.error || 'Cannot delete this user.');
+          const code = err?.error?.error;
+          if (code) {
+            this.errorMessage.set(this.translate.instant('ERRORS.' + code));
+          } else if (err.status === 403) {
+            this.errorMessage.set(this.translate.instant('ERRORS.CANNOT_DELETE_USER'));
           } else {
-            this.errorMessage.set(err?.error?.error || 'Failed to delete user.');
+            this.errorMessage.set(this.translate.instant('ERRORS.FAILED_DELETE_USER'));
           }
         },
       });

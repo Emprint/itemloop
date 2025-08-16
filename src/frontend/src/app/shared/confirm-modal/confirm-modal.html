@@ -4,8 +4,8 @@
       <div class="modal-content">
         <p>{{ message }}</p>
         <div class="modal-actions">
-          <button (click)="onCancel()">Cancel</button>
-          <button class="danger" (click)="onConfirm()">Delete</button>
+          <button (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
+          <button class="danger" (click)="onConfirm()">{{ 'DELETE' | translate }}</button>
         </div>
       </div>
     </div>

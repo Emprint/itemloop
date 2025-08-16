@@ -20,7 +20,11 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 1em;
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
 }
+// Add padding to main content to avoid overlap with fixed navbar
 .users-table th,
 .users-table td {
   padding: 0.4em 0.7em;

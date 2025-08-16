@@ -23,7 +23,7 @@ class LocationController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation failed',
+                'error' => 'ERROR_VALIDATION',
                 'errors' => $validator->errors()
             ], 422);
         }
@@ -41,7 +41,7 @@ class LocationController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation failed',
+                'error' => 'ERROR_VALIDATION',
                 'errors' => $validator->errors()
             ], 422);
         }
@@ -53,6 +53,6 @@ class LocationController extends Controller
     {
         $location = Location::findOrFail($id);
         $location->delete();
-        return response()->json(['message' => 'Location deleted']);
+    return response()->json(['success' => true]);
     }
 }

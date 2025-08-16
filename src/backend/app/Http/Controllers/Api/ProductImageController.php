@@ -35,7 +35,7 @@ class ProductImageController extends Controller
                 ]);
             }
         }
-        return response()->json(['images' => $createdImages], 201);
+    return response()->json(['images' => $createdImages], 201);
     }
 
     // Remove image from product
@@ -49,6 +49,6 @@ class ProductImageController extends Controller
             unlink($filePath);
         }
         $image->delete();
-        return response()->json(['message' => 'Image deleted']);
+    return response()->json(['success' => true]);
     }
 }

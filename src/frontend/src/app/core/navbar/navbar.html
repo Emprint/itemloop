@@ -10,16 +10,67 @@
       />
     </a>
   </div>
-  <ul class="navbar-links">
-    @for (link of links(); track link.label) {
-      <li>
-        <ng-container *ngIf="link.label !== 'Logout'; else logoutLink">
-          <a [routerLink]="link.route">{{ link.label }}</a>
-        </ng-container>
-        <ng-template #logoutLink>
-          <a href="#" (click)="$event.preventDefault(); logout()">Logout</a>
-        </ng-template>
-      </li>
+  <div class="navbar-desktop">
+    <ul class="navbar-links">
+      @for (link of links(); track link.label) {
+        <li>
+          <ng-container *ngIf="link.label !== 'LOGOUT'; else logoutLink">
+            <a [routerLink]="link.route">{{ link.label | translate }}</a>
+          </ng-container>
+          <ng-template #logoutLink>
+            <a href="#" (click)="$event.preventDefault(); logout()">{{ link.label | translate }}</a>
+          </ng-template>
+        </li>
+      }
+    </ul>
+    <div class="navbar-lang-switcher">
+      <select
+        #langSelect
+        (change)="switchLang(langSelect.value)"
+        [value]="currentLang"
+        aria-label="Language"
+        class="navbar-lang-select"
+      >
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+      </select>
+    </div>
+  </div>
+  <div class="navbar-mobile">
+    <button class="navbar-hamburger" (click)="toggleMenu()" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    @if (showMenu()) {
+      <div class="navbar-mobile-menu">
+        <ul>
+          @for (link of links(); track link.label) {
+            <li>
+              <ng-container *ngIf="link.label !== 'LOGOUT'; else logoutLinkMobile">
+                <a [routerLink]="link.route" (click)="closeMenu()">{{ link.label | translate }}</a>
+              </ng-container>
+              <ng-template #logoutLinkMobile>
+                <a href="#" (click)="$event.preventDefault(); logout(); closeMenu()">{{
+                  link.label | translate
+                }}</a>
+              </ng-template>
+            </li>
+          }
+        </ul>
+        <div class="navbar-lang-switcher">
+          <select
+            #langSelectMobile
+            (change)="switchLang(langSelectMobile.value); closeMenu()"
+            [value]="currentLang"
+            aria-label="Language"
+            class="navbar-lang-select"
+          >
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+          </select>
+        </div>
+      </div>
     }
-  </ul>
+  </div>
 </nav>
