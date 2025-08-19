@@ -24,7 +24,9 @@
     <label for="confirmPassword">{{ 'CONFIRM_PASSWORD' | translate }}</label>
     <input type="password" formControlName="confirmPassword" id="confirmPassword" required />
   </div>
-  <button type="submit">{{ 'REGISTER' | translate }}</button>
+  <div class="buttons-list">
+    <button type="submit">{{ 'REGISTER' | translate }}</button>
+  </div>
   @if (error()) {
     <div class="error">{{ error() | translate }}</div>
   }

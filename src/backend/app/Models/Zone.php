@@ -5,14 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Location extends Model
+class Zone extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'building_id',
-        'zone_id',
-        'shelf',
     ];
 
     public function building()
@@ -20,13 +19,8 @@ class Location extends Model
         return $this->belongsTo(Building::class);
     }
 
-    public function zone()
+    public function locations()
     {
-        return $this->belongsTo(Zone::class);
-    }
-
-    public function products()
-    {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Location::class);
     }
 }

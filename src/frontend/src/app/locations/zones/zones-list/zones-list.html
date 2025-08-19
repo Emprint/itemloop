@@ -1,0 +1,67 @@
+<div class="item-list">
+  @if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  }
+  @if (showForm()) {
+    <div class="form-card">
+      <h3>{{ selectedZone ? ('EDIT_ZONE' | translate) : ('NEW_ZONE' | translate) }}</h3>
+      <form [formGroup]="form" (ngSubmit)="saveZone()" autocomplete="off">
+        <label for="zoneName">{{ 'NAME' | translate }}:</label>
+        <input formControlName="name" id="zoneName" type="text" required />
+        <label for="buildingSelect">{{ 'BUILDING' | translate }}:</label>
+        <select formControlName="building_id" id="buildingSelect" required>
+          <option value="" disabled>{{ 'SELECT_BUILDING' | translate }}</option>
+          @for (building of buildings(); track building.id) {
+            <option [value]="building.id">{{ building.name }}</option>
+          }
+        </select>
+        <div class="buttons-list">
+          <button type="button" (click)="cancel()">{{ 'CANCEL' | translate }}</button>
+          <button type="submit">{{ 'SAVE' | translate }}</button>
+        </div>
+      </form>
+    </div>
+  }
+  @if (!showForm()) {
+    <button (click)="newZoneForm()">{{ 'NEW_ZONE_BTN' | translate }}</button>
+    <table class="item-table">
+      <thead>
+        <tr>
+          <th>{{ 'NAME' | translate }}</th>
+          <th>{{ 'BUILDING' | translate }}</th>
+          <th>{{ 'ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (zone of zones(); track zone.id) {
+          <tr>
+            <td>{{ zone.name }}</td>
+            <td>{{ zone.building?.name }}</td>
+            <td>
+              <button class="compact-button" (click)="editZone(zone)">
+                {{ 'EDIT' | translate }}
+              </button>
+              <button class="compact-button" (click)="confirmDeleteZone(zone)">
+                {{ 'DELETE' | translate }}
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
+
+<app-confirm-modal
+  [show]="showDeleteModal"
+  [message]="
+    ('CONFIRM_DELETE_ZONE_MSG' | translate) +
+    ' ' +
+    (zoneToDelete?.building?.name || '') +
+    ' > ' +
+    (zoneToDelete?.name || '') +
+    '?'
+  "
+  (confirmEvent)="deleteZoneConfirmed()"
+  (cancelEvent)="cancelDeleteZone()"
+></app-confirm-modal>

@@ -3,22 +3,114 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Location;
+use App\Models\Building;
+use App\Models\Zone;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class LocationController extends Controller
 {
+    // Buildings CRUD
+    public function buildingsIndex()
+    {
+        return response()->json(Building::all());
+    }
+
+    public function buildingsStore(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255|unique:buildings,name',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'ERROR_VALIDATION',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        $building = Building::create($request->all());
+        return response()->json($building, 201);
+    }
+
+    public function buildingsUpdate(Request $request, $id)
+    {
+        $building = Building::findOrFail($id);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255|unique:buildings,name,' . $id,
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'ERROR_VALIDATION',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        $building->update($request->all());
+        return response()->json($building);
+    }
+
+    public function buildingsDestroy($id)
+    {
+        $building = Building::findOrFail($id);
+        $building->delete();
+        return response()->json(['success' => true]);
+    }
+
+    // Zones CRUD
+    public function zonesIndex()
+    {
+        return response()->json(Zone::with('building')->get());
+    }
+
+    public function zonesStore(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'building_id' => 'required|exists:buildings,id',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'ERROR_VALIDATION',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        $zone = Zone::create($request->all());
+        return response()->json($zone, 201);
+    }
+
+    public function zonesUpdate(Request $request, $id)
+    {
+        $zone = Zone::findOrFail($id);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'building_id' => 'required|exists:buildings,id',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => 'ERROR_VALIDATION',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        $zone->update($request->all());
+        return response()->json($zone);
+    }
+
+    public function zonesDestroy($id)
+    {
+        $zone = Zone::findOrFail($id);
+        $zone->delete();
+        return response()->json(['success' => true]);
+    }
+
+    // Locations CRUD
     public function index()
     {
-        return response()->json(Location::all());
+    return response()->json(Location::with(['zone.building'])->get());
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'building' => 'required|string|max:255',
-            'zone' => 'required|string|max:255',
+            'zone_id' => 'required|exists:zones,id',
             'shelf' => 'required|string|max:255',
         ]);
         if ($validator->fails()) {
@@ -35,8 +127,7 @@ class LocationController extends Controller
     {
         $location = Location::findOrFail($id);
         $validator = Validator::make($request->all(), [
-            'building' => 'sometimes|required|string|max:255',
-            'zone' => 'sometimes|required|string|max:255',
+            'zone_id' => 'sometimes|required|exists:zones,id',
             'shelf' => 'sometimes|required|string|max:255',
         ]);
         if ($validator->fails()) {
@@ -53,6 +144,6 @@ class LocationController extends Controller
     {
         $location = Location::findOrFail($id);
         $location->delete();
-    return response()->json(['success' => true]);
+        return response()->json(['success' => true]);
     }
 }

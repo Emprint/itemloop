@@ -33,6 +33,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/products/{id}/images', [ProductImageController::class, 'store']);
     Route::delete('/products/{id}/images/{image_id}', [ProductImageController::class, 'destroy']);
 
+    // Buildings management
+    Route::get('/buildings', [LocationController::class, 'buildingsIndex']);
+    Route::post('/buildings', [LocationController::class, 'buildingsStore']);
+    Route::put('/buildings/{id}', [LocationController::class, 'buildingsUpdate']);
+    Route::delete('/buildings/{id}', [LocationController::class, 'buildingsDestroy']);
+
+    // Zones management
+    Route::get('/zones', [LocationController::class, 'zonesIndex']);
+    Route::post('/zones', [LocationController::class, 'zonesStore']);
+    Route::put('/zones/{id}', [LocationController::class, 'zonesUpdate']);
+    Route::delete('/zones/{id}', [LocationController::class, 'zonesDestroy']);
+
     // Locations management
     Route::get('/locations', [LocationController::class, 'index']);
     Route::post('/locations', [LocationController::class, 'store']);

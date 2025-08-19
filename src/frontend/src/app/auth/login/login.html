@@ -14,7 +14,9 @@
       autocomplete="current-password"
     />
   </div>
-  <button type="submit">{{ 'LOGIN' | translate }}</button>
+  <div class="buttons-list">
+    <button type="submit">{{ 'LOGIN' | translate }}</button>
+  </div>
   @if (error()) {
     <div class="error">{{ error() }}</div>
   }

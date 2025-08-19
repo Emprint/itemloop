@@ -38,24 +38,22 @@
             [type]="showPassword ? 'text' : 'password'"
             autocomplete="new-password"
           />
-          <button
-            type="button"
-            (click)="togglePassword()"
-            style="position: absolute; right: 0; padding: 0.3em 0.7em; font-size: 0.9em"
-          >
+          <button type="button" (click)="togglePassword()" class="hide-password-button">
             {{ showPassword ? ('HIDE' | translate) : ('SHOW' | translate) }}
           </button>
         </div>
 
-        <button type="button" (click)="cancel()">{{ 'CANCEL' | translate }}</button>
-        <button type="submit">{{ 'SAVE' | translate }}</button>
+        <div class="buttons-list">
+          <button type="button" (click)="cancel()">{{ 'CANCEL' | translate }}</button>
+          <button type="submit">{{ 'SAVE' | translate }}</button>
+        </div>
       </form>
     </div>
   }
 
   @if (!showForm && !showReLoginNotice) {
     <button (click)="newUserForm()">{{ 'NEW_USER_BTN' | translate }}</button>
-    <table class="users-table">
+    <table class="item-table">
       <thead>
         <tr>
           <th>{{ 'NAME' | translate }}</th>
@@ -72,9 +70,11 @@
             <td>{{ user.role | uppercase | translate }}</td>
             <td>
               <span style="display: flex; gap: 0.3em; align-items: center">
-                <button class="compact" (click)="selectUser(user)">{{ 'EDIT' | translate }}</button>
+                <button class="compact-button" (click)="selectUser(user)">
+                  {{ 'EDIT' | translate }}
+                </button>
                 <button
-                  class="compact"
+                  class="compact-button"
                   (click)="confirmDeleteUser(user)"
                   [disabled]="isLastAdmin(user)"
                 >
@@ -91,7 +91,9 @@
 
 <app-confirm-modal
   [show]="showDeleteModal"
-  [message]="'CONFIRM_DELETE_MSG' | translate"
+  [message]="
+    'Are you sure you want to delete the user &quot;' + (userToDelete?.name || '') + '&quot;?'
+  "
   (confirmEvent)="deleteUserConfirmed()"
   (cancelEvent)="cancelDeleteUser()"
 ></app-confirm-modal>

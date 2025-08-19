@@ -1,0 +1,29 @@
+.location-tabs {
+  margin: 1rem -1rem;
+
+  .tabs-nav {
+    display: flex;
+    padding: 0 1rem;
+    gap: 1rem;
+    border-bottom: 1px solid var(--primary-color);
+
+    button {
+      background: #f8f8f8;
+      color: #222;
+      border: none;
+      padding: 0.7em 1.5em;
+      border-radius: 6px 6px 0 0;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 0;
+
+      &.active {
+        background: var(--primary-color);
+        color: #fff;
+      }
+    }
+  }
+  .tab-content {
+    padding: 1rem;
+  }
+}

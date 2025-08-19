@@ -48,5 +48,25 @@
     "PASSWORD_MISMATCH": "Les mots de passe ne correspondent pas.",
     "REGISTRATION_FAILED": "Échec de l'inscription.",
     "EMAIL_TAKEN": "Cette adresse e-mail est déjà enregistrée."
-  }
+  },
+  "LOCATIONS_MANAGEMENT": "Gestion des emplacements",
+  "EDIT_LOCATION": "Modifier l'emplacement",
+  "NEW_LOCATION": "Nouvel emplacement",
+  "NEW_LOCATION_BTN": "Nouvel emplacement",
+  "SHELF": "Rayon",
+  "ZONE": "Zone",
+  "SELECT_ZONE": "Sélectionner une zone",
+  "BUILDING": "Bâtiment",
+  "CONFIRM_DELETE_LOCATION_MSG": "Êtes-vous sûr de vouloir supprimer l'emplacement :",
+  "BUILDINGS_MANAGEMENT": "Gestion des bâtiments",
+  "EDIT_BUILDING": "Modifier le bâtiment",
+  "NEW_BUILDING": "Nouveau bâtiment",
+  "NEW_BUILDING_BTN": "Nouveau bâtiment",
+  "CONFIRM_DELETE_BUILDING_MSG": "Êtes-vous sûr de vouloir supprimer le bâtiment :",
+  "ZONES_MANAGEMENT": "Gestion des zones",
+  "EDIT_ZONE": "Modifier la zone",
+  "NEW_ZONE": "Nouvelle zone",
+  "NEW_ZONE_BTN": "Nouvelle zone",
+  "SELECT_BUILDING": "Sélectionner un bâtiment",
+  "CONFIRM_DELETE_ZONE_MSG": "Êtes-vous sûr de vouloir supprimer la zone :"
 }

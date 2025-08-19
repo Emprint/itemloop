@@ -1,0 +1,75 @@
+<div class="locations-list">
+  @if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  }
+
+  @if (showForm()) {
+    <div class="form-card">
+      <h3>{{ selectedLocation ? ('EDIT_LOCATION' | translate) : ('NEW_LOCATION' | translate) }}</h3>
+      <form [formGroup]="form" (ngSubmit)="saveLocation()" autocomplete="off">
+        <label for="shelf">{{ 'SHELF' | translate }}:</label>
+        <input formControlName="shelf" id="shelf" type="text" required />
+
+        <label for="zone_id">{{ 'ZONE' | translate }}:</label>
+        <select formControlName="zone_id" id="zone_id" required>
+          <option value="" disabled>{{ 'SELECT_ZONE' | translate }}</option>
+          @for (zone of zones(); track zone.id) {
+            <option [value]="zone.id">{{ zone.building?.name }} &gt; {{ zone.name }}</option>
+          }
+        </select>
+
+        <div class="buttons-list">
+          <button type="button" (click)="cancel()">{{ 'CANCEL' | translate }}</button>
+          <button type="submit">{{ 'SAVE' | translate }}</button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (!showForm()) {
+    <button (click)="newLocationForm()">{{ 'NEW_LOCATION_BTN' | translate }}</button>
+    <table class="item-table">
+      <thead>
+        <tr>
+          <th>{{ 'BUILDING' | translate }}</th>
+          <th>{{ 'ZONE' | translate }}</th>
+          <th>{{ 'SHELF' | translate }}</th>
+          <th>{{ 'ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (location of locations(); track location.id) {
+          <tr>
+            <td>{{ location.zone?.building?.name }}</td>
+            <td>{{ location.zone?.name }}</td>
+            <td>{{ location.shelf }}</td>
+            <td>
+              <button class="compact-button" (click)="editLocation(location)">
+                {{ 'EDIT' | translate }}
+              </button>
+              <button class="compact-button" (click)="deleteLocation(location)">
+                {{ 'DELETE' | translate }}
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
+
+<app-confirm-modal
+  [show]="showDeleteModal"
+  [message]="
+    ('CONFIRM_DELETE_LOCATION_MSG' | translate) +
+    ' ' +
+    (locationToDelete?.zone?.building?.name || '') +
+    ' > ' +
+    (locationToDelete?.zone?.name || '') +
+    ' > ' +
+    (locationToDelete?.shelf || '') +
+    '?'
+  "
+  (confirmEvent)="deleteLocationConfirmed()"
+  (cancelEvent)="cancelDeleteLocation()"
+></app-confirm-modal>

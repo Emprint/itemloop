@@ -1,15 +1,20 @@
+:root {
+  --primary-color: #28a745;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
 body {
   margin: 0;
+}
+
+h2 {
+  margin: 1rem 0;
 }
 
 main {
   padding: 1rem;
   padding-top: 73px;
   box-sizing: border-box;
-}
-:root {
-  --primary-color: #28a745;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
 input[type='text'],
@@ -28,12 +33,20 @@ button {
 }
 
 button {
+  width: auto;
   background: var(--primary-color);
   color: #fff;
   border: none;
   padding: 0.75rem;
   cursor: pointer;
   margin-bottom: 1rem;
+
+  &.compact-button {
+    padding: 0.2em 0.6em;
+    font-size: 0.85em;
+    margin-right: 0.3em;
+    margin-bottom: 0;
+  }
 }
 
 button:disabled {
@@ -52,10 +65,6 @@ button:disabled {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   font-family: inherit;
-
-  h2 {
-    margin-bottom: 1rem;
-  }
 
   label {
     display: block;
@@ -99,4 +108,42 @@ select {
   background-repeat: no-repeat;
   background-position: right 0.8em center;
   background-size: 1em;
+}
+
+// Common table for all item lists (users, locations, etc.)
+.item-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1em;
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+
+  th,
+  td {
+    padding: 0.4em 0.7em;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+  }
+
+  th {
+    background: #f8f8f8;
+    font-weight: 600;
+  }
+
+  td {
+    font-size: 0.98em;
+  }
+}
+
+.buttons-list {
+  display: flex;
+  gap: 1rem;
+  align-content: stretch;
+  margin-top: 1rem;
+
+  button {
+    flex-grow: 1;
+    margin: 0;
+  }
 }

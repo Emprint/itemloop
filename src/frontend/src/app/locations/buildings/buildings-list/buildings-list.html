@@ -1,0 +1,53 @@
+<div class="item-list">
+  @if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  }
+  @if (showForm()) {
+    <div class="form-card">
+      <h3>{{ selectedBuilding ? ('EDIT_BUILDING' | translate) : ('NEW_BUILDING' | translate) }}</h3>
+      <form [formGroup]="form" (ngSubmit)="saveBuilding()" autocomplete="off">
+        <label for="buildingName">{{ 'NAME' | translate }}:</label>
+        <input formControlName="name" id="buildingName" type="text" required />
+        <div class="buttons-list">
+          <button type="button" (click)="cancel()">{{ 'CANCEL' | translate }}</button>
+          <button type="submit">{{ 'SAVE' | translate }}</button>
+        </div>
+      </form>
+    </div>
+  }
+  @if (!showForm()) {
+    <button (click)="newBuildingForm()">{{ 'NEW_BUILDING_BTN' | translate }}</button>
+    <table class="item-table">
+      <thead>
+        <tr>
+          <th>{{ 'NAME' | translate }}</th>
+          <th>{{ 'ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (building of buildings(); track building.id) {
+          <tr>
+            <td>{{ building.name }}</td>
+            <td>
+              <button class="compact-button" (click)="editBuilding(building)">
+                {{ 'EDIT' | translate }}
+              </button>
+              <button class="compact-button" (click)="confirmDeleteBuilding(building)">
+                {{ 'DELETE' | translate }}
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
+
+<app-confirm-modal
+  [show]="showDeleteModal"
+  [message]="
+    ('CONFIRM_DELETE_BUILDING_MSG' | translate) + ' ' + (buildingToDelete?.name || '') + '?'
+  "
+  (confirmEvent)="deleteBuildingConfirmed()"
+  (cancelEvent)="cancelDeleteBuilding()"
+></app-confirm-modal>

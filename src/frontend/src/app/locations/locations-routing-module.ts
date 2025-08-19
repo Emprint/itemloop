@@ -9,7 +9,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () => import('./locations-list/locations-list').then((m) => m.LocationsList),
+        loadComponent: () => import('./location-tabs/location-tabs').then((m) => m.LocationTabs),
       },
     ],
   },

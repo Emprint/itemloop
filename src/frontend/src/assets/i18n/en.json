@@ -48,5 +48,25 @@
     "PASSWORD_MISMATCH": "Passwords do not match.",
     "REGISTRATION_FAILED": "Registration failed.",
     "EMAIL_TAKEN": "This email is already registered."
-  }
+  },
+  "LOCATIONS_MANAGEMENT": "Location Management",
+  "EDIT_LOCATION": "Edit Location",
+  "NEW_LOCATION": "New Location",
+  "NEW_LOCATION_BTN": "New Location",
+  "SHELF": "Shelf",
+  "ZONE": "Zone",
+  "SELECT_ZONE": "Select zone",
+  "BUILDING": "Building",
+  "CONFIRM_DELETE_LOCATION_MSG": "Are you sure you want to delete the location:",
+  "BUILDINGS_MANAGEMENT": "Building Management",
+  "EDIT_BUILDING": "Edit Building",
+  "NEW_BUILDING": "New Building",
+  "NEW_BUILDING_BTN": "New Building",
+  "CONFIRM_DELETE_BUILDING_MSG": "Are you sure you want to delete the building:",
+  "ZONES_MANAGEMENT": "Zone Management",
+  "EDIT_ZONE": "Edit Zone",
+  "NEW_ZONE": "New Zone",
+  "NEW_ZONE_BTN": "New Zone",
+  "SELECT_BUILDING": "Select building",
+  "CONFIRM_DELETE_ZONE_MSG": "Are you sure you want to delete the zone:"
 }

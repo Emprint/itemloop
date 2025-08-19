@@ -1,45 +1,8 @@
-.error {
-  color: #d00;
-  margin-bottom: 1em;
-  text-align: center;
-}
-.users-table tbody tr {
-  transition: background 0.15s;
-}
-.users-table tbody tr:hover {
-  background: #f0f4fa;
-}
-/* Make the new user button inline and visually smaller */
-.users-list button {
-  display: inline-block;
-  width: auto;
-  margin: 0.5em 0.5em 0.5em 0;
-}
-
-.users-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1em;
-  display: block;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-// Add padding to main content to avoid overlap with fixed navbar
-.users-table th,
-.users-table td {
-  padding: 0.4em 0.7em;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-}
-.users-table th {
-  background: #f8f8f8;
-  font-weight: 600;
-}
-.users-table td {
-  font-size: 0.98em;
-}
-.users-table button.compact {
-  padding: 0.2em 0.6em;
-  font-size: 0.85em;
-  margin-right: 0.3em;
+.hide-password-button {
+  position: absolute;
+  top: 0.45em;
+  right: 0.5em;
+  padding: 0.3em 0.7em;
+  font-size: 0.9em;
+  margin: 0;
 }

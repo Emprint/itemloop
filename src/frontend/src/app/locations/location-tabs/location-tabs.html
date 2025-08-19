@@ -1,0 +1,24 @@
+<div class="location-tabs">
+  <nav class="tabs-nav">
+    <button [class.active]="activeTab === 'locations'" (click)="setTab('locations')">
+      {{ 'LOCATIONS_MANAGEMENT' | translate }}
+    </button>
+    <button [class.active]="activeTab === 'zones'" (click)="setTab('zones')">
+      {{ 'ZONES_MANAGEMENT' | translate }}
+    </button>
+    <button [class.active]="activeTab === 'buildings'" (click)="setTab('buildings')">
+      {{ 'BUILDINGS_MANAGEMENT' | translate }}
+    </button>
+  </nav>
+  <section class="tab-content">
+    @if (activeTab === 'locations') {
+      <app-locations-list></app-locations-list>
+    }
+    @if (activeTab === 'zones') {
+      <app-zones-list></app-zones-list>
+    }
+    @if (activeTab === 'buildings') {
+      <app-buildings-list></app-buildings-list>
+    }
+  </section>
+</div>
