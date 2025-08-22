@@ -59,6 +59,7 @@
   "BUILDING": "Building",
   "CONFIRM_DELETE_LOCATION_MSG": "Are you sure you want to delete the location:",
   "BUILDINGS_MANAGEMENT": "Building Management",
+  "CODE": "Code",
   "EDIT_BUILDING": "Edit Building",
   "NEW_BUILDING": "New Building",
   "NEW_BUILDING_BTN": "New Building",
@@ -68,5 +69,6 @@
   "NEW_ZONE": "New Zone",
   "NEW_ZONE_BTN": "New Zone",
   "SELECT_BUILDING": "Select building",
-  "CONFIRM_DELETE_ZONE_MSG": "Are you sure you want to delete the zone:"
+  "CONFIRM_DELETE_ZONE_MSG": "Are you sure you want to delete the zone:",
+  "FINAL_CODE": "Final code"
 }

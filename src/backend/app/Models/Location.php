@@ -13,6 +13,7 @@ class Location extends Model
         'building_id',
         'zone_id',
         'shelf',
+        'code',
     ];
 
     public function building()

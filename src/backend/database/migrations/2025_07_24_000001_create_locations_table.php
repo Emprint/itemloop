@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('building');
             $table->string('zone');
             $table->string('shelf');
+            $table->string('code', 16)->unique();
             $table->timestamps();
         });
     }

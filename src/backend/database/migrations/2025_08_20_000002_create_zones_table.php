@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('zones', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('code', 8);
             $table->foreignId('building_id')->constrained('buildings')->onDelete('cascade');
             $table->timestamps();
         });

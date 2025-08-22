@@ -58,6 +58,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US24 | User/System      | As a user or visitor, I want the frontend navigation to show Products, Cart, and Login when not logged in, and to update contextually after login: all users see Products and Cart, editors/admins see Locations, and admins see a Users link to manage accounts. | High | 🟡 Medium |
 | US25 | User             | As a user, I want to set a password that is secure but flexible, requiring at least 8 characters, one letter, one digit, and one special character, so I can easily create a password that fits my needs while keeping my account safe. | High | 🟡 Medium |
 | US26 | User/System      | As a user, I want a generic confirmation modal to appear before deleting any item (user, location, product, image, etc.), so I don't accidentally delete important data. | High | ⚪ Simple |
+| US27 | Admin/User | As an admin or user, I want location codes to be generated automatically (and editable), so that each shelf/location has a unique, human-readable, and barcode-friendly code (e.g., BG1-ZOA-001). |
 
 ---
 

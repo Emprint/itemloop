@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\Location;
 use App\Models\Building;
 use App\Models\Zone;
@@ -21,6 +22,7 @@ class LocationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:buildings,name',
+            'code' => 'required|string|size:3|regex:/^[A-Z0-9]{3}$/|unique:buildings,code',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -37,6 +39,7 @@ class LocationController extends Controller
         $building = Building::findOrFail($id);
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:buildings,name,' . $id,
+            'code' => 'sometimes|required|string|size:3|regex:/^[A-Z0-9]{3}$/|unique:buildings,code,' . $id,
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -66,6 +69,21 @@ class LocationController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'building_id' => 'required|exists:buildings,id',
+            'code' => [
+                'required',
+                'string',
+                'size:3',
+                'regex:/^[A-Z0-9]{3}$/',
+                function ($attribute, $value, $fail) use ($request) {
+                    $exists = \DB::table('zones')
+                        ->where('code', $value)
+                        ->where('building_id', $request->building_id)
+                        ->exists();
+                    if ($exists) {
+                        $fail('The code has already been taken for this building.');
+                    }
+                },
+            ],
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -83,6 +101,23 @@ class LocationController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'building_id' => 'required|exists:buildings,id',
+            'code' => [
+                'sometimes',
+                'required',
+                'string',
+                'size:3',
+                'regex:/^[A-Z0-9]{3}$/',
+                function ($attribute, $value, $fail) use ($request, $id) {
+                    $exists = \DB::table('zones')
+                        ->where('code', $value)
+                        ->where('building_id', $request->building_id)
+                        ->where('id', '!=', $id)
+                        ->exists();
+                    if ($exists) {
+                        $fail('The code has already been taken for this building.');
+                    }
+                },
+            ],
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -112,6 +147,21 @@ class LocationController extends Controller
         $validator = Validator::make($request->all(), [
             'zone_id' => 'required|exists:zones,id',
             'shelf' => 'required|string|max:255',
+            'code' => [
+                'required',
+                'string',
+                'size:3',
+                'regex:/^[A-Z0-9]{3}$/',
+                function ($attribute, $value, $fail) use ($request) {
+                    $exists = \DB::table('locations')
+                        ->where('code', $value)
+                        ->where('zone_id', $request->zone_id)
+                        ->exists();
+                    if ($exists) {
+                        $fail('The code has already been taken for this zone.');
+                    }
+                },
+            ],
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -129,6 +179,23 @@ class LocationController extends Controller
         $validator = Validator::make($request->all(), [
             'zone_id' => 'sometimes|required|exists:zones,id',
             'shelf' => 'sometimes|required|string|max:255',
+            'code' => [
+                'sometimes',
+                'required',
+                'string',
+                'size:3',
+                'regex:/^[A-Z0-9]{3}$/',
+                function ($attribute, $value, $fail) use ($request, $id) {
+                    $exists = \DB::table('locations')
+                        ->where('code', $value)
+                        ->where('zone_id', $request->zone_id)
+                        ->where('id', '!=', $id)
+                        ->exists();
+                    if ($exists) {
+                        $fail('The code has already been taken for this zone.');
+                    }
+                },
+            ],
         ]);
         if ($validator->fails()) {
             return response()->json([

@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('buildings', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string('code', 8)->unique();
             $table->timestamps();
         });
     }

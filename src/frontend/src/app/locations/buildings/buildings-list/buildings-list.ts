@@ -26,6 +26,7 @@ export class BuildingsList {
   constructor() {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(255)]],
+      code: ['', [Validators.required, Validators.maxLength(3)]],
     });
     this.loadBuildings();
   }
@@ -45,31 +46,36 @@ export class BuildingsList {
   newBuildingForm() {
     this.selectedBuilding = null;
     this.form.reset();
+    this.form.patchValue({ code: '' });
     this.showForm.set(true);
     this.errorMessage.set(null);
   }
 
   editBuilding(building: Building) {
     this.selectedBuilding = building;
-    this.form.setValue({ name: building.name });
+    this.form.setValue({ name: building.name, code: building.code });
     this.showForm.set(true);
     this.errorMessage.set(null);
   }
 
   saveBuilding() {
     if (this.form.invalid) {
-      this.errorMessage.set('Name is required.');
+      this.errorMessage.set('Name and code are required.');
       return;
     }
-    const payload = { name: this.form.value.name };
+    const payload = { name: this.form.value.name, code: this.form.value.code };
     if (this.selectedBuilding) {
       this.service.updateBuilding(this.selectedBuilding.id, payload).subscribe({
         next: () => {
           this.loadBuildings();
           this.showForm.set(false);
         },
-        error: () => {
-          this.errorMessage.set('Failed to update building');
+        error: (err) => {
+          if (err?.error?.error === 'ERROR_VALIDATION' && err?.error?.errors) {
+            this.errorMessage.set(Object.values(err.error.errors).flat().join(' '));
+          } else {
+            this.errorMessage.set('Failed to update building');
+          }
         },
       });
     } else {
@@ -78,10 +84,22 @@ export class BuildingsList {
           this.loadBuildings();
           this.showForm.set(false);
         },
-        error: () => {
-          this.errorMessage.set('Failed to add building');
+        error: (err) => {
+          if (err?.error?.error === 'ERROR_VALIDATION' && err?.error?.errors) {
+            this.errorMessage.set(Object.values(err.error.errors).flat().join(' '));
+          } else {
+            this.errorMessage.set('Failed to add building');
+          }
         },
       });
+    }
+  }
+
+  onNameInput() {
+    if (!this.selectedBuilding) {
+      const name = this.form.value.name;
+      const code = LocationService.generateCode(name);
+      this.form.patchValue({ code });
     }
   }
 

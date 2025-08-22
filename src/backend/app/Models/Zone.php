@@ -12,6 +12,7 @@ class Zone extends Model
     protected $fillable = [
         'name',
         'building_id',
+        'code',
     ];
 
     public function building()

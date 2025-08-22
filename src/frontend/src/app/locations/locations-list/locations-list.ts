@@ -24,9 +24,21 @@ export class LocationsList {
   private service = inject(LocationService);
   private fb = inject(FormBuilder);
   form = this.fb.group({
-    shelf: [''],
-    zone_id: [null as number | null],
+    shelf: ['', []],
+    zone_id: [null as number | null, []],
+    code: ['', []],
   });
+  finalCode = '';
+
+  getFormLocation(): Partial<Location> {
+    // Normalize form values for getFinalCode
+    const value = this.form.value;
+    return {
+      shelf: value.shelf ?? '',
+      zone_id: value.zone_id ?? undefined,
+      code: value.code ?? '',
+    };
+  }
 
   constructor() {
     this.loadLocations();
@@ -71,6 +83,8 @@ export class LocationsList {
   newLocationForm() {
     this.selectedLocation = null;
     this.form.reset();
+    this.form.patchValue({ code: '' });
+    this.finalCode = '';
     this.showForm.set(true);
     this.errorMessage.set(null);
   }
@@ -80,20 +94,23 @@ export class LocationsList {
     this.form.setValue({
       shelf: location.shelf ?? '',
       zone_id: location.zone_id ?? location.zone?.id ?? null,
-    } as { shelf: string; zone_id: number | null });
+      code: location.code ?? '',
+    } as { shelf: string; zone_id: number | null; code: string });
+    this.finalCode = this.getFinalCode(location);
     this.showForm.set(true);
     this.errorMessage.set(null);
   }
 
   saveLocation() {
     const value = this.form.value;
-    if (!value.shelf?.trim() || !value.zone_id) {
-      this.errorMessage.set('Shelf and zone are required.');
+    if (!value.shelf?.trim() || !value.zone_id || !value.code?.trim()) {
+      this.errorMessage.set('Shelf, zone, and code are required.');
       return;
     }
     const payload = {
       shelf: value.shelf,
       zone_id: value.zone_id,
+      code: value.code,
     };
     if (this.selectedLocation) {
       this.service.updateLocation(this.selectedLocation.id, payload).subscribe({
@@ -101,8 +118,12 @@ export class LocationsList {
           this.loadLocations();
           this.showForm.set(false);
         },
-        error: () => {
-          this.errorMessage.set('Failed to update location');
+        error: (err) => {
+          if (err?.error?.error === 'ERROR_VALIDATION' && err?.error?.errors) {
+            this.errorMessage.set(Object.values(err.error.errors).flat().join(' '));
+          } else {
+            this.errorMessage.set('Failed to update location');
+          }
         },
       });
     } else {
@@ -111,11 +132,47 @@ export class LocationsList {
           this.loadLocations();
           this.showForm.set(false);
         },
-        error: () => {
-          this.errorMessage.set('Failed to add location');
+        error: (err) => {
+          if (err?.error?.error === 'ERROR_VALIDATION' && err?.error?.errors) {
+            this.errorMessage.set(Object.values(err.error.errors).flat().join(' '));
+          } else {
+            this.errorMessage.set('Failed to add location');
+          }
         },
       });
     }
+  }
+
+  onShelfInput() {
+    const shelf = this.form.value.shelf ?? '';
+    const zone_id = this.form.value.zone_id ? +this.form.value.zone_id : undefined;
+    const code = LocationService.generateCode(shelf || '');
+    // Only auto-generate code for new locations
+    if (!this.selectedLocation) {
+      this.form.patchValue({ code });
+    }
+    // Always update final code field
+    this.finalCode = this.getFinalCode({
+      shelf: shelf,
+      code: this.form.value.code ?? code,
+      zone: this.zones().find((z) => z.id === zone_id),
+    });
+  }
+
+  getFinalCode(location: Partial<Location>): string {
+    // Concatenate codes: building-zone for zones, building-zone-location for locations
+    const zone = location.zone;
+    const buildingCode = zone?.building?.code ?? '';
+    const zoneCode = zone?.code ?? '';
+    const locCode = location.code ?? '';
+    if (buildingCode && zoneCode && locCode) {
+      return `${buildingCode}-${zoneCode}-${locCode}`;
+    } else if (buildingCode && zoneCode) {
+      return `${buildingCode}-${zoneCode}`;
+    } else if (zoneCode) {
+      return zoneCode;
+    }
+    return '';
   }
 
   deleteLocation(location: Location) {

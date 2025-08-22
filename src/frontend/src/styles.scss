@@ -1,3 +1,10 @@
+/* Generic style for readonly input fields */
+input[readonly] {
+  background-color: #f5f5f5;
+  color: #888;
+  border: 1px dashed #ccc;
+  cursor: not-allowed;
+}
 :root {
   --primary-color: #28a745;
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
