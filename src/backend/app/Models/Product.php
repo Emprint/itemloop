@@ -16,8 +16,14 @@ class Product extends Model
         'quantity',
         'estimated_value',
         'location_id',
-        'barcode',
-        'date',
+    'barcode',
+        'length',
+        'width',
+        'height',
+        'color',
+        'weight',
+        'destination',
+        'visibility',
     ];
 
     public function location()

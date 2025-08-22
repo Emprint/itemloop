@@ -17,7 +17,13 @@ return new class extends Migration
             $table->decimal('estimated_value', 10, 2)->nullable();
             $table->foreignId('location_id')->constrained()->onDelete('cascade');
             $table->string('barcode')->nullable();
-            $table->date('date')->nullable();
+            $table->float('length')->nullable();
+            $table->float('width')->nullable();
+            $table->float('height')->nullable();
+            $table->string('color')->nullable();
+            $table->float('weight')->nullable();
+            $table->string('destination')->nullable();
+            $table->boolean('visibility')->default(true);
             $table->timestamps();
         });
     }
