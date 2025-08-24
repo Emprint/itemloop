@@ -16,15 +16,25 @@ class Product extends Model
         'quantity',
         'estimated_value',
         'location_id',
-    'barcode',
+        'barcode',
         'length',
         'width',
         'height',
         'color',
         'weight',
         'destination',
-        'visibility',
+        'visibility'
     ];
+
+    public function isPublic(): bool
+    {
+        return $this->visibility === 'public';
+    }
+
+    public function isPrivate(): bool
+    {
+        return $this->visibility === 'private';
+    }
 
     public function location()
     {

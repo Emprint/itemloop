@@ -1,0 +1,90 @@
+<div class="form-card">
+  <h3>{{ selectedProduct ? ('EDIT_PRODUCT' | translate) : ('NEW_PRODUCT' | translate) }}</h3>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label
+      >{{ 'PRODUCT_FORM.TITLE' | translate }}
+      <input type="text" formControlName="title" />
+      @if (form.get('title')?.invalid && form.get('title')?.touched) {
+        <span class="error">Title is required.</span>
+      }
+    </label>
+    <label
+      >{{ 'PRODUCT_FORM.DESCRIPTION' | translate }}
+      <textarea formControlName="description"></textarea>
+    </label>
+    <label for="condition-combobox">{{ 'PRODUCT_FORM.CONDITION' | translate }}</label>
+    <app-combobox
+      id="condition-combobox"
+      [options]="conditionOptions()"
+      [value]="capitalize(form.get('condition')?.value || '')"
+      (valueChange)="onConditionChange($event)"
+      (addNew)="onAddNewCondition($event)"
+      [placeholder]="'PRODUCT_FORM.CONDITION_PLACEHOLDER' | translate"
+    ></app-combobox>
+    @if (form.get('condition')?.invalid && form.get('condition')?.touched) {
+      <span class="error">Condition is required.</span>
+    }
+    <label
+      >{{ 'PRODUCT_FORM.QUANTITY' | translate }}
+      <input type="number" formControlName="quantity" min="0" />
+      @if (form.get('quantity')?.invalid && form.get('quantity')?.touched) {
+        <span class="error">Quantity must be 0 or more.</span>
+      }
+    </label>
+    <label
+      >{{ 'PRODUCT_FORM.LENGTH' | translate }}
+      <small class="help-text">{{ 'PRODUCT_FORM.HELP.LENGTH' | translate }}</small>
+      <input type="number" formControlName="length" min="0" />
+    </label>
+    <label
+      >{{ 'PRODUCT_FORM.WIDTH' | translate }}
+      <small class="help-text">{{ 'PRODUCT_FORM.HELP.WIDTH' | translate }}</small>
+      <input type="number" formControlName="width" min="0" />
+    </label>
+    <label
+      >{{ 'PRODUCT_FORM.HEIGHT' | translate }}
+      <small class="help-text">{{ 'PRODUCT_FORM.HELP.HEIGHT' | translate }}</small>
+      <input type="number" formControlName="height" min="0" />
+    </label>
+    <label for="color-combobox">{{ 'PRODUCT_FORM.COLOR' | translate }}</label>
+    <app-combobox
+      id="color-combobox"
+      [options]="colorOptions()"
+      [value]="capitalize(form.get('color')?.value || '')"
+      (valueChange)="onColorChange($event)"
+      (addNew)="onAddNewColor($event)"
+      [placeholder]="'PRODUCT_FORM.COLOR_PLACEHOLDER' | translate"
+    ></app-combobox>
+    <label
+      >{{ 'PRODUCT_FORM.WEIGHT' | translate }}
+      <input type="number" formControlName="weight" min="0" />
+    </label>
+    <label
+      >{{ 'PRODUCT_FORM.DESTINATION' | translate }}
+      <input type="text" formControlName="destination" />
+    </label>
+    <label
+      >{{ 'PRODUCT_FORM.VISIBILITY' | translate }}
+      <select formControlName="visibility">
+        <option value="private">{{ 'Private' | translate }}</option>
+        <option value="public">{{ 'Public' | translate }}</option>
+      </select>
+    </label>
+    <label
+      >{{ 'PRODUCT_FORM.LOCATION' | translate }}
+      <select formControlName="location_id">
+        <option value="">{{ 'PRODUCT_FORM.SELECT_LOCATION' | translate }}</option>
+        @for (location of locations(); track location.id) {
+          <option [value]="location.id">{{ getFinalCode(location) }} - {{ location.shelf }}</option>
+        }
+      </select>
+      @if (form.get('location_id')?.invalid && form.get('location_id')?.touched) {
+        <span class="error">{{ 'PRODUCT_FORM.LOCATION_REQUIRED' | translate }}</span>
+      }
+    </label>
+    <div class="buttons-list">
+      <button type="button" (click)="onCancel()">Cancel</button>
+      <button type="submit" [disabled]="form.invalid">Save</button>
+    </div>
+  </form>
+</div>

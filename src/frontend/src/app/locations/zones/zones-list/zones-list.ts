@@ -22,6 +22,7 @@ export class ZonesList {
   selectedZone: Zone | null = null;
   form: FormGroup;
   finalZoneCode = '';
+  codeChangedManually = false;
 
   private fb = inject(FormBuilder);
   private service = inject(LocationService);
@@ -79,6 +80,7 @@ export class ZonesList {
     this.selectedZone = null;
     this.form.reset();
     this.form.patchValue({ code: '' });
+    this.codeChangedManually = false;
     this.showForm.set(true);
     this.errorMessage.set(null);
   }
@@ -86,6 +88,7 @@ export class ZonesList {
   editZone(zone: Zone) {
     this.selectedZone = zone;
     this.form.setValue({ name: zone.name, building_id: zone.building_id, code: zone.code });
+    this.codeChangedManually = true;
     this.showForm.set(true);
     this.errorMessage.set(null);
   }
@@ -132,10 +135,30 @@ export class ZonesList {
   }
 
   onNameInput() {
-    if (!this.selectedZone) {
+    // If code is empty, always regenerate code from name
+    if (!this.form.value.code) {
       const name = this.form.value.name;
-      const code = LocationService.generateCode(name);
+      let code = LocationService.generateCode(name);
+      code = code.toUpperCase();
       this.form.patchValue({ code });
+      this.codeChangedManually = false;
+    }
+    this.updateFinalZoneCode();
+  }
+
+  onCodeInput() {
+    this.codeChangedManually = true;
+    // Always convert code to uppercase on manual input
+    const code = this.form.value.code;
+    if (code && code !== code.toUpperCase()) {
+      this.form.patchValue({ code: code.toUpperCase() });
+    }
+    this.updateFinalZoneCode();
+  }
+
+  onCodeBlur() {
+    if (!this.form.value.code) {
+      this.codeChangedManually = false;
     }
   }
 

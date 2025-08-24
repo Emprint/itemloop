@@ -2,13 +2,17 @@ export interface AuthResponse {
   user: User;
 }
 
-export type UserRole = 'customer' | 'editor' | 'admin' | null;
+export enum UserRole {
+  Customer = 'customer',
+  Editor = 'editor',
+  Admin = 'admin',
+}
 
 export interface User {
   id: number;
   name: string;
   email: string;
-  role: UserRole;
+  role: UserRole | null;
   created_at: string;
   updated_at: string;
 }

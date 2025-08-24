@@ -94,7 +94,9 @@ export class LocationService {
    */
   static generateCode(name: string): string {
     if (!name) return '';
-    const trimmed = name.trim();
+    // Normalize accents
+    const normalized = name.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+    const trimmed = normalized.trim();
     if (/^\d+$/.test(trimmed)) {
       return trimmed.padStart(3, '0');
     }

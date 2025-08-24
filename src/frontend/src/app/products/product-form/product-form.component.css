@@ -1,0 +1,16 @@
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 400px;
+}
+.product-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+}
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}

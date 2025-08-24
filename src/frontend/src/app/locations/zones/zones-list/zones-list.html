@@ -6,7 +6,7 @@
     <div class="form-card">
       <h3>{{ selectedZone ? ('EDIT_ZONE' | translate) : ('NEW_ZONE' | translate) }}</h3>
       <form [formGroup]="form" (ngSubmit)="saveZone()" autocomplete="off">
-        <label for="buildingSelect">{{ 'BUILDING' | translate }}:</label>
+        <label for="buildingSelect">{{ 'BUILDING' | translate }}</label>
         <select
           formControlName="building_id"
           id="buildingSelect"
@@ -18,11 +18,19 @@
             <option [value]="building.id">{{ building.name }}</option>
           }
         </select>
-        <label for="zoneName">{{ 'NAME' | translate }}:</label>
+        <label for="zoneName">{{ 'NAME' | translate }}</label>
         <input formControlName="name" id="zoneName" type="text" required (input)="onNameInput()" />
-        <label for="zoneCode">{{ 'CODE' | translate }}:</label>
-        <input formControlName="code" id="zoneCode" type="text" maxlength="3" required />
-        <label for="finalZoneCode">{{ 'FINAL_CODE' | translate }}:</label>
+        <label for="zoneCode">{{ 'CODE' | translate }}</label>
+        <input
+          formControlName="code"
+          id="zoneCode"
+          type="text"
+          maxlength="3"
+          required
+          (input)="onCodeInput()"
+          (blur)="onCodeBlur()"
+        />
+        <label for="finalZoneCode">{{ 'FINAL_CODE' | translate }}</label>
         <input type="text" id="finalZoneCode" [value]="finalZoneCode" readonly />
         <div class="buttons-list">
           <button type="button" (click)="cancel()">{{ 'CANCEL' | translate }}</button>

@@ -6,7 +6,7 @@
     <div class="form-card">
       <h3>{{ selectedBuilding ? ('EDIT_BUILDING' | translate) : ('NEW_BUILDING' | translate) }}</h3>
       <form [formGroup]="form" (ngSubmit)="saveBuilding()" autocomplete="off">
-        <label for="buildingName">{{ 'NAME' | translate }}:</label>
+        <label for="buildingName">{{ 'NAME' | translate }}</label>
         <input
           formControlName="name"
           id="buildingName"
@@ -14,8 +14,16 @@
           required
           (input)="onNameInput()"
         />
-        <label for="buildingCode">{{ 'CODE' | translate }}:</label>
-        <input formControlName="code" id="buildingCode" type="text" maxlength="3" required />
+        <label for="buildingCode">{{ 'CODE' | translate }}</label>
+        <input
+          formControlName="code"
+          id="buildingCode"
+          type="text"
+          maxlength="3"
+          required
+          (input)="onCodeInput()"
+          (blur)="onCodeBlur()"
+        />
         <div class="buttons-list">
           <button type="button" (click)="cancel()">{{ 'CANCEL' | translate }}</button>
           <button type="submit">{{ 'SAVE' | translate }}</button>

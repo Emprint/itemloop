@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { UserService, User } from '../user.service';
+import { UserRole } from '../../auth/auth-response';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { emailTldValidator } from '../../shared/email-tld.validator';
 import { CommonModule } from '@angular/common';
@@ -35,7 +36,7 @@ export class UsersList implements OnInit {
       id: [null],
       name: ['', [Validators.required, Validators.maxLength(255)]],
       email: ['', [Validators.required, emailTldValidator, Validators.maxLength(255)]],
-      role: ['customer', [Validators.required]],
+      role: [UserRole.Customer, [Validators.required]],
       password: [''],
     });
   }
@@ -148,12 +149,12 @@ export class UsersList implements OnInit {
   }
 
   isLastAdmin(user: User): boolean {
-    if (user.role !== 'admin') return false;
-    const admins = this.users().filter((u: User) => u.role === 'admin');
+    if (user.role !== UserRole.Admin) return false;
+    const admins = this.users().filter((u: User) => u.role === UserRole.Admin);
     return admins.length === 1 && admins[0].id === user.id;
   }
 
   private resetForm() {
-    this.form.reset({ name: '', email: '', role: 'customer', password: '' });
+    this.form.reset({ name: '', email: '', role: UserRole.Customer, password: '' });
   }
 }

@@ -1,0 +1,26 @@
+<div class="combobox-wrapper">
+  <input
+    [value]="value"
+    [placeholder]="placeholder"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+    (keydown)="onKeyDown($event)"
+    [disabled]="disabled"
+    autocomplete="off"
+    class="combobox-input"
+  />
+  @if (showDropdown() && (filteredOptions().length || value)) {
+    <div class="combobox-dropdown">
+      @for (option of filteredOptions(); track option) {
+        <div class="combobox-option" (mousedown)="selectOption(option)">
+          {{ option.charAt(0).toUpperCase() + option.slice(1) }}
+        </div>
+      }
+      @if (value && !isValueInOptions()) {
+        <div class="combobox-add" (mousedown)="onAddNew()">
+          {{ 'COMBOBOX_ADD' | translate }} {{ value.charAt(0).toUpperCase() + value.slice(1) }}
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -57,7 +57,7 @@
   "ZONE": "Zone",
   "SELECT_ZONE": "Select zone",
   "BUILDING": "Building",
-  "CONFIRM_DELETE_LOCATION_MSG": "Are you sure you want to delete the location:",
+  "CONFIRM_DELETE_LOCATION_MSG": "Are you sure you want to delete the shelf:",
   "BUILDINGS_MANAGEMENT": "Building Management",
   "CODE": "Code",
   "EDIT_BUILDING": "Edit Building",
@@ -70,5 +70,35 @@
   "NEW_ZONE_BTN": "New Zone",
   "SELECT_BUILDING": "Select building",
   "CONFIRM_DELETE_ZONE_MSG": "Are you sure you want to delete the zone:",
-  "FINAL_CODE": "Final code"
+  "FINAL_CODE": "Final code",
+  "SHELF_MANAGEMENT": "Shelf Management",
+  "EDIT_SHELF": "Edit Shelf",
+  "NEW_SHELF": "New Shelf",
+  "NEW_SHELF_BTN": "New Shelf",
+  "PRODUCT_FORM_TITLE": "Product Form",
+  "EDIT_PRODUCT": "Edit Product",
+  "NEW_PRODUCT": "New Product",
+  "COMBOBOX_ADD": "Add",
+  "PRODUCT_FORM": {
+    "TITLE": "Title",
+    "DESCRIPTION": "Description",
+    "CONDITION": "Condition",
+    "CONDITION_PLACEHOLDER": "Enter or select a condition",
+    "QUANTITY": "Quantity",
+    "LENGTH": "Length (cm)",
+    "WIDTH": "Width (cm)",
+    "HEIGHT": "Height (cm)",
+    "COLOR": "Color",
+    "COLOR_PLACEHOLDER": "Enter or select a color",
+    "WEIGHT": "Weight (kg)",
+    "DESTINATION": "Destination",
+    "VISIBILITY": "Visibility",
+    "LOCATION": "Location",
+    "SELECT_LOCATION": "Select location",
+    "HELP": {
+      "LENGTH": "Front-to-back (depth)",
+      "WIDTH": "Left-to-right; for round items (screws, rods, axes), enter diameter.",
+      "HEIGHT": "Bottom-to-top (vertical)"
+    }
+  }
 }

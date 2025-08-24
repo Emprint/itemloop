@@ -1,12 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { UserRole } from '../auth/auth-response';
 
 export interface User {
   id?: number;
   name: string;
   email: string;
-  role: 'admin' | 'editor' | 'customer';
+  role: UserRole;
 }
 
 @Injectable({ providedIn: 'root' })

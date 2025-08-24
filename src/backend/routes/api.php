@@ -13,7 +13,18 @@ Route::prefix('auth')->as('auth.')->group(function() {
     Route::middleware('auth:sanctum')->get('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
+// Public product listing and details
+Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/{id}', [ProductController::class, 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
+    // Product conditions
+    Route::get('/product-conditions', [\App\Http\Controllers\Api\ProductConditionController::class, 'index']);
+    Route::post('/product-conditions', [\App\Http\Controllers\Api\ProductConditionController::class, 'store']);
+
+    // Product colors
+    Route::get('/product-colors', [\App\Http\Controllers\Api\ProductColorController::class, 'index']);
+    Route::post('/product-colors', [\App\Http\Controllers\Api\ProductColorController::class, 'store']);
     // User management (admin only)
     Route::get('/users', [UserController::class, 'index']);
     Route::post('/users/save', [UserController::class, 'save']);
@@ -23,8 +34,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
     // Products management
-    Route::get('/products', [ProductController::class, 'index']);
-    Route::get('/products/{id}', [ProductController::class, 'show']);
     Route::post('/products', [ProductController::class, 'store']);
     Route::put('/products/{id}', [ProductController::class, 'update']);
     Route::delete('/products/{id}', [ProductController::class, 'destroy']);

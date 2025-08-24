@@ -18,6 +18,10 @@ h2 {
   margin: 1rem 0;
 }
 
+h3 {
+  margin-top: 0;
+}
+
 main {
   padding: 1rem;
   padding-top: 73px;
@@ -27,6 +31,8 @@ main {
 input[type='text'],
 input[type='email'],
 input[type='password'],
+input[type='number'],
+textarea,
 select,
 button {
   width: 100%;

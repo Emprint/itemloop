@@ -1,4 +1,29 @@
 {
+  "COMBOBOX_ADD": "Ajouter",
+  "PRODUCT_FORM": {
+    "TITLE": "Titre",
+    "DESCRIPTION": "Description",
+    "CONDITION": "État",
+    "CONDITION_PLACEHOLDER": "Saisissez ou sélectionnez un état",
+    "QUANTITY": "Quantité",
+    "LENGTH": "Longueur (cm)",
+    "WIDTH": "Largeur (cm)",
+    "HEIGHT": "Hauteur (cm)",
+    "COLOR": "Couleur",
+    "COLOR_PLACEHOLDER": "Saisissez ou sélectionnez une couleur",
+    "WEIGHT": "Poids (kg)",
+    "DESTINATION": "Destination",
+    "VISIBILITY": "Visibilité",
+    "LOCATION": "Emplacement",
+    "SELECT_LOCATION": "Sélectionner un emplacement",
+    "HELP": {
+      "LENGTH": "Avant-arrière (profondeur)",
+      "WIDTH": "Gauche-droite; pour les objets ronds (vis, axes, tiges), indiquez le diamètre.",
+      "HEIGHT": "Bas-haut (vertical)"
+    },
+    "LOCATION_REQUIRED": "L'emplacement est requis."
+  },
+
   "USER_MANAGEMENT": "Gestion des utilisateurs",
   "EDIT": "Modifier",
   "EDIT_USER": "Modifier l'utilisateur",
@@ -57,7 +82,7 @@
   "ZONE": "Zone",
   "SELECT_ZONE": "Sélectionner une zone",
   "BUILDING": "Bâtiment",
-  "CONFIRM_DELETE_LOCATION_MSG": "Êtes-vous sûr de vouloir supprimer l'emplacement :",
+  "CONFIRM_DELETE_LOCATION_MSG": "Êtes-vous sûr de vouloir supprimer le rayon :",
   "BUILDINGS_MANAGEMENT": "Gestion des bâtiments",
   "CODE": "Code",
   "EDIT_BUILDING": "Modifier le bâtiment",
@@ -70,5 +95,12 @@
   "NEW_ZONE_BTN": "Nouvelle zone",
   "SELECT_BUILDING": "Sélectionner un bâtiment",
   "CONFIRM_DELETE_ZONE_MSG": "Êtes-vous sûr de vouloir supprimer la zone :",
-  "FINAL_CODE": "Code final"
+  "FINAL_CODE": "Code final",
+  "SHELF_MANAGEMENT": "Gestion des rayons",
+  "EDIT_SHELF": "Modifier le rayon",
+  "NEW_SHELF": "Nouveau rayon",
+  "NEW_SHELF_BTN": "Nouveau rayon",
+  "PRODUCT_FORM_TITLE": "Formulaire produit",
+  "EDIT_PRODUCT": "Modifier le produit",
+  "NEW_PRODUCT": "Nouveau produit"
 }

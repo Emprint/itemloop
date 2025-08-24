@@ -4,7 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
-import { User } from '../../auth/auth-response';
+import { User, UserRole } from '../../auth/auth-response';
 
 @Component({
   selector: 'app-navbar',
@@ -48,20 +48,21 @@ export class Navbar {
       { label: 'CART', route: '/cart' },
     ];
 
-    if (!user) {
+    // Only show login/logout if user is truly logged in/out
+    if (!user || !user.id) {
       links.push({ label: 'LOGIN', route: '/auth/login' });
       return links;
     }
 
-    if (user.role === 'editor' || user.role === 'admin') {
+    if (user.role === UserRole.Editor || user.role === UserRole.Admin) {
       links.push({ label: 'LOCATIONS', route: '/locations' });
     }
 
-    if (user.role === 'admin') {
+    if (user.role === UserRole.Admin) {
       links.push({ label: 'USERS', route: '/admin/users' });
     }
 
-    // Add a logout link for logged-in users
+    // Add a logout link for logged-in users with valid id
     links.push({ label: 'LOGOUT', route: '' });
 
     return links;

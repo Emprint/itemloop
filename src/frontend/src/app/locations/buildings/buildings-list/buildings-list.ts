@@ -20,6 +20,7 @@ export class BuildingsList {
   form: FormGroup;
   showDeleteModal = false;
   buildingToDelete: Building | null = null;
+  codeChangedManually = false;
 
   private fb = inject(FormBuilder);
   private service = inject(LocationService);
@@ -27,6 +28,9 @@ export class BuildingsList {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(255)]],
       code: ['', [Validators.required, Validators.maxLength(3)]],
+    });
+    this.form.valueChanges.subscribe(() => {
+      // Optionally, update any preview code here
     });
     this.loadBuildings();
   }
@@ -47,6 +51,7 @@ export class BuildingsList {
     this.selectedBuilding = null;
     this.form.reset();
     this.form.patchValue({ code: '' });
+    this.codeChangedManually = false;
     this.showForm.set(true);
     this.errorMessage.set(null);
   }
@@ -54,6 +59,7 @@ export class BuildingsList {
   editBuilding(building: Building) {
     this.selectedBuilding = building;
     this.form.setValue({ name: building.name, code: building.code });
+    this.codeChangedManually = true;
     this.showForm.set(true);
     this.errorMessage.set(null);
   }
@@ -96,10 +102,27 @@ export class BuildingsList {
   }
 
   onNameInput() {
-    if (!this.selectedBuilding) {
+    // Regenerate code from name if code was not changed manually
+    if (!this.codeChangedManually) {
       const name = this.form.value.name;
-      const code = LocationService.generateCode(name);
+      let code = LocationService.generateCode(name);
+      code = code.toUpperCase();
       this.form.patchValue({ code });
+    }
+  }
+
+  onCodeInput() {
+    this.codeChangedManually = true;
+    // Always convert code to uppercase on manual input
+    const code = this.form.value.code;
+    if (code && code !== code.toUpperCase()) {
+      this.form.patchValue({ code: code.toUpperCase() });
+    }
+  }
+
+  onCodeBlur() {
+    if (!this.form.value.code) {
+      this.codeChangedManually = false;
     }
   }
 

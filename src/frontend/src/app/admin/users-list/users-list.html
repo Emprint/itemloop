@@ -15,22 +15,22 @@
     <div class="form-card">
       <h3>{{ selectedUser ? ('EDIT_USER' | translate) : ('NEW_USER' | translate) }}</h3>
       <form [formGroup]="form" (ngSubmit)="saveUser()" autocomplete="off">
-        <label for="name">{{ 'NAME' | translate }}:</label>
+        <label for="name">{{ 'NAME' | translate }}</label>
         <input formControlName="name" id="name" type="text" required autocomplete="off" />
 
-        <label for="email">{{ 'EMAIL' | translate }}:</label>
+        <label for="email">{{ 'EMAIL' | translate }}</label>
         <input formControlName="email" id="email" type="email" required autocomplete="off" />
 
-        <label for="role">{{ 'ROLE' | translate }}:</label>
+        <label for="role">{{ 'ROLE' | translate }}</label>
         <select formControlName="role" id="role" autocomplete="off">
           <option value="customer">{{ 'CUSTOMER' | translate }}</option>
           <option value="editor">{{ 'EDITOR' | translate }}</option>
           <option value="admin">{{ 'ADMIN' | translate }}</option>
         </select>
 
-        <label for="password"
-          >{{ selectedUser ? ('CHANGE_PASSWORD' | translate) : ('PASSWORD' | translate) }}:</label
-        >
+        <label for="password">{{
+          selectedUser ? ('CHANGE_PASSWORD' | translate) : ('PASSWORD' | translate)
+        }}</label>
         <div style="position: relative">
           <input
             formControlName="password"

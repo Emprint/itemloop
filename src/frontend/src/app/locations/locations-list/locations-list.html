@@ -5,9 +5,9 @@
 
   @if (showForm()) {
     <div class="form-card">
-      <h3>{{ selectedLocation ? ('EDIT_LOCATION' | translate) : ('NEW_LOCATION' | translate) }}</h3>
+      <h3>{{ selectedLocation ? ('EDIT_SHELF' | translate) : ('NEW_SHELF' | translate) }}</h3>
       <form [formGroup]="form" (ngSubmit)="saveLocation()" autocomplete="off">
-        <label for="zone_id">{{ 'ZONE' | translate }}:</label>
+        <label for="zone_id">{{ 'ZONE' | translate }}</label>
         <select formControlName="zone_id" id="zone_id" required (change)="onShelfInput()">
           <option value="" disabled>{{ 'SELECT_ZONE' | translate }}</option>
           @for (zone of zones(); track zone.id) {
@@ -15,20 +15,21 @@
           }
         </select>
 
-        <label for="shelf">{{ 'SHELF' | translate }}:</label>
+        <label for="shelf">{{ 'SHELF' | translate }}</label>
         <input formControlName="shelf" id="shelf" type="text" required (input)="onShelfInput()" />
 
-        <label for="locationCode">{{ 'CODE' | translate }}:</label>
+        <label for="locationCode">{{ 'CODE' | translate }}</label>
         <input
           formControlName="code"
           id="locationCode"
           type="text"
           maxlength="3"
           required
-          (input)="onShelfInput()"
+          (input)="onCodeInput()"
+          (blur)="onCodeBlur()"
         />
 
-        <label for="finalCode">{{ 'FINAL_CODE' | translate }}:</label>
+        <label for="finalCode">{{ 'FINAL_CODE' | translate }}</label>
         <input type="text" id="finalCode" [value]="finalCode" readonly />
 
         <div class="buttons-list">
@@ -40,7 +41,7 @@
   }
 
   @if (!showForm()) {
-    <button (click)="newLocationForm()">{{ 'NEW_LOCATION_BTN' | translate }}</button>
+    <button (click)="newLocationForm()">{{ 'NEW_SHELF_BTN' | translate }}</button>
     <table class="item-table">
       <thead>
         <tr>

@@ -20,6 +20,10 @@ class LocationController extends Controller
 
     public function buildingsStore(Request $request)
     {
+        $user = $request->user();
+        if (!$user || (!$user->isAdmin() && !$user->isEditor())) {
+            return response()->json(['error' => 'FORBIDDEN', 'message' => 'You do not have permission to create buildings.'], 403);
+        }
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:buildings,name',
             'code' => 'required|string|size:3|regex:/^[A-Z0-9]{3}$/|unique:buildings,code',
@@ -36,6 +40,10 @@ class LocationController extends Controller
 
     public function buildingsUpdate(Request $request, $id)
     {
+        $user = $request->user();
+        if (!$user || (!$user->isAdmin() && !$user->isEditor())) {
+            return response()->json(['error' => 'FORBIDDEN', 'message' => 'You do not have permission to update buildings.'], 403);
+        }
         $building = Building::findOrFail($id);
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:buildings,name,' . $id,
@@ -53,6 +61,10 @@ class LocationController extends Controller
 
     public function buildingsDestroy($id)
     {
+        $user = request()->user();
+        if (!$user || (!$user->isAdmin() && !$user->isEditor())) {
+            return response()->json(['error' => 'FORBIDDEN', 'message' => 'You do not have permission to delete buildings.'], 403);
+        }
         $building = Building::findOrFail($id);
         $building->delete();
         return response()->json(['success' => true]);
@@ -66,6 +78,10 @@ class LocationController extends Controller
 
     public function zonesStore(Request $request)
     {
+        $user = $request->user();
+        if (!$user || (!$user->isAdmin() && !$user->isEditor())) {
+            return response()->json(['error' => 'FORBIDDEN', 'message' => 'You do not have permission to create zones.'], 403);
+        }
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'building_id' => 'required|exists:buildings,id',
@@ -97,6 +113,10 @@ class LocationController extends Controller
 
     public function zonesUpdate(Request $request, $id)
     {
+        $user = $request->user();
+        if (!$user || (!$user->isAdmin() && !$user->isEditor())) {
+            return response()->json(['error' => 'FORBIDDEN', 'message' => 'You do not have permission to update zones.'], 403);
+        }
         $zone = Zone::findOrFail($id);
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -131,6 +151,10 @@ class LocationController extends Controller
 
     public function zonesDestroy($id)
     {
+        $user = request()->user();
+        if (!$user || (!$user->isAdmin() && !$user->isEditor())) {
+            return response()->json(['error' => 'FORBIDDEN', 'message' => 'You do not have permission to delete zones.'], 403);
+        }
         $zone = Zone::findOrFail($id);
         $zone->delete();
         return response()->json(['success' => true]);
@@ -144,6 +168,10 @@ class LocationController extends Controller
 
     public function store(Request $request)
     {
+        $user = $request->user();
+        if (!$user || (!$user->isAdmin() && !$user->isEditor())) {
+            return response()->json(['error' => 'FORBIDDEN', 'message' => 'You do not have permission to create locations.'], 403);
+        }
         $validator = Validator::make($request->all(), [
             'zone_id' => 'required|exists:zones,id',
             'shelf' => 'required|string|max:255',
@@ -175,6 +203,10 @@ class LocationController extends Controller
 
     public function update(Request $request, $id)
     {
+        $user = $request->user();
+        if (!$user || (!$user->isAdmin() && !$user->isEditor())) {
+            return response()->json(['error' => 'FORBIDDEN', 'message' => 'You do not have permission to update locations.'], 403);
+        }
         $location = Location::findOrFail($id);
         $validator = Validator::make($request->all(), [
             'zone_id' => 'sometimes|required|exists:zones,id',
@@ -209,6 +241,10 @@ class LocationController extends Controller
 
     public function destroy($id)
     {
+        $user = request()->user();
+        if (!$user || (!$user->isAdmin() && !$user->isEditor())) {
+            return response()->json(['error' => 'FORBIDDEN', 'message' => 'You do not have permission to delete locations.'], 403);
+        }
         $location = Location::findOrFail($id);
         $location->delete();
         return response()->json(['success' => true]);

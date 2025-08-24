@@ -29,6 +29,7 @@ export class LocationsList {
     code: ['', []],
   });
   finalCode = '';
+  codeChangedManually = false;
 
   getFormLocation(): Partial<Location> {
     // Normalize form values for getFinalCode
@@ -85,6 +86,7 @@ export class LocationsList {
     this.form.reset();
     this.form.patchValue({ code: '' });
     this.finalCode = '';
+    this.codeChangedManually = false;
     this.showForm.set(true);
     this.errorMessage.set(null);
   }
@@ -97,6 +99,7 @@ export class LocationsList {
       code: location.code ?? '',
     } as { shelf: string; zone_id: number | null; code: string });
     this.finalCode = this.getFinalCode(location);
+    this.codeChangedManually = true;
     this.showForm.set(true);
     this.errorMessage.set(null);
   }
@@ -145,17 +148,38 @@ export class LocationsList {
 
   onShelfInput() {
     const shelf = this.form.value.shelf ?? '';
-    const zone_id = this.form.value.zone_id ? +this.form.value.zone_id : undefined;
-    const code = LocationService.generateCode(shelf || '');
-    // Only auto-generate code for new locations
-    if (!this.selectedLocation) {
-      this.form.patchValue({ code });
+    let autoCode = LocationService.generateCode(shelf || '');
+    autoCode = autoCode.toUpperCase();
+    if (!this.codeChangedManually && this.form.value.code !== autoCode) {
+      this.form.patchValue({ code: autoCode });
     }
-    // Always update final code field
+    this.updateFinalCode();
+  }
+
+  onCodeInput() {
+    this.codeChangedManually = true;
+    // Always convert code to uppercase on manual input
+    const code = this.form.value.code;
+    if (code && code !== code.toUpperCase()) {
+      this.form.patchValue({ code: code.toUpperCase() });
+    }
+    this.updateFinalCode();
+  }
+
+  onCodeBlur() {
+    if (!this.form.value.code) {
+      this.codeChangedManually = false;
+    }
+  }
+
+  updateFinalCode() {
+    const shelf = this.form.value.shelf ?? '';
+    const zone_id = this.form.value.zone_id ? +this.form.value.zone_id : undefined;
+    const zone = this.zones().find((z) => z.id === zone_id);
     this.finalCode = this.getFinalCode({
       shelf: shelf,
-      code: this.form.value.code ?? code,
-      zone: this.zones().find((z) => z.id === zone_id),
+      code: this.form.value.code ?? '',
+      zone: zone,
     });
   }
 
