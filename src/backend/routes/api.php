@@ -16,6 +16,8 @@ Route::prefix('auth')->as('auth.')->group(function() {
 // Public product listing and details
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
+// Public product categories
+Route::get('/product-categories', [\App\Http\Controllers\Api\ProductCategoryController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Product conditions

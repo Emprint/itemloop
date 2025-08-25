@@ -12,7 +12,7 @@ class Product extends Model
     protected $fillable = [
         'title',
         'description',
-        'condition',
+        'condition_id',
         'quantity',
         'estimated_value',
         'location_id',
@@ -20,7 +20,8 @@ class Product extends Model
         'length',
         'width',
         'height',
-        'color',
+        'color_id',
+        'category_id',
         'weight',
         'destination',
         'visibility'
@@ -45,4 +46,21 @@ class Product extends Model
     {
         return $this->hasMany(Image::class);
     }
+
+    public function color()
+    {
+        return $this->belongsTo(ProductColor::class, 'color_id');
+    }
+
+    public function condition()
+    {
+        return $this->belongsTo(ProductCondition::class, 'condition_id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class, 'category_id');
+    }
+
+    protected $with = ['color', 'condition', 'category', 'location', 'images'];
 }

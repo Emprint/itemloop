@@ -73,7 +73,10 @@ class ProductController extends Controller
         $rules = [
             'title' => $product ? 'sometimes|required|string|max:255' : 'required|string|max:255',
             'description' => 'nullable|string',
-            'condition' => $product ? 'sometimes|required|string' : 'required|string',
+            // Accept 0 for new entries, otherwise must exist
+            'condition_id' => $product ? 'sometimes|required|integer|min:0' : 'required|integer|min:0',
+            'color_id' => 'nullable|integer|min:0',
+            'category_id' => 'nullable|integer|min:0',
             'quantity' => $product ? 'sometimes|required|integer|min:0' : 'required|integer|min:0',
             'estimated_value' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
             'length' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
@@ -82,7 +85,6 @@ class ProductController extends Controller
             'weight' => 'nullable|numeric|regex:/^\d+(\.\d{1,2})?$/',
             'location_id' => $product ? 'sometimes|required|exists:locations,id' : 'required|exists:locations,id',
             'barcode' => 'nullable|string',
-            'color' => 'nullable|string',
             'destination' => 'nullable|string',
             'visibility' => 'nullable|in:private,public',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:4096',
@@ -95,20 +97,26 @@ class ProductController extends Controller
                 'status' => 422
             ];
         }
-        // Ensure color exists
-        if ($request->filled('color')) {
-            $colorName = strtolower($request->color);
-            ProductColor::firstOrCreate(['name' => $colorName]);
+        $data = $validator->validated();
+
+        // Upsert logic for color, condition, category using object.name if _id is 0
+        if (($request->color_id == 0 || empty($request->color_id)) && !empty($request->color['name'])) {
+            $color = \App\Models\ProductColor::firstOrCreate(['name' => $request->color['name']]);
+            $data['color_id'] = $color->id;
         }
-        // Ensure condition exists
-        if ($request->filled('condition')) {
-            $conditionName = strtolower($request->condition);
-            ProductCondition::firstOrCreate(['name' => $conditionName]);
+        if (($request->condition_id == 0 || empty($request->condition_id)) && !empty($request->condition['name'])) {
+            $condition = \App\Models\ProductCondition::firstOrCreate(['name' => $request->condition['name']]);
+            $data['condition_id'] = $condition->id;
         }
+        if (($request->category_id == 0 || empty($request->category_id)) && !empty($request->category['name'])) {
+            $category = \App\Models\ProductCategory::firstOrCreate(['name' => $request->category['name']]);
+            $data['category_id'] = $category->id;
+        }
+
         if ($product) {
-            $product->update($request->all());
+            $product->update($data);
         } else {
-            $product = Product::create($request->all());
+            $product = Product::create($data);
         }
         return ['product' => $product];
     }

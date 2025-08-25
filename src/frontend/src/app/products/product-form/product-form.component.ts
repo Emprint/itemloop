@@ -1,3 +1,7 @@
+interface IdNamePair {
+  id: number;
+  name: string;
+}
 import {
   Component,
   Input,
@@ -7,6 +11,7 @@ import {
   OnInit,
   SimpleChanges,
   signal,
+  computed,
 } from '@angular/core';
 import { Product } from '../product.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
@@ -17,6 +22,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ComboboxComponent } from '../../shared/combobox/combobox.component';
 import { ProductColorService } from '../product-color.service';
+import { ProductCategoryService } from '../product-category.service';
 import { ProductConditionService } from '../product-condition.service';
 
 @Component({
@@ -27,17 +33,25 @@ import { ProductConditionService } from '../product-condition.service';
   styleUrls: ['./product-form.component.css'],
 })
 export class ProductFormComponent implements OnChanges, OnInit {
+  // Track when all options are loaded
+  private optionsLoaded = signal(false);
+  private categoryService = inject(ProductCategoryService);
+  // ...existing code...
+  colors = signal<IdNamePair[]>([]);
+  conditions = signal<IdNamePair[]>([]);
+  categoryNames = computed(() => this.categories().map((c) => c.name));
+  colorNames = computed(() => this.colors().map((c) => c.name));
+  conditionNames = computed(() => this.conditions().map((c) => c.name));
   @Input() product: Product | null = null;
   @Output() save = new EventEmitter<Product>();
-  @Output() cancelForm = new EventEmitter<void>();
+  @Output() cancel = new EventEmitter<void>();
 
   private fb = inject(FormBuilder);
   private locationService = inject(LocationService);
   private colorService = inject(ProductColorService);
   private conditionService = inject(ProductConditionService);
-  conditionOptions = signal<string[]>([]);
   locations = signal<Location[]>([]);
-  colorOptions = signal<string[]>([]);
+  categories = signal<{ id: number; name: string }[]>([]);
   form: FormGroup;
 
   constructor() {
@@ -45,12 +59,16 @@ export class ProductFormComponent implements OnChanges, OnInit {
       id: [0],
       title: ['', [Validators.required, Validators.maxLength(255)]],
       description: [''],
-      condition: ['', Validators.required],
+      condition: [null, Validators.required], // IdNamePair
+      condition_id: [0],
       quantity: [0, [Validators.required, Validators.min(0)]],
       length: [0, [Validators.min(0)]],
       width: [0, [Validators.min(0)]],
       height: [0, [Validators.min(0)]],
-      color: [''],
+      color: [null], // IdNamePair
+      color_id: [0],
+      category: [null], // IdNamePair
+      category_id: [0],
       weight: [0, [Validators.min(0)]],
       destination: [''],
       visibility: ['private', Validators.required],
@@ -61,13 +79,46 @@ export class ProductFormComponent implements OnChanges, OnInit {
   }
 
   ngOnInit() {
+    // Patch form values with product object for editing
+    if (this.product) {
+      this.form.patchValue({
+        ...this.product,
+      });
+    }
+    let loaded = 0;
+    const checkLoaded = () => {
+      loaded++;
+      if (loaded === 3) this.optionsLoaded.set(true);
+    };
+    this.categoryService.getCategories().subscribe({
+      next: (categories: IdNamePair[]) => {
+        this.categories.set(categories);
+        checkLoaded();
+      },
+      error: () => {
+        this.categories.set([]);
+        checkLoaded();
+      },
+    });
     this.colorService.getColors().subscribe({
-      next: (colors: string[]) => this.colorOptions.set(colors),
-      error: () => this.colorOptions.set([]),
+      next: (colors: IdNamePair[]) => {
+        this.colors.set(colors);
+        checkLoaded();
+      },
+      error: () => {
+        this.colors.set([]);
+        checkLoaded();
+      },
     });
     this.conditionService.getConditions().subscribe({
-      next: (conds: string[]) => this.conditionOptions.set(conds),
-      error: () => this.conditionOptions.set([]),
+      next: (conds: IdNamePair[]) => {
+        this.conditions.set(conds);
+        checkLoaded();
+      },
+      error: () => {
+        this.conditions.set([]);
+        checkLoaded();
+      },
     });
   }
 
@@ -75,8 +126,8 @@ export class ProductFormComponent implements OnChanges, OnInit {
     return this.product;
   }
 
-  capitalize(value: string): string {
-    if (!value) {
+  capitalize(value?: string): string {
+    if (!value || value.length === 0) {
       return '';
     }
     return value.charAt(0).toUpperCase() + value.slice(1);
@@ -90,19 +141,21 @@ export class ProductFormComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['product'] && this.product) {
-      this.form.patchValue({ ...this.product });
-    } else if (changes['product'] && !this.product) {
+    if (changes['product'] && !this.product) {
       this.form.reset({
         id: 0,
         title: '',
         description: '',
-        condition: '',
+        condition: null,
+        condition_id: 0,
         quantity: 0,
         length: 0,
         width: 0,
         height: 0,
-        color: '',
+        color: null,
+        color_id: 0,
+        category: null,
+        category_id: 0,
         weight: 0,
         destination: '',
         visibility: 'private',
@@ -112,50 +165,82 @@ export class ProductFormComponent implements OnChanges, OnInit {
     }
   }
 
+  onCategoryChange(value: string) {
+    const categoryObj = this.categories().find((c) => c.name.toLowerCase() === value.toLowerCase());
+    this.form.get('category')?.setValue(categoryObj ?? { id: 0, name: value });
+  }
+
+  onAddNewCategory(value: string) {
+    const category = value.toLowerCase();
+    if (!this.categoryNames().includes(category)) {
+      const updated = [...this.categories(), { id: 0, name: category }];
+      this.categories.set(updated);
+    }
+    this.form.get('category')?.setValue({ id: 0, name: category });
+  }
+
   onColorChange(value: string) {
-    this.form.get('color')?.setValue(value.toLowerCase());
+    const colorObj = this.colors().find((c) => c.name.toLowerCase() === value.toLowerCase());
+    this.form.get('color')?.setValue(colorObj ?? { id: 0, name: value });
   }
 
   onConditionChange(value: string) {
-    this.form.get('condition')?.setValue(value.toLowerCase());
+    const conditionObj = this.conditions().find(
+      (c) => c.name.toLowerCase() === value.toLowerCase(),
+    );
+    this.form.get('condition')?.setValue(conditionObj ?? { id: 0, name: value });
   }
 
   onAddNewCondition(value: string) {
     const cond = value.toLowerCase();
-    if (!this.conditionOptions().includes(cond)) {
-      const updated = [...this.conditionOptions(), cond];
-      this.conditionOptions.set(updated);
+    const exists = this.conditionNames().some((name) => name.toLowerCase() === cond);
+    if (!exists) {
+      this.form.get('condition_id')?.setValue(0);
     }
-    this.form.get('condition')?.setValue(cond);
   }
 
   onAddNewColor(value: string) {
     const color = value.toLowerCase();
-    if (!this.colorOptions().includes(color)) {
-      const updated = [...this.colorOptions(), color];
-      this.colorOptions.set(updated);
+    const exists = this.colorNames().some((name) => name.toLowerCase() === color);
+    if (!exists) {
+      this.form.get('color_id')?.setValue(0);
     }
-    this.form.get('color')?.setValue(color);
   }
 
   onSubmit() {
     if (this.form.valid) {
-      this.save.emit(this.form.value);
+      const colorObj = this.form.get('color')?.value as IdNamePair;
+      const conditionObj = this.form.get('condition')?.value as IdNamePair;
+      const categoryObj = this.form.get('category')?.value as IdNamePair;
+      const payload = {
+        ...this.form.value,
+        color: colorObj,
+        color_id: colorObj?.id ?? 0,
+        condition: conditionObj,
+        condition_id: conditionObj?.id ?? 0,
+        category: categoryObj,
+        category_id: categoryObj?.id ?? 0,
+      };
+      this.save.emit(payload);
     }
   }
 
   onCancel() {
-    this.cancelForm.emit();
+    this.cancel.emit();
     this.form.reset({
       id: 0,
       title: '',
       description: '',
-      condition: '',
+      condition: null,
+      condition_id: 0,
       quantity: 0,
       length: 0,
       width: 0,
       height: 0,
-      color: '',
+      color: null,
+      color_id: 0,
+      category: null,
+      category_id: 0,
       weight: 0,
       destination: '',
       visibility: 'private',

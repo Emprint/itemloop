@@ -1,34 +1,38 @@
 <div class="products-list">
   <h2>Products</h2>
+
   @if (errorMessage) {
     <div class="error">{{ errorMessage }}</div>
   }
-  @if (showForm) {
+
+  @if (showForm()) {
     <app-product-form
       [product]="selectedProduct"
       (save)="onSaveProduct($event)"
       (cancel)="onCancelProduct()"
     ></app-product-form>
-  }
-  @if (isEditorOrAdmin) {
-    <button (click)="showAddProductForm()">Add Product</button>
-  }
-  <div class="products-grid">
-    @for (product of products(); track product.id) {
-      <div class="product-card">
-        @if (product.images && product.images.length) {
-          <img [src]="product.images[0].url" alt="Thumbnail" class="thumbnail" />
-        }
-        <div class="product-info">
-          <h3>{{ product.title }}</h3>
-          <p>{{ product.description }}</p>
-        </div>
-        @if (isEditorOrAdmin) {
-          <div class="product-actions">
-            <button (click)="editProduct(product)">Edit</button>
-          </div>
-        }
-      </div>
+  } @else {
+    @if (isEditorOrAdmin) {
+      <button (click)="showAddProductForm()">Add Product</button>
     }
-  </div>
+
+    <div class="products-grid">
+      @for (product of products(); track product.id) {
+        <div class="product-card">
+          @if (product.images && product.images.length) {
+            <img [src]="product.images[0].url" alt="Thumbnail" class="thumbnail" />
+          }
+          <div class="product-info">
+            <h3>{{ product.title }}</h3>
+            <p>{{ product.description }}</p>
+          </div>
+          @if (isEditorOrAdmin) {
+            <div class="product-actions">
+              <button (click)="editProduct(product)">Edit</button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
 </div>

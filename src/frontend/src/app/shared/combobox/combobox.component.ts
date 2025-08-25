@@ -9,6 +9,12 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./combobox.component.scss'],
 })
 export class ComboboxComponent implements OnInit {
+  onFocus() {
+    if (this.options.length > 0) {
+      this.filteredOptions.set(this.options);
+      this.showDropdown.set(true);
+    }
+  }
   onKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       const match = this.options.find((opt) => opt.toLowerCase() === this.value.toLowerCase());

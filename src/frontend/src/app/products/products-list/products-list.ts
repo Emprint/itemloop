@@ -11,9 +11,15 @@ import { ProductFormComponent } from '../product-form/product-form.component';
   templateUrl: './products-list.html',
 })
 export class ProductsList {
+  private completeProductSave() {
+    this.loadProducts();
+    this.showForm.set(false);
+    this.selectedProduct = null;
+    this.errorMessage = null;
+  }
   products = signal<Product[]>([]);
   errorMessage: string | null = null;
-  showForm = false;
+  showForm = signal(false);
   selectedProduct: Product | null = null;
   isEditorOrAdmin = false;
   private auth = inject(AuthService);
@@ -41,20 +47,19 @@ export class ProductsList {
 
   showAddProductForm() {
     this.selectedProduct = null;
-    this.showForm = true;
+    this.showForm.set(true);
   }
 
   editProduct(product: Product) {
     this.selectedProduct = product;
-    this.showForm = true;
+    this.showForm.set(true);
   }
 
   onSaveProduct(product: Product) {
     if (this.selectedProduct) {
       this.service.updateProduct(this.selectedProduct.id, product).subscribe({
         next: () => {
-          this.loadProducts();
-          this.showForm = false;
+          this.completeProductSave();
         },
         error: () => {
           this.errorMessage = 'Failed to update product';
@@ -63,8 +68,7 @@ export class ProductsList {
     } else {
       this.service.addProduct(product).subscribe({
         next: () => {
-          this.loadProducts();
-          this.showForm = false;
+          this.completeProductSave();
         },
         error: () => {
           this.errorMessage = 'Failed to add product';
@@ -74,7 +78,7 @@ export class ProductsList {
   }
 
   onCancelProduct() {
-    this.showForm = false;
+    this.showForm.set(false);
     this.selectedProduct = null;
   }
 }

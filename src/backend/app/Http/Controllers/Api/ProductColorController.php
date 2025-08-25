@@ -10,7 +10,7 @@ class ProductColorController extends Controller
 {
     public function index()
     {
-        return ProductColor::all();
+        return response()->json(ProductColor::all(['id', 'name']));
     }
 
     public function store(Request $request)

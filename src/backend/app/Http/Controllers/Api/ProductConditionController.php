@@ -10,7 +10,7 @@ class ProductConditionController extends Controller
 {
     public function index()
     {
-        return ProductCondition::all();
+        return response()->json(ProductCondition::all(['id', 'name']));
     }
 
     public function store(Request $request)

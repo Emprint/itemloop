@@ -135,13 +135,12 @@ export class ZonesList {
   }
 
   onNameInput() {
-    // If code is empty, always regenerate code from name
-    if (!this.form.value.code) {
+    // Regenerate code from name unless codeChangedManually is true
+    if (!this.codeChangedManually) {
       const name = this.form.value.name;
       let code = LocationService.generateCode(name);
       code = code.toUpperCase();
       this.form.patchValue({ code });
-      this.codeChangedManually = false;
     }
     this.updateFinalZoneCode();
   }
