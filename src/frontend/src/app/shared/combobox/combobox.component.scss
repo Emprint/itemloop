@@ -1,3 +1,24 @@
+.combobox-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.combobox-input {
+  width: 100%;
+  padding-right: 32px;
+}
+.combobox-arrow {
+  position: absolute;
+  right: 8px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}
 .combobox-wrapper {
   position: relative;
   width: 100%;
@@ -5,9 +26,14 @@
 }
 .combobox-input {
   width: 100%;
-  padding: 6px 8px;
+  padding: 8px 12px;
   box-sizing: border-box;
   margin-bottom: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: #fff;
+  color: #222;
 }
 .combobox-dropdown {
   position: absolute;

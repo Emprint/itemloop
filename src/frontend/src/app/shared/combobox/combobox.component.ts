@@ -35,8 +35,8 @@ export class ComboboxComponent implements OnInit {
   @Input() value = '';
   @Input() placeholder = '';
   @Input() disabled = false;
-  @Output() valueChange = new EventEmitter<string>();
-  @Output() addNew = new EventEmitter<string>();
+  @Output() valueChangeEvent = new EventEmitter<string>();
+  @Output() addNewEvent = new EventEmitter<string>();
 
   filteredOptions = signal<string[]>([]);
   showDropdown = signal(false);
@@ -47,7 +47,7 @@ export class ComboboxComponent implements OnInit {
 
   onInput(event: Event) {
     const input = (event.target as HTMLInputElement).value;
-    this.valueChange.emit(input);
+    this.valueChangeEvent.emit(input);
     this.filteredOptions.set(
       this.options.filter((opt) => opt.toLowerCase().includes(input.toLowerCase())),
     );
@@ -55,7 +55,7 @@ export class ComboboxComponent implements OnInit {
   }
 
   selectOption(option: string) {
-    this.valueChange.emit(option);
+    this.valueChangeEvent.emit(option);
     this.showDropdown.set(false);
   }
 
@@ -64,9 +64,9 @@ export class ComboboxComponent implements OnInit {
   }
 
   onAddNew() {
-    this.addNew.emit(this.value);
+    this.addNewEvent.emit(this.value);
     // Set the input to the newly added value
-    this.valueChange.emit(this.value);
+    this.valueChangeEvent.emit(this.value);
     this.showDropdown.set(false);
   }
 }

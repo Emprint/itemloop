@@ -7,5 +7,4 @@ class ProductCategory extends Model
 {
     protected $table = 'product_categories';
     protected $fillable = ['name'];
-    public $timestamps = false;
 }

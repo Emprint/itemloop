@@ -2,6 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface Image {
+  id: number;
+  url: string;
+  // Add other image properties as needed
+}
+
 export interface Product {
   id: number;
   title: string;
@@ -20,7 +26,7 @@ export interface Product {
   visibility: 'private' | 'public';
   location_id: number;
   barcode?: string;
-  images?: any[];
+  images?: Image[];
 }
 
 @Injectable({ providedIn: 'root' })

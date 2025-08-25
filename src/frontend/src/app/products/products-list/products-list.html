@@ -1,5 +1,5 @@
 <div class="products-list">
-  <h2>Products</h2>
+  <h2>{{ 'PRODUCT' | translate }}</h2>
 
   @if (errorMessage) {
     <div class="error">{{ errorMessage }}</div>
@@ -8,12 +8,12 @@
   @if (showForm()) {
     <app-product-form
       [product]="selectedProduct"
-      (save)="onSaveProduct($event)"
-      (cancel)="onCancelProduct()"
+      (saveEvent)="onSaveProduct($event)"
+      (cancelEvent)="onCancelProduct()"
     ></app-product-form>
   } @else {
     @if (isEditorOrAdmin) {
-      <button (click)="showAddProductForm()">Add Product</button>
+      <button (click)="showAddProductForm()">{{ 'ADD_PRODUCT' | translate }}</button>
     }
 
     <div class="products-grid">
@@ -23,14 +23,16 @@
             <img [src]="product.images[0].url" alt="Thumbnail" class="thumbnail" />
           }
           <div class="product-info">
-            <h3>{{ product.title }}</h3>
+            <h3>
+              {{ product.title }}
+              @if (isEditorOrAdmin) {
+                <button class="compact-button" (click)="editProduct(product)">
+                  {{ 'EDIT' | translate }}
+                </button>
+              }
+            </h3>
             <p>{{ product.description }}</p>
           </div>
-          @if (isEditorOrAdmin) {
-            <div class="product-actions">
-              <button (click)="editProduct(product)">Edit</button>
-            </div>
-          }
         </div>
       }
     </div>

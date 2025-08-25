@@ -1,4 +1,5 @@
 import { Component, signal, inject } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { ProductService, Product } from '../product.service';
@@ -7,7 +8,7 @@ import { ProductFormComponent } from '../product-form/product-form.component';
 @Component({
   selector: 'app-products-list',
   standalone: true,
-  imports: [ProductFormComponent],
+  imports: [ProductFormComponent, TranslateModule],
   templateUrl: './products-list.html',
 })
 export class ProductsList {

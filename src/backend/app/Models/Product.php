@@ -9,6 +9,27 @@ class Product extends Model
 {
     use HasFactory;
 
+    public const DESTINATION_REVIEW = 'review';
+    public const DESTINATION_KEEP = 'keep';
+    public const DESTINATION_REUSE = 'reuse';
+    public const DESTINATION_SELL = 'sell';
+    public const DESTINATION_DONATE = 'donate';
+    public const DESTINATION_RECYCLE = 'recycle';
+    public const DESTINATION_TRASH = 'trash';
+
+    public static function destinationOptions(): array
+    {
+        return [
+            self::DESTINATION_REVIEW,
+            self::DESTINATION_KEEP,
+            self::DESTINATION_REUSE,
+            self::DESTINATION_SELL,
+            self::DESTINATION_DONATE,
+            self::DESTINATION_RECYCLE,
+            self::DESTINATION_TRASH,
+        ];
+    }
+
     protected $fillable = [
         'title',
         'description',

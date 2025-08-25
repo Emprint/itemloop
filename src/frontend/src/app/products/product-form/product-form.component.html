@@ -1,14 +1,14 @@
 <div class="form-card">
   <h3>{{ selectedProduct ? ('EDIT_PRODUCT' | translate) : ('NEW_PRODUCT' | translate) }}</h3>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <label for="category-combobox">Category</label>
+    <label for="category-combobox">{{ 'PRODUCT_FORM.CATEGORY' | translate }}</label>
     <app-combobox
       id="category-combobox"
       [options]="categoryNames()"
       [value]="capitalize(form.get('category')?.value?.name)"
-      (valueChange)="onCategoryChange($event)"
-      (addNew)="onAddNewCategory($event)"
-      [placeholder]="'Enter or select a category'"
+      (valueChangeEvent)="onCategoryChange($event)"
+      (addNewEvent)="onAddNewCategory($event)"
+      [placeholder]="'PRODUCT_FORM.CATEGORY_PLACEHOLDER' | translate"
     ></app-combobox>
     <label
       >{{ 'PRODUCT_FORM.TITLE' | translate }}
@@ -26,8 +26,8 @@
       id="condition-combobox"
       [options]="conditionNames()"
       [value]="capitalize(form.get('condition')?.value?.name)"
-      (valueChange)="onConditionChange($event)"
-      (addNew)="onAddNewCondition($event)"
+      (valueChangeEvent)="onConditionChange($event)"
+      (addNewEvent)="onAddNewCondition($event)"
       [placeholder]="'PRODUCT_FORM.CONDITION_PLACEHOLDER' | translate"
     ></app-combobox>
     <label
@@ -52,13 +52,20 @@
       <small class="help-text">{{ 'PRODUCT_FORM.HELP.HEIGHT' | translate }}</small>
       <input type="number" formControlName="height" min="0" />
     </label>
+    <label>
+      {{ 'PRODUCT_FORM.ESTIMATED_VALUE' | translate }}
+      <input type="number" formControlName="estimated_value" min="0" step="0.01" />
+      @if (form.get('estimated_value')?.invalid && form.get('estimated_value')?.touched) {
+        <span class="error">{{ 'PRODUCT_FORM.ESTIMATED_VALUE_ERROR' | translate }}</span>
+      }
+    </label>
     <label for="color-combobox">{{ 'PRODUCT_FORM.COLOR' | translate }}</label>
     <app-combobox
       id="color-combobox"
       [options]="colorNames()"
       [value]="capitalize(form.get('color')?.value?.name)"
-      (valueChange)="onColorChange($event)"
-      (addNew)="onAddNewColor($event)"
+      (valueChangeEvent)="onColorChange($event)"
+      (addNewEvent)="onAddNewColor($event)"
       [placeholder]="'PRODUCT_FORM.COLOR_PLACEHOLDER' | translate"
     ></app-combobox>
     <label
@@ -67,13 +74,18 @@
     </label>
     <label
       >{{ 'PRODUCT_FORM.DESTINATION' | translate }}
-      <input type="text" formControlName="destination" />
+      <select formControlName="destination">
+        <option value="">{{ 'PRODUCT_FORM.SELECT_DESTINATION' | translate }}</option>
+        <option *ngFor="let dest of destinationOptions" [value]="dest">
+          {{ 'PRODUCT_FORM.DESTINATION_' + dest.toUpperCase() | translate }}
+        </option>
+      </select>
     </label>
     <label
       >{{ 'PRODUCT_FORM.VISIBILITY' | translate }}
       <select formControlName="visibility">
-        <option value="private">{{ 'Private' | translate }}</option>
-        <option value="public">{{ 'Public' | translate }}</option>
+        <option value="private">{{ 'PRODUCT_FORM.VISIBILITY_PRIVATE' | translate }}</option>
+        <option value="public">{{ 'PRODUCT_FORM.VISIBILITY_PUBLIC' | translate }}</option>
       </select>
     </label>
     <label

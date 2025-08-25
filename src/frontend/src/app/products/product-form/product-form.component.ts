@@ -1,3 +1,13 @@
+export enum DestinationOption {
+  REVIEW = 'review',
+  KEEP = 'keep',
+  REUSE = 'reuse',
+  SELL = 'sell',
+  DONATE = 'donate',
+  RECYCLE = 'recycle',
+  TRASH = 'trash',
+}
+
 interface IdNamePair {
   id: number;
   name: string;
@@ -33,18 +43,42 @@ import { ProductConditionService } from '../product-condition.service';
   styleUrls: ['./product-form.component.css'],
 })
 export class ProductFormComponent implements OnChanges, OnInit {
+  resetForm() {
+    this.form.reset({
+      id: 0,
+      title: '',
+      description: '',
+      condition: null,
+      condition_id: 0,
+      quantity: 0,
+      length: 0,
+      width: 0,
+      height: 0,
+      color: null,
+      color_id: 0,
+      category: null,
+      category_id: 0,
+      weight: 0,
+      estimated_value: 0,
+      destination: '',
+      visibility: 'private',
+      location_id: 0,
+      images: [],
+    });
+  }
+  destinationOptions = Object.values(DestinationOption);
   // Track when all options are loaded
   private optionsLoaded = signal(false);
   private categoryService = inject(ProductCategoryService);
-  // ...existing code...
+
   colors = signal<IdNamePair[]>([]);
   conditions = signal<IdNamePair[]>([]);
   categoryNames = computed(() => this.categories().map((c) => c.name));
   colorNames = computed(() => this.colors().map((c) => c.name));
   conditionNames = computed(() => this.conditions().map((c) => c.name));
   @Input() product: Product | null = null;
-  @Output() save = new EventEmitter<Product>();
-  @Output() cancel = new EventEmitter<void>();
+  @Output() saveEvent = new EventEmitter<Product>();
+  @Output() cancelEvent = new EventEmitter<void>();
 
   private fb = inject(FormBuilder);
   private locationService = inject(LocationService);
@@ -67,8 +101,9 @@ export class ProductFormComponent implements OnChanges, OnInit {
       height: [0, [Validators.min(0)]],
       color: [null], // IdNamePair
       color_id: [0],
-      category: [null], // IdNamePair
+      category: [null, Validators.required], // IdNamePair
       category_id: [0],
+      estimated_value: [0, [Validators.min(0)]],
       weight: [0, [Validators.min(0)]],
       destination: [''],
       visibility: ['private', Validators.required],
@@ -142,26 +177,7 @@ export class ProductFormComponent implements OnChanges, OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['product'] && !this.product) {
-      this.form.reset({
-        id: 0,
-        title: '',
-        description: '',
-        condition: null,
-        condition_id: 0,
-        quantity: 0,
-        length: 0,
-        width: 0,
-        height: 0,
-        color: null,
-        color_id: 0,
-        category: null,
-        category_id: 0,
-        weight: 0,
-        destination: '',
-        visibility: 'private',
-        location_id: 0,
-        images: [],
-      });
+      this.resetForm();
     }
   }
 
@@ -221,32 +237,13 @@ export class ProductFormComponent implements OnChanges, OnInit {
         category: categoryObj,
         category_id: categoryObj?.id ?? 0,
       };
-      this.save.emit(payload);
+      this.saveEvent.emit(payload);
     }
   }
 
   onCancel() {
-    this.cancel.emit();
-    this.form.reset({
-      id: 0,
-      title: '',
-      description: '',
-      condition: null,
-      condition_id: 0,
-      quantity: 0,
-      length: 0,
-      width: 0,
-      height: 0,
-      color: null,
-      color_id: 0,
-      category: null,
-      category_id: 0,
-      weight: 0,
-      destination: '',
-      visibility: 'private',
-      location_id: 0,
-      images: [],
-    });
+    this.cancelEvent.emit();
+    this.resetForm();
   }
 
   getFinalCode(location: Location): string {

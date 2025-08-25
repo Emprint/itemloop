@@ -92,13 +92,29 @@
     "COLOR_PLACEHOLDER": "Enter or select a color",
     "WEIGHT": "Weight (kg)",
     "DESTINATION": "Destination",
+    "SELECT_DESTINATION": "Select a destination",
+    "DESTINATION_REVIEW": "Review",
+    "DESTINATION_KEEP": "Keep",
+    "DESTINATION_REUSE": "Reuse",
+    "DESTINATION_SELL": "Sell",
+    "DESTINATION_DONATE": "Donate",
+    "DESTINATION_RECYCLE": "Recycle",
+    "DESTINATION_TRASH": "Trash",
     "VISIBILITY": "Visibility",
+    "VISIBILITY_PRIVATE": "Private",
+    "VISIBILITY_PUBLIC": "Public",
     "LOCATION": "Location",
     "SELECT_LOCATION": "Select location",
     "HELP": {
       "LENGTH": "Front-to-back (depth)",
       "WIDTH": "Left-to-right; for round items (screws, rods, axes), enter diameter.",
       "HEIGHT": "Bottom-to-top (vertical)"
-    }
-  }
+    },
+    "CATEGORY": "Category",
+    "CATEGORY_PLACEHOLDER": "Enter or select a category",
+    "ESTIMATED_VALUE": "Estimated Value",
+    "ESTIMATED_VALUE_ERROR": "Estimated value must be 0 or more."
+  },
+  "PRODUCT": "Product",
+  "ADD_PRODUCT": "Add Product"
 }

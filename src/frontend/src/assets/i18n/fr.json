@@ -1,6 +1,7 @@
 {
   "COMBOBOX_ADD": "Ajouter",
   "PRODUCT_FORM": {
+    "CATEGORY_PLACEHOLDER": "Saisissez ou sélectionnez une catégorie",
     "TITLE": "Titre",
     "DESCRIPTION": "Description",
     "CONDITION": "État",
@@ -13,7 +14,17 @@
     "COLOR_PLACEHOLDER": "Saisissez ou sélectionnez une couleur",
     "WEIGHT": "Poids (kg)",
     "DESTINATION": "Destination",
+    "SELECT_DESTINATION": "Sélectionner une destination",
+    "DESTINATION_REVIEW": "Vérifier",
+    "DESTINATION_KEEP": "Garder",
+    "DESTINATION_REUSE": "Réutiliser",
+    "DESTINATION_SELL": "Vendre",
+    "DESTINATION_DONATE": "Donner",
+    "DESTINATION_RECYCLE": "Recycler",
+    "DESTINATION_TRASH": "Jeter",
     "VISIBILITY": "Visibilité",
+    "VISIBILITY_PRIVATE": "Privé",
+    "VISIBILITY_PUBLIC": "Public",
     "LOCATION": "Emplacement",
     "SELECT_LOCATION": "Sélectionner un emplacement",
     "HELP": {
@@ -21,9 +32,11 @@
       "WIDTH": "Gauche-droite; pour les objets ronds (vis, axes, tiges), indiquez le diamètre.",
       "HEIGHT": "Bas-haut (vertical)"
     },
-    "LOCATION_REQUIRED": "L'emplacement est requis."
+    "LOCATION_REQUIRED": "L'emplacement est requis.",
+    "CATEGORY": "Catégorie",
+    "ESTIMATED_VALUE": "Valeur estimée",
+    "ESTIMATED_VALUE_ERROR": "La valeur estimée doit être supérieure ou égale à 0."
   },
-
   "USER_MANAGEMENT": "Gestion des utilisateurs",
   "EDIT": "Modifier",
   "EDIT_USER": "Modifier l'utilisateur",
@@ -102,5 +115,7 @@
   "NEW_SHELF_BTN": "Nouveau rayon",
   "PRODUCT_FORM_TITLE": "Formulaire produit",
   "EDIT_PRODUCT": "Modifier le produit",
-  "NEW_PRODUCT": "Nouveau produit"
+  "NEW_PRODUCT": "Nouveau produit",
+  "PRODUCT": "Produit",
+  "ADD_PRODUCT": "Ajouter un produit"
 }
