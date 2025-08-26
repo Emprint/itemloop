@@ -28,7 +28,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'password' => 'nullable|string|min:8',
-            'role' => 'required|string|in:admin,editor,customer',
+            'role' => 'required|string|in:admin,editor,member,customer',
         ]);
             $authUser = $request->user();
             if (!$authUser || !$authUser->isAdmin()) {

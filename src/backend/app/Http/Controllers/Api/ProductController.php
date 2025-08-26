@@ -26,8 +26,8 @@ class ProductController extends Controller
         if ($request->has('keyword')) {
             $query->where('title', 'like', '%'.$request->keyword.'%');
         }
-        // Only show private products to editors/admins
-        if (!$user || (!$user->isAdmin() && !$user->isEditor())) {
+        // Only show private products to editors/admins/members
+        if (!$user || (!$user->isAdmin() && !$user->isEditor() && !$user->isMember())) {
             $query->where('visibility', 'public');
         }
         return response()->json($query->with('images', 'location')->get());

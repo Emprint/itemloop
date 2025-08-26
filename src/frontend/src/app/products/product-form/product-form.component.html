@@ -81,8 +81,9 @@
         </option>
       </select>
     </label>
-    <label
-      >{{ 'PRODUCT_FORM.VISIBILITY' | translate }}
+    <label>
+      {{ 'PRODUCT_FORM.VISIBILITY' | translate }}
+      <small class="help-text">{{ 'PRODUCT_FORM.HELP.VISIBILITY_PRIVATE' | translate }}</small>
       <select formControlName="visibility">
         <option value="private">{{ 'PRODUCT_FORM.VISIBILITY_PRIVATE' | translate }}</option>
         <option value="public">{{ 'PRODUCT_FORM.VISIBILITY_PUBLIC' | translate }}</option>

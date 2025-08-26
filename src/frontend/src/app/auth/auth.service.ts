@@ -44,6 +44,9 @@ export class AuthService {
   softLogout() {
     this._user.set(null);
     localStorage.removeItem('user');
+    // Clear cookies related to authentication and CSRF
+    document.cookie = 'XSRF-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = 'laravel_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
   }
 
   restoreSession() {

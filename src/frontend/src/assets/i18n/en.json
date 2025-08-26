@@ -33,6 +33,7 @@
   "PASSWORD_SPECIAL": "At least one special character",
   "ADMIN": "Admin",
   "EDITOR": "Editor",
+  "MEMBER": "Member",
   "CUSTOMER": "Customer",
   "ERRORS": {
     "EMAIL_INVALID": "Please enter a valid email address.",
@@ -108,7 +109,8 @@
     "HELP": {
       "LENGTH": "Front-to-back (depth)",
       "WIDTH": "Left-to-right; for round items (screws, rods, axes), enter diameter.",
-      "HEIGHT": "Bottom-to-top (vertical)"
+      "HEIGHT": "Bottom-to-top (vertical)",
+      "VISIBILITY_PRIVATE": "Private: only visible to members and editors"
     },
     "CATEGORY": "Category",
     "CATEGORY_PLACEHOLDER": "Enter or select a category",

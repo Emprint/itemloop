@@ -42,6 +42,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user is member.
+     */
+    public function isMember(): bool
+    {
+        return $this->role === 'member';
+    }
+
+    /**
      * Check if user is customer.
      */
     public function isCustomer(): bool

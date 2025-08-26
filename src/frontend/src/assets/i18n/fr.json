@@ -30,7 +30,8 @@
     "HELP": {
       "LENGTH": "Avant-arrière (profondeur)",
       "WIDTH": "Gauche-droite; pour les objets ronds (vis, axes, tiges), indiquez le diamètre.",
-      "HEIGHT": "Bas-haut (vertical)"
+      "HEIGHT": "Bas-haut (vertical)",
+      "VISIBILITY_PRIVATE": "Privé : visible uniquement par les membres et les éditeurs"
     },
     "LOCATION_REQUIRED": "L'emplacement est requis.",
     "CATEGORY": "Catégorie",
@@ -71,6 +72,7 @@
   "PASSWORD_SPECIAL": "Au moins un caractère spécial",
   "ADMIN": "Administrateur",
   "EDITOR": "Éditeur",
+  "MEMBER": "Membre",
   "CUSTOMER": "Client",
   "ERRORS": {
     "EMAIL_INVALID": "Veuillez entrer une adresse e-mail valide.",
