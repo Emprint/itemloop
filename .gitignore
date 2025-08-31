@@ -1,2 +1,3 @@
 /.devdbrc
 /.vscode
+src/frontend/src/environments/environment.prod.ts
