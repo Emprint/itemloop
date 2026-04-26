@@ -65,6 +65,10 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US27 | Admin/User | As an admin or user, I want location codes to be generated automatically and be editable, so each shelf has a unique, human-readable, barcode-friendly code (e.g., BG1-ZOA-001). | Medium | 🟡 Medium | ✅ |
 | US28 | System | As the system, I want to automatically generate a small thumbnail (max 400×400 px) alongside the full image on upload, so the product list loads faster with compact card images. | High | ⚪ Simple | ✅ |
 | US29 | User | As a user, I want to drag and drop images in the product form to control their order, with the first image automatically becoming the cover image shown in lists and previews. | Medium | 🟡 Medium | ✅ |
+| US30 | Customer | As a customer, I want to add items to a cart with a quantity picker (capped at available stock) on the product page, so I can prepare my pickup list. | Medium | 🟡 Medium | ✅ |
+| US31 | Customer | As a customer, I want to view my cart with a list of selected items, unit prices, line totals, and a grand total, so I can review my order before placing it. | Medium | 🟡 Medium | ✅ |
+| US32 | Customer | As a customer, I want to place an order from my cart so the reuse center knows what I intend to pick up. | Medium | 🔴 Complex | ⚪ (UI stub — backend order submission not yet implemented) |
+| US33 | Customer | As a customer, I want my cart to be saved between sessions (browser refresh) so I don't lose my selection. | Low | ⚪ Simple | ✅ (localStorage persistence) |
 
 ---
 
@@ -76,13 +80,15 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 
 ## 📌 Roadmap Ideas
 
-- Public item browsing with reservation / cart checkout flow
+- **Order submission** — backend API to receive cart orders and notify staff (US32)
+- **Order history** — customers can view past orders
 - Barcode scanning for quick product lookup or creation
 - User notification system (email, browser alerts)
 - Item history & audit log
 - Export to PDF (admin reporting)
 - PWA offline sync with conflict resolution
 - Weight / volume tracking for reuse impact reporting
+- Barcode / QR code on location labels (using generated codes)
 
 ---
 

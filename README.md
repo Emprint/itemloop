@@ -26,15 +26,20 @@ This project is open source and welcomes contributions under the AGPL v3 license
 ## 🚀 Features
 
 - **Product CRUD** — title, description, condition, quantity, estimated value, barcode, dimensions, weight, destination, visibility
+- **Product list** — search, multi-filter (category, condition, location), grid/list toggle, pagination, CSV export
+- **Product form** — 3-column layout, view mode (read-only) and edit mode
 - **Structured locations** — Building → Zone → Shelf with auto-generated, editable codes
 - **Image management** — multiple images per product, WebP conversion, thumbnail generation, drag-to-reorder, cover image (first image by sort order)
-- **Role-based access** — Customer, Editor, Admin
+- **Cart** — add-to-cart with quantity picker (max = available stock) on product view page; cart page with item list, price/line-total columns, grand total, clear and place-order actions; persisted in `localStorage`
+- **Dashboard** — KPI cards (total products, total quantity, estimated value) + category donut chart
+- **Role-based access** — Customer (browse + cart), Editor (full product/location CRUD), Admin (everything + user management)
 - **Public / private visibility** — guests see only public products; editors/admins see all
 - **Authentication** — register, login, logout (PHP session-based)
 - **User management** (admin only)
 - **Multilingual UI** — French + English, auto-detected from browser, manually switchable
 - **Comboboxes with inline create** — colors and categories created on the fly
 - **Angular CDK drag-and-drop** for image ordering
+- **Centralized currency config** — `app-settings.ts` sets the currency code (default: `EUR`) used everywhere
 
 ---
 
@@ -183,6 +188,9 @@ All routes are prefixed with `/api`.
 | POST | `/product-conditions` | — | Create condition |
 | GET | `/product-colors` | — | List colors |
 | POST | `/product-colors` | — | Create color |
+| GET | `/dashboard` | Editor+ | Dashboard statistics (total products, qty, estimated value, category breakdown) |
+
+> **Cart**: The cart is entirely client-side (`localStorage`) — no backend endpoints. The "Place Order" button is a UI stub; order submission is on the roadmap.
 
 ---
 
@@ -225,6 +233,7 @@ Configure the backend `.env` on the server with your hosting MySQL credentials.
 - **Passwords**: hashed with PHP `password_hash()` (bcrypt / `PASSWORD_DEFAULT`)
 - **Sessions**: PHP native session handling (no JWT, no Sanctum)
 - **CSRF**: token-based protection on mutating API routes
+- **Currency**: configured in `src/frontend/src/app/app-settings.ts` — change `currency: 'EUR'` to any ISO 4217 code
 
 ---
 
