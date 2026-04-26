@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { Layout } from '../core/layout/layout';
 import { adminGuard } from './admin.guard';
 
 const routes: Routes = [
   {
     path: '',
-    component: Layout,
     canActivate: [adminGuard],
     children: [
       {
