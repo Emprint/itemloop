@@ -138,19 +138,22 @@
   overflow: hidden;
 
   button {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
     border: none;
-    background: #fff;
-    color: #9ca3af;
+    background: #fff !important;
+    color: #9ca3af !important;
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
 
-    &:hover { background: #f3f4f6; color: #374151; }
-    &.active { background: #f3f4f6; color: #22c55e; }
+    svg { display: block; pointer-events: none; }
+
+    &:hover { background: #f3f4f6 !important; color: #374151 !important; }
+    &.active { background: #f3f4f6 !important; color: #22c55e !important; }
     & + button { border-left: 1px solid #e5e7eb; }
   }
 }
