@@ -68,7 +68,7 @@ export class Home implements OnInit {
     this.chart = new Chart(canvas, {
       type: 'doughnut',
       data: {
-        labels: categories.map(c => c.name),
+        labels: categories.map(c => c.name ? c.name.charAt(0).toUpperCase() + c.name.slice(1) : ''),
         datasets: [{
           data: categories.map(c => c.count),
           backgroundColor: categories.map((_, i) => palette[i % palette.length]),
