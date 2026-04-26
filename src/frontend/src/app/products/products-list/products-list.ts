@@ -108,6 +108,10 @@ export class ProductsList {
     this.showForm.set(true);
   }
 
+  onSwitchToEdit() {
+    this.isReadOnlyForm = false;
+  }
+
   editProduct(product: Product) {
     this.selectedProduct = product;
     this.isReadOnlyForm = false;

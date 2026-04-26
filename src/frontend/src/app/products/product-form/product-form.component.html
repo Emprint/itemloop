@@ -214,6 +214,9 @@
     <div class="pf-footer">
       @if (readOnly) {
         <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
+        @if (canEdit) {
+          <button type="button" class="pf-btn-primary" (click)="editModeEvent.emit()">{{ 'EDIT' | translate }}</button>
+        }
       } @else {
         <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
         <button type="button" class="pf-btn-secondary" (click)="onSaveAndContinue()" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CONTINUE' | translate }}</button>

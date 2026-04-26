@@ -172,5 +172,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed !important; }
   cursor: default;
 }
 .pf-readonly .pf-toggle { pointer-events: none; opacity: 0.7; cursor: default; }
+.pf-readonly .pf-photo-thumb { cursor: default; }
 .pf-readonly app-combobox { pointer-events: none; opacity: 0.85; }
 .pf-readonly select.pf-input { pointer-events: none; background-color: #f9fafb; cursor: default; }
