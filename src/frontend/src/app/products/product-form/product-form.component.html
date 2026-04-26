@@ -210,10 +210,30 @@
     <!-- Sticky footer -->
     <div class="pf-footer">
       @if (readOnly) {
-        <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
-        @if (canEdit) {
-          <button type="button" class="pf-btn-primary" (click)="editModeEvent.emit()">{{ 'EDIT' | translate }}</button>
+        @if (product && product.quantity > 0) {
+          <div class="pf-cart-controls">
+            <div class="pf-qty-picker">
+              <button type="button" class="pf-qty-btn" (click)="decrementCartQty()" [disabled]="cartQty() <= 1">−</button>
+              <input type="number" class="pf-qty-input" [value]="cartQty()" (change)="setCartQty(+$any($event.target).value)" min="1" [max]="maxCartQty()" />
+              <button type="button" class="pf-qty-btn" (click)="incrementCartQty()" [disabled]="cartQty() >= maxCartQty()">+</button>
+            </div>
+            <button type="button" class="pf-btn-cart" [class.pf-btn-cart-added]="cartAdded()" (click)="addToCart()">
+              @if (cartAdded()) {
+                ✓ {{ 'CART.ADDED' | translate }}
+              } @else {
+                {{ 'CART.ADD_TO_CART' | translate }}
+              }
+            </button>
+          </div>
+        } @else if (product) {
+          <span class="pf-out-of-stock">{{ 'CART.OUT_OF_STOCK' | translate }}</span>
         }
+        <div class="pf-footer-actions">
+          <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
+          @if (canEdit) {
+            <button type="button" class="pf-btn-primary" (click)="editModeEvent.emit()">{{ 'EDIT' | translate }}</button>
+          }
+        </div>
       } @else {
         <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
         <button type="button" class="pf-btn-secondary" (click)="onSaveAndContinue()" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CONTINUE' | translate }}</button>

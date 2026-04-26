@@ -36,6 +36,7 @@ import { ProductColorService } from '../product-color.service';
 import { ProductCategoryService } from '../product-category.service';
 import { ProductConditionService } from '../product-condition.service';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CartService } from '../../cart/cart.service';
 
 @Component({
   selector: 'app-product-form',
@@ -67,6 +68,23 @@ export class ProductFormComponent implements OnChanges, OnInit {
   private colorService = inject(ProductColorService);
   private conditionService = inject(ProductConditionService);
   private productService = inject(ProductService);
+  readonly cartService = inject(CartService);
+
+  // Cart qty picker (view mode)
+  cartQty = signal(1);
+  cartAdded = signal(false);
+  maxCartQty = computed(() => this.product?.quantity ?? 1);
+
+  decrementCartQty() { this.cartQty.update(v => Math.max(1, v - 1)); }
+  incrementCartQty() { this.cartQty.update(v => Math.min(this.maxCartQty(), v + 1)); }
+  setCartQty(v: number) { this.cartQty.set(Math.min(Math.max(1, v), this.maxCartQty())); }
+
+  addToCart() {
+    if (!this.product || this.product.quantity < 1) return;
+    this.cartService.addToCart(this.product, this.cartQty());
+    this.cartAdded.set(true);
+    setTimeout(() => this.cartAdded.set(false), 2000);
+  }
 
   locations = signal<Location[]>([]);
   categories = signal<{ id: number; name: string }[]>([]);
@@ -170,6 +188,10 @@ export class ProductFormComponent implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['product'] && !this.product) {
       this.resetForm();
+    }
+    if (changes['product']) {
+      this.cartQty.set(1);
+      this.cartAdded.set(false);
     }
   }
 

@@ -162,6 +162,25 @@
       flex-shrink: 0;
     }
 
+    .nav-badge {
+      margin-left: auto;
+      background: #22c55e;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+    }
+
+    &.active .nav-badge {
+      background: rgba(255,255,255,0.3);
+    }
+
     &:hover {
       background: rgba(255, 255, 255, 0.06);
       color: #e5e7eb;

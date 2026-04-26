@@ -5,6 +5,7 @@ import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { ProductService, Product } from '../product.service';
 import { ProductFormComponent } from '../product-form/product-form.component';
+import { APP_SETTINGS } from '../../app-settings';
 
 @Component({
   selector: 'app-products-list',
@@ -183,7 +184,13 @@ export class ProductsList {
 
   formatDate(d?: string) { return d ? d.substring(0, 10) : '—'; }
 
-  formatValue(v?: number | null) { return v != null ? `€${v.toFixed(2)}` : '—'; }
+  formatValue(v?: number | null) {
+    if (v == null) return '—';
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency', currency: APP_SETTINGS.currency,
+      minimumFractionDigits: 2, maximumFractionDigits: 2,
+    }).format(v);
+  }
 
   clampedPageRange() {
     const start = (this.currentPage() - 1) * this.pageSize() + 1;

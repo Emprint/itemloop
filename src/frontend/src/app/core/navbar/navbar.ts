@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
+import { CartService } from '../../cart/cart.service';
 
 @Component({
   selector: 'app-navbar',
@@ -15,6 +16,7 @@ import { UserRole } from '../../auth/auth-response';
 export class Navbar {
   private authService = inject(AuthService);
   private translateService = inject(TranslateService);
+  readonly cartService = inject(CartService);
 
   readonly user = this.authService.user;
   readonly sidebarOpen = signal(false);

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { HomeService, DashboardStats } from './home.service';
+import { APP_SETTINGS } from '../../app-settings';
 import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -23,6 +24,7 @@ export class Home implements OnInit {
   private authService = inject(AuthService);
 
   readonly user = this.authService.user;
+  readonly currency = APP_SETTINGS.currency;
   readonly stats = signal<DashboardStats | null>(null);
   readonly loading = signal(true);
   readonly error = signal(false);
