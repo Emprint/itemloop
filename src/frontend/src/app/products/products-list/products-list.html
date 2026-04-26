@@ -81,11 +81,11 @@
             <tr>
               <th class="col-check"><input type="checkbox" /></th>
               <th>{{ 'PRODUCT' | translate }}</th>
+              <th>{{ 'CATEGORY' | translate }}</th>
               <th>{{ 'CONDITION' | translate }}</th>
               <th>{{ 'LOCATION' | translate }}</th>
               <th>{{ 'QUANTITY' | translate }}</th>
               <th>{{ 'EST_VALUE' | translate }}</th>
-              <th>{{ 'BARCODE' | translate }}</th>
               <th>{{ 'DATE_ADDED' | translate }}</th>
               <th>{{ 'ACTIONS' | translate }}</th>
             </tr>
@@ -109,6 +109,7 @@
                     <div class="product-code">{{ productCode(product.id) }}</div>
                   </div>
                 </td>
+                <td>{{ product.category?.name ?? '—' }}</td>
                 <td>
                   @if (product.condition) {
                     <span class="badge {{ conditionClass(product.condition.name) }}">{{ capitalize(product.condition.name) }}</span>
@@ -122,7 +123,6 @@
                 </td>
                 <td>{{ product.quantity }}</td>
                 <td>{{ formatValue(product.estimated_value) }}</td>
-                <td class="barcode-cell">{{ product.barcode ?? '—' }}</td>
                 <td>{{ formatDate(product.created_at) }}</td>
                 <td class="actions-menu" (click)="$event.stopPropagation()">
                   <button class="action-btn" (click)="toggleAction(product.id, $event)">⋮</button>
