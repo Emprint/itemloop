@@ -11,3 +11,4 @@ src/frontend/src/environments/environment.prod.ts
 mockup-*.png
 *-check.png
 *.screenshot.png
+dashboard*.png
