@@ -39,19 +39,6 @@
           />
         </div>
 
-        <!-- Condition full width -->
-        <div class="pf-field">
-          <label class="pf-label-text"><span>{{ 'PRODUCT_FORM.CONDITION' | translate }} <span class="req">*</span></span></label>
-          <app-combobox
-            [options]="conditionNames()"
-            [value]="capitalize(form.get('condition')?.value?.name)"
-            (valueChangeEvent)="onConditionChange($event)"
-            (addNewEvent)="onAddNewCondition($event)"
-            [placeholder]="'PRODUCT_FORM.CONDITION_PLACEHOLDER' | translate"
-            [readOnly]="readOnly"
-          />
-        </div>
-
         <!-- Quantity + Estimated value side by side -->
         <div class="pf-row">
           <label class="pf-label pf-flex-1">
@@ -70,6 +57,21 @@
           <input type="text" formControlName="barcode" class="pf-input" [placeholder]="'PRODUCT_FORM.BARCODE_PLACEHOLDER' | translate" />
         </label>
 
+        <!-- Destination -->
+        <label class="pf-label">
+          <span>{{ 'PRODUCT_FORM.DESTINATION' | translate }}</span>
+          <select formControlName="destination" class="pf-input">
+            <option value="">{{ 'PRODUCT_FORM.SELECT_DESTINATION' | translate }}</option>
+            <option value="review">{{ 'PRODUCT_FORM.DESTINATION_REVIEW' | translate }}</option>
+            <option value="keep">{{ 'PRODUCT_FORM.DESTINATION_KEEP' | translate }}</option>
+            <option value="reuse">{{ 'PRODUCT_FORM.DESTINATION_REUSE' | translate }}</option>
+            <option value="sell">{{ 'PRODUCT_FORM.DESTINATION_SELL' | translate }}</option>
+            <option value="donate">{{ 'PRODUCT_FORM.DESTINATION_DONATE' | translate }}</option>
+            <option value="recycle">{{ 'PRODUCT_FORM.DESTINATION_RECYCLE' | translate }}</option>
+            <option value="trash">{{ 'PRODUCT_FORM.DESTINATION_TRASH' | translate }}</option>
+          </select>
+        </label>
+
         <!-- Visible to public toggle -->
         <div class="pf-toggle-row">
           <button type="button" class="pf-toggle" [class.pf-toggle-on]="isPublic" (click)="toggleVisibility()">
@@ -84,6 +86,59 @@
 
       <!-- MIDDLE column -->
       <div class="pf-mid-col">
+        <!-- Characteristics card -->
+        <div class="pf-card">
+          <h3 class="pf-card-title">{{ 'PRODUCT_FORM.CHARACTERISTICS' | translate }}</h3>
+
+          <!-- Condition -->
+          <div class="pf-field">
+            <label class="pf-label-text"><span>{{ 'PRODUCT_FORM.CONDITION' | translate }} <span class="req">*</span></span></label>
+            <app-combobox
+              [options]="conditionNames()"
+              [value]="capitalize(form.get('condition')?.value?.name)"
+              (valueChangeEvent)="onConditionChange($event)"
+              (addNewEvent)="onAddNewCondition($event)"
+              [placeholder]="'PRODUCT_FORM.CONDITION_PLACEHOLDER' | translate"
+              [readOnly]="readOnly"
+            />
+          </div>
+
+          <!-- Color -->
+          <div class="pf-field">
+            <label class="pf-label-text"><span>{{ 'PRODUCT_FORM.COLOR' | translate }}</span></label>
+            <app-combobox
+              [options]="colorNames()"
+              [value]="capitalize(form.get('color')?.value?.name)"
+              (valueChangeEvent)="onColorChange($event)"
+              (addNewEvent)="onAddNewColor($event)"
+              [placeholder]="'PRODUCT_FORM.COLOR_PLACEHOLDER' | translate"
+              [readOnly]="readOnly"
+            />
+          </div>
+
+          <!-- Dimensions: L / W / H -->
+          <div class="pf-row">
+            <label class="pf-label pf-flex-1">
+              <span class="pf-label-with-hint">{{ 'PRODUCT_FORM.LENGTH' | translate }} <span class="pf-hint-icon" [title]="'PRODUCT_FORM.HELP.LENGTH' | translate">?</span></span>
+              <input type="number" formControlName="length" class="pf-input" min="0" step="0.1" />
+            </label>
+            <label class="pf-label pf-flex-1">
+              <span class="pf-label-with-hint">{{ 'PRODUCT_FORM.WIDTH' | translate }} <span class="pf-hint-icon" [title]="'PRODUCT_FORM.HELP.WIDTH' | translate">?</span></span>
+              <input type="number" formControlName="width" class="pf-input" min="0" step="0.1" />
+            </label>
+            <label class="pf-label pf-flex-1">
+              <span class="pf-label-with-hint">{{ 'PRODUCT_FORM.HEIGHT' | translate }} <span class="pf-hint-icon" [title]="'PRODUCT_FORM.HELP.HEIGHT' | translate">?</span></span>
+              <input type="number" formControlName="height" class="pf-input" min="0" step="0.1" />
+            </label>
+          </div>
+
+          <!-- Weight -->
+          <label class="pf-label">
+            <span>{{ 'PRODUCT_FORM.WEIGHT' | translate }}</span>
+            <input type="number" formControlName="weight" class="pf-input" min="0" step="0.01" />
+          </label>
+        </div>
+
         <!-- Location card -->
         <div class="pf-card">
           <h3 class="pf-card-title">{{ 'PRODUCT_FORM.LOCATION_STORAGE' | translate }}</h3>
@@ -131,25 +186,11 @@
             </div>
           }
         </div>
-
-        <!-- Quick info card (edit mode only) -->
-        @if (product) {
-          <div class="pf-card">
-            <h3 class="pf-card-title">{{ 'PRODUCT_FORM.QUICK_INFO' | translate }}</h3>
-            <dl class="pf-info-list">
-              <dt>{{ 'PRODUCT_FORM.DATE_ADDED' | translate }}</dt>
-              <dd>{{ formatDate(product.created_at) }}</dd>
-              <dt>{{ 'PRODUCT_FORM.LAST_UPDATED' | translate }}</dt>
-              <dd>{{ formatDateTime(product.updated_at) }}</dd>
-              <dt>{{ 'PRODUCT_FORM.STATUS' | translate }}</dt>
-              <dd><span class="pf-status-badge">{{ 'PRODUCT_FORM.AVAILABLE' | translate }}</span></dd>
-            </dl>
-          </div>
-        }
       </div>
 
-      <!-- RIGHT: Photos -->
-      <div class="pf-card">
+      <!-- RIGHT column: Photos + Quick info -->
+      <div class="pf-right-col">
+        <div class="pf-card">
         <h3 class="pf-card-title">
           {{ 'PRODUCT_FORM.PHOTOS' | translate }}{{ !readOnly ? ' (' + images().length + '/10)' : '' }}
         </h3>
@@ -165,11 +206,11 @@
           @if (images().length > 0) {
             <div class="pf-photo-grid" cdkDropList cdkDropListOrientation="mixed" (cdkDropListDropped)="onImageDrop($event)">
               @for (img of images(); track img.id; let i = $index) {
-                <div class="pf-photo-thumb" cdkDrag [cdkDragDisabled]="readOnly">
+                <div class="pf-photo-thumb" cdkDrag [cdkDragDisabled]="readOnly" (click)="openLightbox(i)">
                   <img [src]="img.thumbnail_url ?? img.url" [alt]="img.path" />
                   @if (i === 0) { <span class="pf-cover-badge">Cover</span> }
                   @if (!readOnly) {
-                  <button type="button" class="pf-photo-delete" (click)="deleteImage(img.id)">
+                  <button type="button" class="pf-photo-delete" (click)="$event.stopPropagation(); deleteImage(img.id)">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>
                   </button>
                   }
@@ -204,6 +245,22 @@
           </div>
           }
         }
+        </div>
+
+        <!-- Quick info card (below photos) -->
+        @if (product) {
+          <div class="pf-card">
+            <h3 class="pf-card-title">{{ 'PRODUCT_FORM.QUICK_INFO' | translate }}</h3>
+            <dl class="pf-info-list">
+              <dt>{{ 'PRODUCT_FORM.DATE_ADDED' | translate }}</dt>
+              <dd>{{ formatDate(product.created_at) }}</dd>
+              <dt>{{ 'PRODUCT_FORM.LAST_UPDATED' | translate }}</dt>
+              <dd>{{ formatDateTime(product.updated_at) }}</dd>
+              <dt>{{ 'PRODUCT_FORM.STATUS' | translate }}</dt>
+              <dd><span class="pf-status-badge">{{ 'PRODUCT_FORM.AVAILABLE' | translate }}</span></dd>
+            </dl>
+          </div>
+        }
       </div>
     </div>
 
@@ -235,10 +292,33 @@
           }
         </div>
       } @else {
-        <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
-        <button type="button" class="pf-btn-secondary" (click)="onSaveAndContinue()" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CONTINUE' | translate }}</button>
-        <button type="submit" class="pf-btn-primary" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CHANGES' | translate }}</button>
+        <div class="pf-footer-actions">
+          <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
+          <button type="button" class="pf-btn-secondary" (click)="onSaveAndContinue()" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CONTINUE' | translate }}</button>
+          <button type="submit" class="pf-btn-primary" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CHANGES' | translate }}</button>
+        </div>
       }
     </div>
   </form>
+
+  <!-- Lightbox -->
+  @if (lightboxOpen()) {
+    <div class="pf-lightbox" (click)="closeLightbox()">
+      <button type="button" class="pf-lb-close" (click)="closeLightbox()">✕</button>
+      @if (images().length > 1) {
+        <button type="button" class="pf-lb-nav pf-lb-prev" (click)="$event.stopPropagation(); prevLightbox()">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button type="button" class="pf-lb-nav pf-lb-next" (click)="$event.stopPropagation(); nextLightbox()">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      }
+      <div class="pf-lb-img-wrap" (click)="$event.stopPropagation()">
+        <img [src]="images()[lightboxIndex()].url" [alt]="images()[lightboxIndex()].path" />
+      </div>
+      @if (images().length > 1) {
+        <div class="pf-lb-counter">{{ lightboxIndex() + 1 }} / {{ images().length }}</div>
+      }
+    </div>
+  }
 </div>

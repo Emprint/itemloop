@@ -23,6 +23,7 @@ import {
   SimpleChanges,
   signal,
   computed,
+  HostListener,
 } from '@angular/core';
 import { Product, ProductService, Image } from '../product.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
@@ -91,6 +92,37 @@ export class ProductFormComponent implements OnChanges, OnInit {
   images = signal<Image[]>([]);
   imageError = signal<string | null>(null);
   isDragging = signal(false);
+
+  // Lightbox
+  lightboxOpen = signal(false);
+  lightboxIndex = signal(0);
+
+  openLightbox(index: number) {
+    this.lightboxIndex.set(index);
+    this.lightboxOpen.set(true);
+  }
+
+  closeLightbox() {
+    this.lightboxOpen.set(false);
+  }
+
+  prevLightbox() {
+    const len = this.images().length;
+    this.lightboxIndex.update(i => (i - 1 + len) % len);
+  }
+
+  nextLightbox() {
+    const len = this.images().length;
+    this.lightboxIndex.update(i => (i + 1) % len);
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onKeydown(e: KeyboardEvent) {
+    if (!this.lightboxOpen()) return;
+    if (e.key === 'Escape') this.closeLightbox();
+    if (e.key === 'ArrowLeft') this.prevLightbox();
+    if (e.key === 'ArrowRight') this.nextLightbox();
+  }
 
   // Cascade location signals
   cascadeBuildingId = signal<number>(0);

@@ -19,15 +19,16 @@ This project is open source and welcomes contributions under the AGPL v3 license
 | Image processing | Intervention Image (GD driver) — WebP conversion + thumbnails |
 | Hosting target | Shared PHP/MySQL hosting (e.g., OVH) — **no SSH required after deploy** |
 
-> ⚠️ The backend was migrated from Laravel to **Slim Framework 4** to allow fully local builds with no post-deploy server-side commands required (no `artisan`, no migrations to run on the server).
+> The backend is built on **Slim Framework 4** — fully assembled locally with no post-deploy server-side commands required.
 
 ---
 
 ## 🚀 Features
 
-- **Product CRUD** — title, description, condition, quantity, estimated value, barcode, dimensions, weight, destination, visibility
+- **Product CRUD** — title, description, category, condition, color, quantity, estimated value, barcode, dimensions (L/W/H cm, weight kg), destination, visibility
 - **Product list** — search, multi-filter (category, condition, location), grid/list toggle, pagination, CSV export
-- **Product form** — 3-column layout, view mode (read-only) and edit mode
+- **Product form** — 3-column layout: product info / characteristics + location / photos + quick info; view mode (read-only) and edit mode
+- **Photo lightbox** — click any photo to view full-size; ←/→ navigation and Esc to close; keyboard support
 - **Structured locations** — Building → Zone → Shelf with auto-generated, editable codes
 - **Image management** — multiple images per product, WebP conversion, thumbnail generation, drag-to-reorder, cover image (first image by sort order)
 - **Cart** — add-to-cart with quantity picker (max = available stock) on product view page; cart page with item list, price/line-total columns, grand total, clear and place-order actions; persisted in `localStorage`
@@ -58,8 +59,7 @@ itemloop/
 │       └── src/
 │           ├── app/          # Features: products, locations, users, auth, cart
 │           └── assets/i18n/  # en.json, fr.json
-├── deploy_package/           # Built output after running deploy.sh
-├── deploy.sh                 # Local build script — no SSH needed
+├── deploy.sh                 # Local build script — generates deploy_package/ (no SSH needed)
 └── REQUIREMENTS.md           # User stories and roadmap
 ```
 

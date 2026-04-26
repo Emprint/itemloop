@@ -14,6 +14,7 @@
 }
 
 .pf-mid-col { display: flex; flex-direction: column; gap: 1.5rem; }
+.pf-right-col { display: flex; flex-direction: column; gap: 1.5rem; }
 
 /* Cards */
 .pf-card {
@@ -60,6 +61,31 @@ select.pf-input {
 .pf-row { display: flex; gap: 1rem; }
 .pf-flex-1 { flex: 1; min-width: 0; }
 
+/* Dimension label with tooltip hint icon */
+.pf-label-with-hint { display: inline-flex; align-items: center; gap: 0.3rem; }
+.pf-hint-icon {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1rem; height: 1rem; border-radius: 50%;
+  background: #d1d5db; color: #374151;
+  font-size: 0.6rem; font-weight: 700; cursor: help; line-height: 1;
+}
+.pf-hint-icon::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%; transform: translateX(-50%);
+  background: #1f2937; color: #fff;
+  font-size: 0.75rem; font-weight: 400;
+  padding: 0.35rem 0.6rem;
+  border-radius: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0; transition: opacity 0.15s;
+  z-index: 50;
+}
+.pf-hint-icon:hover::after { opacity: 1; }
+
 /* Toggle switch */
 .pf-toggle-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; }
 .pf-toggle {
@@ -94,8 +120,9 @@ select.pf-input {
 
 /* Photo grid */
 .pf-photo-hint { font-size: 0.8125rem; color: #6b7280; margin: 0 0 1rem; }
-.pf-photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.5rem; }
+.pf-photo-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.5rem; }
 .pf-photo-thumb { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 1; cursor: grab; }
+.pf-photo-thumb:hover::after { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.15); pointer-events: none; }
 .pf-photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .pf-cover-badge { position: absolute; bottom: 4px; left: 4px; background: rgba(25,118,210,0.85); color: #fff; font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 4px; pointer-events: none; }
 .pf-photo-delete {
@@ -198,7 +225,40 @@ button:disabled { opacity: 0.5; cursor: not-allowed !important; }
   cursor: default;
 }
 .pf-readonly .pf-toggle { pointer-events: none; opacity: 0.7; cursor: default; }
-.pf-readonly .pf-photo-thumb { cursor: default; }
+.pf-readonly .pf-photo-thumb { cursor: zoom-in; }
 .pf-readonly .pf-photo-grid { margin-bottom: 0; }
 .pf-readonly app-combobox { pointer-events: none; }
 .pf-readonly select.pf-input { pointer-events: none; background-color: #f9fafb; cursor: default; }
+
+/* Lightbox */
+.pf-lightbox {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.88);
+  display: flex; align-items: center; justify-content: center;
+  cursor: zoom-out;
+}
+.pf-lb-img-wrap { max-width: 90vw; max-height: 90vh; cursor: default; }
+.pf-lb-img-wrap img { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 6px; display: block; }
+.pf-lb-close {
+  position: absolute; top: 1rem; right: 1.5rem;
+  background: rgba(255,255,255,0.15); border: none; color: #fff;
+  width: 2.5rem; height: 2.5rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 1001; transition: background 0.15s;
+  font-size: 1.25rem; line-height: 1; font-weight: 300;
+}
+.pf-lb-close:hover { background: rgba(255,255,255,0.3); }
+.pf-lb-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,0.15); border: none; color: #fff;
+  width: 3.5rem; height: 3.5rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 1001; transition: background 0.15s;
+}
+.pf-lb-nav:hover { background: rgba(255,255,255,0.3); }
+.pf-lb-prev { left: 1.5rem; }
+.pf-lb-next { right: 1.5rem; }
+.pf-lb-counter {
+  position: absolute; bottom: 1.25rem; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,0.65); font-size: 0.875rem; letter-spacing: 0.05em;
+}

@@ -25,6 +25,8 @@ export interface Product {
   length?: number;
   width?: number;
   height?: number;
+  weight?: number;
+  destination?: string;
   color?: { id: number; name: string };
   color_id?: number;
   category?: { id: number; name: string };

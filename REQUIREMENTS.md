@@ -11,12 +11,8 @@ This project is developed with a non-commercial, open community spirit. Contribu
 ## 🔧 Tech Stack
 
 - **Frontend**: Angular 20+ (standalone components, signals, Angular CDK, PWA support)
-- **Backend**: PHP 8.2+ · **Slim Framework 4** (lightweight, no-framework-lock-in API)
+- **Backend**: PHP 8.2+ · **Slim Framework 4** (lightweight, FTP-deployable — no SSH or post-deploy commands needed)
 - **Database**: MySQL 5.7+
-- **Image processing**: Intervention Image (GD driver) — resize, WebP conversion, thumbnail generation
-- **Hosting target**: Shared PHP/MySQL hosting (e.g., OVH) — no SSH required after deploying files
-
-> The backend was rewritten from Laravel to Slim Framework 4 to eliminate the need for server-side commands (no `artisan`, no migrations to run on the server), making FTP-only deployment viable.
 
 ---
 
@@ -38,7 +34,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 |-----|------|-----------|----------|------------|--------|
 | US1 | User | As a user, I want to log in with a username and password so I can access the app. | High | 🟡 Medium | ✅ |
 | US2 | Admin | As an admin, I want to create, edit, and delete user accounts to manage access control. | High | 🟡 Medium | ✅ |
-| US3 | User | As a user, I want to add a product with a title, description, condition, quantity, estimated value, location, multiple photos, barcode, and date so I can track inventory items. | High | 🔴 Complex | ✅ |
+| US3 | User | As a user, I want to add a product with a title, description, category, condition, color, quantity, estimated value, location, multiple photos, barcode, dimensions (L/W/H), weight, and destination so I can fully document inventory items. | High | 🔴 Complex | ✅ |
 | US4 | User | As a user, I want to edit or delete product entries to keep information up to date. | High | 🟡 Medium | ✅ |
 | US5 | User | As a user, I want to view and filter the product list (by condition, location, keyword) to find items easily. | High | 🔴 Complex | ✅ |
 | US6 | User | As a user, I want to scan a barcode to quickly search or add an item. | Medium | 🔴 Complex | ⚪ |
@@ -69,6 +65,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US31 | Customer | As a customer, I want to view my cart with a list of selected items, unit prices, line totals, and a grand total, so I can review my order before placing it. | Medium | 🟡 Medium | ✅ |
 | US32 | Customer | As a customer, I want to place an order from my cart so the reuse center knows what I intend to pick up. | Medium | 🔴 Complex | ⚪ (UI stub — backend order submission not yet implemented) |
 | US33 | Customer | As a customer, I want my cart to be saved between sessions (browser refresh) so I don't lose my selection. | Low | ⚪ Simple | ✅ (localStorage persistence) |
+| US34 | User | As a user, I want to click on a product photo to view it full-size in a lightbox, and navigate between photos with arrows or keyboard (←/→/Esc). | Low | ⚪ Simple | ✅ |
 
 ---
 
