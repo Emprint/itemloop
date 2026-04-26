@@ -1,0 +1,152 @@
+.dashboard {
+  h2 {
+    margin-bottom: 1.5rem;
+  }
+}
+
+// KPI grid
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  &--green  { background: #dcfce7; color: #16a34a; }
+  &--blue   { background: #dbeafe; color: #2563eb; }
+  &--purple { background: #ede9fe; color: #7c3aed; }
+  &--amber  { background: #fef3c7; color: #d97706; }
+  &--rose   { background: #ffe4e6; color: #e11d48; }
+}
+
+.kpi-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  .kpi-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.2;
+  }
+
+  .kpi-label {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+}
+
+// Dashboard row (chart + actions)
+.dashboard-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Chart card
+.chart-card {
+  h3 {
+    margin-bottom: 1.25rem;
+    font-size: 1rem;
+    color: #374151;
+  }
+
+  canvas {
+    max-height: 260px;
+  }
+}
+
+// Quick actions card
+.actions-card {
+  h3 {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: #374151;
+  }
+}
+
+.action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #111827;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #f9fafb;
+  }
+
+  .chevron {
+    width: 16px;
+    height: 16px;
+    stroke: #9ca3af;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+}
+
+.action-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &--green  { background: #dcfce7; color: #16a34a; }
+  &--purple { background: #ede9fe; color: #7c3aed; }
+  &--rose   { background: #ffe4e6; color: #e11d48; }
+}
+
+.loading {
+  color: #6b7280;
+  font-size: 0.95rem;
+}

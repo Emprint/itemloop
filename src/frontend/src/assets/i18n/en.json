@@ -121,5 +121,18 @@
     "DRAG_TO_REORDER": "Drag images to reorder · First image is the cover"
   },
   "PRODUCT": "Product",
-  "ADD_PRODUCT": "Add Product"
+  "ADD_PRODUCT": "Add Product",
+  "DASHBOARD": "Dashboard",
+  "DASHBOARD_PRODUCTS": "Products in inventory",
+  "DASHBOARD_ITEMS": "Total items",
+  "DASHBOARD_LOCATIONS": "Active locations",
+  "DASHBOARD_ESTIMATED_VALUE": "Estimated value",
+  "DASHBOARD_USERS": "Registered users",
+  "DASHBOARD_BY_CATEGORY": "Products by category",
+  "DASHBOARD_QUICK_ACTIONS": "Quick actions",
+  "DASHBOARD_VIEW_PRODUCTS": "View all products",
+  "DASHBOARD_MANAGE_LOCATIONS": "Manage locations",
+  "DASHBOARD_MANAGE_USERS": "Manage users",
+  "LOADING": "Loading",
+  "ERROR_LOADING_STATS": "Could not load dashboard data"
 }

@@ -122,5 +122,18 @@
   "EDIT_PRODUCT": "Modifier le produit",
   "NEW_PRODUCT": "Nouveau produit",
   "PRODUCT": "Produit",
-  "ADD_PRODUCT": "Ajouter un produit"
+  "ADD_PRODUCT": "Ajouter un produit",
+  "DASHBOARD": "Tableau de bord",
+  "DASHBOARD_PRODUCTS": "Produits en inventaire",
+  "DASHBOARD_ITEMS": "Articles au total",
+  "DASHBOARD_LOCATIONS": "Emplacements actifs",
+  "DASHBOARD_ESTIMATED_VALUE": "Valeur estimée",
+  "DASHBOARD_USERS": "Utilisateurs inscrits",
+  "DASHBOARD_BY_CATEGORY": "Produits par catégorie",
+  "DASHBOARD_QUICK_ACTIONS": "Actions rapides",
+  "DASHBOARD_VIEW_PRODUCTS": "Voir tous les produits",
+  "DASHBOARD_MANAGE_LOCATIONS": "Gérer les emplacements",
+  "DASHBOARD_MANAGE_USERS": "Gérer les utilisateurs",
+  "LOADING": "Chargement",
+  "ERROR_LOADING_STATS": "Impossible de charger les données"
 }

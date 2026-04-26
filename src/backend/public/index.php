@@ -17,6 +17,7 @@ use App\Controllers\UserController;
 use App\Controllers\ProductCategoryController;
 use App\Controllers\ProductConditionController;
 use App\Controllers\ProductColorController;
+use App\Controllers\DashboardController;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -105,6 +106,7 @@ $app->get('/api/me', [AuthController::class, 'me'])->add(new AuthMiddleware());
 $app->get('/api/products',         [ProductController::class, 'index'])->add(new OptionalAuthMiddleware());
 $app->get('/api/products/{id}',    [ProductController::class, 'show'])->add(new OptionalAuthMiddleware());
 $app->get('/api/product-categories', [ProductCategoryController::class, 'index']);
+$app->get('/api/dashboard', [DashboardController::class, 'getStats'])->add(new OptionalAuthMiddleware());
 
 $app->group('/api', function (RouteCollectorProxy $group) {
     $group->post('/products',               [ProductController::class, 'store'])->add(new EditorMiddleware());
