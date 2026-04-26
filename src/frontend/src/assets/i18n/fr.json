@@ -161,7 +161,6 @@
   "EST_VALUE": "Val. est.",
   "BARCODE": "Code-barres",
   "DATE_ADDED": "Date d'ajout",
-  "ACTIONS": "Actions",
   "ROWS_PER_PAGE": "Lignes par page",
   "OF": "sur",
   "DASHBOARD": "Tableau de bord",
@@ -176,5 +175,7 @@
   "DASHBOARD_MANAGE_LOCATIONS": "Gérer les emplacements",
   "DASHBOARD_MANAGE_USERS": "Gérer les utilisateurs",
   "LOADING": "Chargement",
-  "ERROR_LOADING_STATS": "Impossible de charger les données"
+  "ERROR_LOADING_STATS": "Impossible de charger les données",
+  "VIEW_PRODUCT": "Voir le produit",
+  "VIEW": "Voir"
 }

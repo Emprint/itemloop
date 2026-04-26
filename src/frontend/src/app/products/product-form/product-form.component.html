@@ -1,7 +1,7 @@
-<div class="pf-page">
+<div class="pf-page" [class.pf-readonly]="readOnly">
   <!-- Page header -->
   <div class="pf-header">
-    <h2>{{ product ? ('EDIT_PRODUCT' | translate) : ('NEW_PRODUCT' | translate) }}</h2>
+    <h2>{{ readOnly ? ('VIEW_PRODUCT' | translate) : (product ? ('EDIT_PRODUCT' | translate) : ('NEW_PRODUCT' | translate)) }}</h2>
   </div>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -162,22 +162,25 @@
           <span class="pf-error">{{ imageError() }}</span>
         }
 
-        @if (product) {
+          @if (product) {
           @if (images().length > 0) {
             <div class="pf-photo-grid" cdkDropList cdkDropListOrientation="mixed" (cdkDropListDropped)="onImageDrop($event)">
               @for (img of images(); track img.id; let i = $index) {
-                <div class="pf-photo-thumb" cdkDrag>
+                <div class="pf-photo-thumb" cdkDrag [cdkDragDisabled]="readOnly">
                   <img [src]="img.thumbnail_url ?? img.url" [alt]="img.path" />
                   @if (i === 0) { <span class="pf-cover-badge">Cover</span> }
+                  @if (!readOnly) {
                   <button type="button" class="pf-photo-delete" (click)="deleteImage(img.id)">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>
                   </button>
+                  }
                 </div>
               }
             </div>
             <p class="pf-drag-hint">{{ 'PRODUCT_FORM.DRAG_TO_REORDER' | translate }}</p>
           }
 
+          @if (!readOnly) {
           <!-- Upload dropzone -->
           <label class="pf-dropzone" [class.pf-dropzone-active]="isDragging()"
             (dragover)="onFileDragOver($event)" (dragleave)="onFileDragLeave($event)" (drop)="onFileDrop($event)">
@@ -186,20 +189,27 @@
             <span class="pf-dropzone-formats">{{ 'PRODUCT_FORM.UPLOAD_FORMATS' | translate }}</span>
             <input type="file" accept="image/*" multiple (change)="onImageFilesSelected($event)" />
           </label>
+          }
         } @else {
+          @if (!readOnly) {
           <div class="pf-photo-new-hint">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
             <p>{{ 'PRODUCT_FORM.SAVE_FIRST_FOR_PHOTOS' | translate }}</p>
           </div>
+          }
         }
       </div>
     </div>
 
     <!-- Sticky footer -->
     <div class="pf-footer">
-      <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
-      <button type="button" class="pf-btn-secondary" (click)="onSaveAndContinue()" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CONTINUE' | translate }}</button>
-      <button type="submit" class="pf-btn-primary" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CHANGES' | translate }}</button>
+      @if (readOnly) {
+        <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
+      } @else {
+        <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
+        <button type="button" class="pf-btn-secondary" (click)="onSaveAndContinue()" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CONTINUE' | translate }}</button>
+        <button type="submit" class="pf-btn-primary" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CHANGES' | translate }}</button>
+      }
     </div>
   </form>
 </div>

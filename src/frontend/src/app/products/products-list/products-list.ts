@@ -21,6 +21,7 @@ export class ProductsList {
   errorMessage: string | null = null;
   showForm = signal(false);
   selectedProduct: Product | null = null;
+  isReadOnlyForm = false;
   isEditorOrAdmin = false;
 
   searchQuery = signal('');
@@ -98,10 +99,18 @@ export class ProductsList {
     });
   }
 
-  showAddProductForm() { this.selectedProduct = null; this.showForm.set(true); }
+  showAddProductForm() { this.selectedProduct = null; this.isReadOnlyForm = false; this.showForm.set(true); }
+
+  viewProduct(product: Product) {
+    this.selectedProduct = product;
+    this.isReadOnlyForm = true;
+    this.openActionId.set(null);
+    this.showForm.set(true);
+  }
 
   editProduct(product: Product) {
     this.selectedProduct = product;
+    this.isReadOnlyForm = false;
     this.openActionId.set(null);
     this.showForm.set(true);
   }

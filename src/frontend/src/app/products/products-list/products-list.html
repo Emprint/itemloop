@@ -7,6 +7,7 @@
   @if (showForm()) {
     <app-product-form
       [product]="selectedProduct"
+      [readOnly]="isReadOnlyForm"
       (saveEvent)="onSaveProduct($event)"
       (saveContinueEvent)="onSaveProductContinue($event)"
       (cancelEvent)="onCancelProduct()"
@@ -89,8 +90,8 @@
           </thead>
           <tbody>
             @for (product of paginatedProducts(); track product.id) {
-              <tr>
-                <td class="col-check"><input type="checkbox" /></td>
+              <tr class="product-row" (click)="viewProduct(product)">
+                <td class="col-check" (click)="$event.stopPropagation()"><input type="checkbox" /></td>
                 <td class="product-cell">
                   <div class="thumb-wrap">
                     @if (product.images?.length) {
@@ -121,10 +122,11 @@
                 <td>{{ formatValue(product.estimated_value) }}</td>
                 <td class="barcode-cell">{{ product.barcode ?? '—' }}</td>
                 <td>{{ formatDate(product.created_at) }}</td>
-                <td class="actions-menu">
+                <td class="actions-menu" (click)="$event.stopPropagation()">
                   <button class="action-btn" (click)="toggleAction(product.id, $event)">⋮</button>
                   @if (openActionId() === product.id) {
                     <div class="action-dropdown">
+                      <button (click)="viewProduct(product)">{{ 'VIEW' | translate }}</button>
                       @if (isEditorOrAdmin) {
                         <button (click)="editProduct(product)">{{ 'EDIT' | translate }}</button>
                         <button class="danger" (click)="deleteProduct(product)">{{ 'DELETE' | translate }}</button>

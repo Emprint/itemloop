@@ -162,3 +162,15 @@ button:disabled { opacity: 0.5; cursor: not-allowed !important; }
   .pf-layout { grid-template-columns: 1fr; padding: 1rem; }
   .pf-row { flex-direction: column; }
 }
+
+/* Read-only view mode */
+.pf-readonly .pf-input,
+.pf-readonly textarea.pf-input {
+  pointer-events: none;
+  background: #f9fafb;
+  color: #374151;
+  cursor: default;
+}
+.pf-readonly .pf-toggle { pointer-events: none; opacity: 0.7; cursor: default; }
+.pf-readonly app-combobox { pointer-events: none; opacity: 0.85; }
+.pf-readonly select.pf-input { pointer-events: none; background-color: #f9fafb; cursor: default; }

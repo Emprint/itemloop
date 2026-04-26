@@ -55,6 +55,7 @@ export class ProductFormComponent implements OnChanges, OnInit {
   conditionNames = computed(() => this.conditions().map((c) => c.name));
 
   @Input() product: Product | null = null;
+  @Input() readOnly = false;
   @Output() saveEvent = new EventEmitter<Product>();
   @Output() cancelEvent = new EventEmitter<void>();
   @Output() saveContinueEvent = new EventEmitter<Product>();

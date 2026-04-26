@@ -54,9 +54,9 @@ class ProductImageController
                 return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['images' => ['Only jpeg, png, webp and gif images are allowed.']]], 422);
             }
 
-            $maxBytes = 4 * 1024 * 1024; // 4 MB
+            $maxBytes = 10 * 1024 * 1024; // 10 MB
             if ($file->getSize() > $maxBytes) {
-                return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['images' => ['Each image must be under 4 MB.']]], 422);
+                return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['images' => ['Each image must be under 10 MB.']]], 422);
             }
 
             $content = (string) $file->getStream();

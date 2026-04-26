@@ -161,7 +161,6 @@
   "EST_VALUE": "Est. value",
   "BARCODE": "Barcode",
   "DATE_ADDED": "Date added",
-  "ACTIONS": "Actions",
   "ROWS_PER_PAGE": "Rows per page",
   "OF": "of",
   "DASHBOARD": "Dashboard",
@@ -176,5 +175,7 @@
   "DASHBOARD_MANAGE_LOCATIONS": "Manage locations",
   "DASHBOARD_MANAGE_USERS": "Manage users",
   "LOADING": "Loading",
-  "ERROR_LOADING_STATS": "Could not load dashboard data"
+  "ERROR_LOADING_STATS": "Could not load dashboard data",
+  "VIEW_PRODUCT": "View Product",
+  "VIEW": "View"
 }
