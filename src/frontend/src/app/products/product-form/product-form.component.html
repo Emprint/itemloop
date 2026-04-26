@@ -39,30 +39,30 @@
           />
         </div>
 
-        <!-- Condition + Quantity side by side -->
+        <!-- Condition full width -->
+        <div class="pf-field">
+          <label class="pf-label-text"><span>{{ 'PRODUCT_FORM.CONDITION' | translate }} <span class="req">*</span></span></label>
+          <app-combobox
+            [options]="conditionNames()"
+            [value]="capitalize(form.get('condition')?.value?.name)"
+            (valueChangeEvent)="onConditionChange($event)"
+            (addNewEvent)="onAddNewCondition($event)"
+            [placeholder]="'PRODUCT_FORM.CONDITION_PLACEHOLDER' | translate"
+            [readOnly]="readOnly"
+          />
+        </div>
+
+        <!-- Quantity + Estimated value side by side -->
         <div class="pf-row">
-          <div class="pf-field pf-flex-1">
-            <label class="pf-label-text"><span>{{ 'PRODUCT_FORM.CONDITION' | translate }} <span class="req">*</span></span></label>
-            <app-combobox
-              [options]="conditionNames()"
-              [value]="capitalize(form.get('condition')?.value?.name)"
-              (valueChangeEvent)="onConditionChange($event)"
-              (addNewEvent)="onAddNewCondition($event)"
-              [placeholder]="'PRODUCT_FORM.CONDITION_PLACEHOLDER' | translate"
-              [readOnly]="readOnly"
-            />
-          </div>
           <label class="pf-label pf-flex-1">
             <span>{{ 'PRODUCT_FORM.QUANTITY' | translate }} <span class="req">*</span></span>
             <input type="number" formControlName="quantity" class="pf-input" min="0" />
           </label>
+          <label class="pf-label pf-flex-1">
+            <span>{{ 'PRODUCT_FORM.ESTIMATED_VALUE' | translate }}</span>
+            <input type="number" formControlName="estimated_value" class="pf-input" min="0" step="0.01" />
+          </label>
         </div>
-
-        <!-- Estimated value -->
-        <label class="pf-label">
-          <span>{{ 'PRODUCT_FORM.ESTIMATED_VALUE' | translate }}</span>
-          <input type="number" formControlName="estimated_value" class="pf-input" min="0" step="0.01" />
-        </label>
 
         <!-- Barcode -->
         <label class="pf-label">
