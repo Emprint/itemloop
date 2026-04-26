@@ -59,8 +59,9 @@ class ProductImageController
                 return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['images' => ['Each image must be under 4 MB.']]], 422);
             }
 
-            $img  = $manager->read($file->getStream()->getMetadata('uri'));
-            $img  = $img->scaleDown(width: 1920, height: 1920);
+            $content = (string) $file->getStream();
+            $img     = $manager->read($content);
+            $img     = $img->scaleDown(width: 1920, height: 1920);
 
             $baseName  = pathinfo($file->getClientFilename(), PATHINFO_FILENAME);
             $safeName  = preg_replace('/[^a-zA-Z0-9_-]/', '_', $baseName) . '_' . uniqid();
@@ -71,8 +72,8 @@ class ProductImageController
 
             file_put_contents($fullPath, $img->toWebp(90));
 
-            // Generate thumbnail at max 400×400 px
-            $thumb = $manager->read($file->getStream()->getMetadata('uri'));
+            // Generate thumbnail at max 400×400 px (reuse already-read content)
+            $thumb = $manager->read($content);
             $thumb = $thumb->scaleDown(width: 400, height: 400);
             file_put_contents($thumbPath, $thumb->toWebp(80));
 
