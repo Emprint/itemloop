@@ -125,6 +125,20 @@ export class ProductsList {
     });
   }
 
+  onSaveProductContinue(product: Product) {
+    const save$ = this.selectedProduct
+      ? this.service.updateProduct(this.selectedProduct.id, product)
+      : this.service.addProduct(product);
+    save$.subscribe({
+      next: (saved: Product) => {
+        this.loadProducts();
+        this.selectedProduct = saved;
+        this.errorMessage = null;
+      },
+      error: () => { this.errorMessage = 'Failed to save product'; },
+    });
+  }
+
   onCancelProduct() { this.showForm.set(false); this.selectedProduct = null; }
 
   private completeProductSave() {

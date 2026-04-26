@@ -12,6 +12,7 @@ interface IdNamePair {
   id: number;
   name: string;
 }
+
 import {
   Component,
   Input,
@@ -44,6 +45,150 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
   styleUrls: ['./product-form.component.css'],
 })
 export class ProductFormComponent implements OnChanges, OnInit {
+  destinationOptions = Object.values(DestinationOption);
+  private categoryService = inject(ProductCategoryService);
+
+  colors = signal<IdNamePair[]>([]);
+  conditions = signal<IdNamePair[]>([]);
+  categoryNames = computed(() => this.categories().map((c) => c.name));
+  colorNames = computed(() => this.colors().map((c) => c.name));
+  conditionNames = computed(() => this.conditions().map((c) => c.name));
+
+  @Input() product: Product | null = null;
+  @Output() saveEvent = new EventEmitter<Product>();
+  @Output() cancelEvent = new EventEmitter<void>();
+  @Output() saveContinueEvent = new EventEmitter<Product>();
+
+  private fb = inject(FormBuilder);
+  private locationService = inject(LocationService);
+  private colorService = inject(ProductColorService);
+  private conditionService = inject(ProductConditionService);
+  private productService = inject(ProductService);
+
+  locations = signal<Location[]>([]);
+  categories = signal<{ id: number; name: string }[]>([]);
+  images = signal<Image[]>([]);
+  imageError = signal<string | null>(null);
+  isDragging = signal(false);
+
+  // Cascade location signals
+  cascadeBuildingId = signal<number>(0);
+  cascadeZoneId = signal<number>(0);
+  selectedShelfLocationId = signal<number>(0);
+
+  uniqueBuildings = computed(() => {
+    const seen = new Set<number>();
+    return this.locations()
+      .filter(l => l.zone?.building)
+      .filter(l => {
+        const bid = l.zone!.building!.id;
+        if (seen.has(bid)) return false;
+        seen.add(bid);
+        return true;
+      })
+      .map(l => l.zone!.building!);
+  });
+
+  filteredZones = computed(() => {
+    const bid = this.cascadeBuildingId();
+    if (!bid) return [];
+    const seen = new Set<number>();
+    return this.locations()
+      .filter(l => l.zone?.building?.id === bid && l.zone)
+      .filter(l => {
+        if (seen.has(l.zone!.id)) return false;
+        seen.add(l.zone!.id);
+        return true;
+      })
+      .map(l => l.zone!);
+  });
+
+  filteredShelves = computed(() => {
+    const bid = this.cascadeBuildingId();
+    const zid = this.cascadeZoneId();
+    if (!bid || !zid) return [];
+    return this.locations().filter(l => l.zone?.building?.id === bid && l.zone?.id === zid);
+  });
+
+  selectedLocation = computed(() =>
+    this.locations().find(l => l.id === this.selectedShelfLocationId())
+  );
+
+  form: FormGroup;
+
+  constructor() {
+    this.form = this.fb.group({
+      id: [0],
+      title: ['', [Validators.required, Validators.maxLength(255)]],
+      description: [''],
+      condition: [null, Validators.required],
+      condition_id: [0],
+      quantity: [0, [Validators.required, Validators.min(0)]],
+      length: [0, [Validators.min(0)]],
+      width: [0, [Validators.min(0)]],
+      height: [0, [Validators.min(0)]],
+      color: [null],
+      color_id: [0],
+      category: [null, Validators.required],
+      category_id: [0],
+      estimated_value: [0, [Validators.min(0)]],
+      weight: [0, [Validators.min(0)]],
+      destination: [''],
+      visibility: ['private', Validators.required],
+      location_id: [0, Validators.required],
+      barcode: [''],
+      images: [[]],
+    });
+  }
+
+  ngOnInit() {
+    if (this.product) {
+      this.form.patchValue({
+        ...this.product,
+        location_id: this.product.location?.id ?? this.product.location_id ?? 0,
+      });
+      this.images.set(this.product.images ?? []);
+    }
+    this.loadLocations();
+    this.categoryService.getCategories().subscribe({
+      next: (categories: IdNamePair[]) => this.categories.set(categories),
+      error: () => this.categories.set([]),
+    });
+    this.colorService.getColors().subscribe({
+      next: (colors: IdNamePair[]) => this.colors.set(colors),
+      error: () => this.colors.set([]),
+    });
+    this.conditionService.getConditions().subscribe({
+      next: (conds: IdNamePair[]) => this.conditions.set(conds),
+      error: () => this.conditions.set([]),
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['product'] && !this.product) {
+      this.resetForm();
+    }
+  }
+
+  loadLocations() {
+    this.locationService.getLocations().subscribe({
+      next: (locs) => {
+        this.locations.set(locs);
+        // Pre-populate cascade for edit mode
+        if (this.product?.location) {
+          const loc = this.product.location;
+          const locationId = loc.id ?? this.product.location_id ?? 0;
+          const zoneId = loc.zone?.id ?? 0;
+          const buildingId = loc.building?.id ?? 0;
+          if (buildingId) this.cascadeBuildingId.set(buildingId);
+          if (zoneId) this.cascadeZoneId.set(zoneId);
+          if (locationId) this.selectedShelfLocationId.set(locationId);
+        }
+      },
+      error: () => this.locations.set([]),
+    });
+  }
+
   resetForm() {
     this.form.reset({
       id: 0,
@@ -64,103 +209,39 @@ export class ProductFormComponent implements OnChanges, OnInit {
       destination: '',
       visibility: 'private',
       location_id: 0,
+      barcode: '',
       images: [],
     });
-  }
-  destinationOptions = Object.values(DestinationOption);
-  // Track when all options are loaded
-  private optionsLoaded = signal(false);
-  private categoryService = inject(ProductCategoryService);
-
-  colors = signal<IdNamePair[]>([]);
-  conditions = signal<IdNamePair[]>([]);
-  categoryNames = computed(() => this.categories().map((c) => c.name));
-  colorNames = computed(() => this.colors().map((c) => c.name));
-  conditionNames = computed(() => this.conditions().map((c) => c.name));
-  @Input() product: Product | null = null;
-  @Output() saveEvent = new EventEmitter<Product>();
-  @Output() cancelEvent = new EventEmitter<void>();
-
-  private fb = inject(FormBuilder);
-  private locationService = inject(LocationService);
-  private colorService = inject(ProductColorService);
-  private conditionService = inject(ProductConditionService);
-  private productService = inject(ProductService);
-  locations = signal<Location[]>([]);
-  categories = signal<{ id: number; name: string }[]>([]);
-  images = signal<Image[]>([]);
-  imageError = signal<string | null>(null);
-  form: FormGroup;
-
-  constructor() {
-    this.form = this.fb.group({
-      id: [0],
-      title: ['', [Validators.required, Validators.maxLength(255)]],
-      description: [''],
-      condition: [null, Validators.required], // IdNamePair
-      condition_id: [0],
-      quantity: [0, [Validators.required, Validators.min(0)]],
-      length: [0, [Validators.min(0)]],
-      width: [0, [Validators.min(0)]],
-      height: [0, [Validators.min(0)]],
-      color: [null], // IdNamePair
-      color_id: [0],
-      category: [null, Validators.required], // IdNamePair
-      category_id: [0],
-      estimated_value: [0, [Validators.min(0)]],
-      weight: [0, [Validators.min(0)]],
-      destination: [''],
-      visibility: ['private', Validators.required],
-      location_id: [0, Validators.required],
-      images: [[]],
-    });
-    this.loadLocations();
+    this.cascadeBuildingId.set(0);
+    this.cascadeZoneId.set(0);
+    this.selectedShelfLocationId.set(0);
   }
 
-  ngOnInit() {
-    // Patch form values with product object for editing
-    if (this.product) {
-      this.form.patchValue({
-        ...this.product,
-        location_id: this.product.location?.id ?? this.product.location_id ?? 0,
-      });
-      this.images.set(this.product.images ?? []);
-    }
-    let loaded = 0;
-    const checkLoaded = () => {
-      loaded++;
-      if (loaded === 3) this.optionsLoaded.set(true);
-    };
-    this.categoryService.getCategories().subscribe({
-      next: (categories: IdNamePair[]) => {
-        this.categories.set(categories);
-        checkLoaded();
-      },
-      error: () => {
-        this.categories.set([]);
-        checkLoaded();
-      },
-    });
-    this.colorService.getColors().subscribe({
-      next: (colors: IdNamePair[]) => {
-        this.colors.set(colors);
-        checkLoaded();
-      },
-      error: () => {
-        this.colors.set([]);
-        checkLoaded();
-      },
-    });
-    this.conditionService.getConditions().subscribe({
-      next: (conds: IdNamePair[]) => {
-        this.conditions.set(conds);
-        checkLoaded();
-      },
-      error: () => {
-        this.conditions.set([]);
-        checkLoaded();
-      },
-    });
+  get isPublic(): boolean {
+    return this.form.get('visibility')?.value === 'public';
+  }
+
+  toggleVisibility() {
+    const current = this.form.get('visibility')?.value;
+    this.form.get('visibility')?.setValue(current === 'public' ? 'private' : 'public');
+  }
+
+  onBuildingChange(bid: number) {
+    this.cascadeBuildingId.set(bid);
+    this.cascadeZoneId.set(0);
+    this.selectedShelfLocationId.set(0);
+    this.form.get('location_id')?.setValue(0);
+  }
+
+  onZoneChange(zid: number) {
+    this.cascadeZoneId.set(zid);
+    this.selectedShelfLocationId.set(0);
+    this.form.get('location_id')?.setValue(0);
+  }
+
+  onShelfChange(locationId: number) {
+    this.selectedShelfLocationId.set(locationId);
+    this.form.get('location_id')?.setValue(locationId);
   }
 
   get selectedProduct(): Product | null {
@@ -170,13 +251,36 @@ export class ProductFormComponent implements OnChanges, OnInit {
   onImageFilesSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length || !this.product) return;
-    const files = Array.from(input.files);
+    this.uploadFiles(Array.from(input.files));
+    input.value = '';
+  }
+
+  onFileDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(true);
+  }
+
+  onFileDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(false);
+  }
+
+  onFileDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(false);
+    if (!this.product) return;
+    const files = Array.from(event.dataTransfer?.files ?? []).filter(f => f.type.startsWith('image/'));
+    if (files.length) this.uploadFiles(files);
+  }
+
+  private uploadFiles(files: File[]) {
+    if (!this.product) return;
     this.imageError.set(null);
     this.productService.uploadImages(this.product.id, files).subscribe({
-      next: (res) => {
-        this.images.update(imgs => [...imgs, ...res.images]);
-        input.value = '';
-      },
+      next: (res) => this.images.update(imgs => [...imgs, ...res.images]),
       error: () => this.imageError.set('Image upload failed.'),
     });
   }
@@ -201,23 +305,18 @@ export class ProductFormComponent implements OnChanges, OnInit {
   }
 
   capitalize(value?: string): string {
-    if (!value || value.length === 0) {
-      return '';
-    }
+    if (!value || value.length === 0) return '';
     return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
-  loadLocations() {
-    this.locationService.getLocations().subscribe({
-      next: (locs) => this.locations.set(locs),
-      error: () => this.locations.set([]),
-    });
+  formatDate(dateStr?: string): string {
+    if (!dateStr) return '—';
+    return dateStr.substring(0, 10);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['product'] && !this.product) {
-      this.resetForm();
-    }
+  formatDateTime(dateStr?: string): string {
+    if (!dateStr) return '—';
+    return dateStr.substring(0, 16).replace('T', ' ');
   }
 
   onCategoryChange(value: string) {
@@ -262,21 +361,30 @@ export class ProductFormComponent implements OnChanges, OnInit {
     }
   }
 
+  private buildPayload(): Product {
+    const colorObj = this.form.get('color')?.value as IdNamePair;
+    const conditionObj = this.form.get('condition')?.value as IdNamePair;
+    const categoryObj = this.form.get('category')?.value as IdNamePair;
+    return {
+      ...this.form.value,
+      color: colorObj,
+      color_id: colorObj?.id ?? 0,
+      condition: conditionObj,
+      condition_id: conditionObj?.id ?? 0,
+      category: categoryObj,
+      category_id: categoryObj?.id ?? 0,
+    };
+  }
+
   onSubmit() {
     if (this.form.valid) {
-      const colorObj = this.form.get('color')?.value as IdNamePair;
-      const conditionObj = this.form.get('condition')?.value as IdNamePair;
-      const categoryObj = this.form.get('category')?.value as IdNamePair;
-      const payload = {
-        ...this.form.value,
-        color: colorObj,
-        color_id: colorObj?.id ?? 0,
-        condition: conditionObj,
-        condition_id: conditionObj?.id ?? 0,
-        category: categoryObj,
-        category_id: categoryObj?.id ?? 0,
-      };
-      this.saveEvent.emit(payload);
+      this.saveEvent.emit(this.buildPayload());
+    }
+  }
+
+  onSaveAndContinue() {
+    if (this.form.valid) {
+      this.saveContinueEvent.emit(this.buildPayload());
     }
   }
 

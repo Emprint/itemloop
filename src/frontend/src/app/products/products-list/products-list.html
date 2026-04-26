@@ -8,6 +8,7 @@
     <app-product-form
       [product]="selectedProduct"
       (saveEvent)="onSaveProduct($event)"
+      (saveContinueEvent)="onSaveProductContinue($event)"
       (cancelEvent)="onCancelProduct()"
     ></app-product-form>
   } @else {

@@ -34,6 +34,7 @@ export interface Product {
   location?: { id: number; shelf?: string; code?: string; zone?: { id: number; name: string }; building?: { id: number; name: string } };
   barcode?: string;
   created_at?: string;
+  updated_at?: string;
   images?: Image[];
 }
 

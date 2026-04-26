@@ -1,139 +1,205 @@
-<div class="form-card">
-  <h3>{{ selectedProduct ? ('EDIT_PRODUCT' | translate) : ('NEW_PRODUCT' | translate) }}</h3>
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <label for="category-combobox"><span>{{ 'PRODUCT_FORM.CATEGORY' | translate }} <span class="req">*</span></span></label>
-    <app-combobox
-      id="category-combobox"
-      [options]="categoryNames()"
-      [value]="capitalize(form.get('category')?.value?.name)"
-      (valueChangeEvent)="onCategoryChange($event)"
-      (addNewEvent)="onAddNewCategory($event)"
-      [placeholder]="'PRODUCT_FORM.CATEGORY_PLACEHOLDER' | translate"
-    ></app-combobox>
-    <label class="required"
-      ><span>{{ 'PRODUCT_FORM.TITLE' | translate }} <span class="req">*</span></span>
-      <input type="text" formControlName="title" />
-      @if (form.get('title')?.invalid && form.get('title')?.touched) {
-        <span class="error">Title is required.</span>
-      }
-    </label>
-    <label
-      >{{ 'PRODUCT_FORM.DESCRIPTION' | translate }}
-      <textarea formControlName="description"></textarea>
-    </label>
-    <label for="condition-combobox"><span>{{ 'PRODUCT_FORM.CONDITION' | translate }} <span class="req">*</span></span></label>
-    <app-combobox
-      id="condition-combobox"
-      [options]="conditionNames()"
-      [value]="capitalize(form.get('condition')?.value?.name)"
-      (valueChangeEvent)="onConditionChange($event)"
-      (addNewEvent)="onAddNewCondition($event)"
-      [placeholder]="'PRODUCT_FORM.CONDITION_PLACEHOLDER' | translate"
-    ></app-combobox>
-    <label class="required"
-      ><span>{{ 'PRODUCT_FORM.QUANTITY' | translate }} <span class="req">*</span></span>
-      <input type="number" formControlName="quantity" min="0" />
-      @if (form.get('quantity')?.invalid && form.get('quantity')?.touched) {
-        <span class="error">Quantity must be 0 or more.</span>
-      }
-    </label>
-    <label
-      >{{ 'PRODUCT_FORM.LENGTH' | translate }}
-      <small class="help-text">{{ 'PRODUCT_FORM.HELP.LENGTH' | translate }}</small>
-      <input type="number" formControlName="length" min="0" />
-    </label>
-    <label
-      >{{ 'PRODUCT_FORM.WIDTH' | translate }}
-      <small class="help-text">{{ 'PRODUCT_FORM.HELP.WIDTH' | translate }}</small>
-      <input type="number" formControlName="width" min="0" />
-    </label>
-    <label
-      >{{ 'PRODUCT_FORM.HEIGHT' | translate }}
-      <small class="help-text">{{ 'PRODUCT_FORM.HELP.HEIGHT' | translate }}</small>
-      <input type="number" formControlName="height" min="0" />
-    </label>
-    <label>
-      {{ 'PRODUCT_FORM.ESTIMATED_VALUE' | translate }}
-      <input type="number" formControlName="estimated_value" min="0" step="0.01" />
-      @if (form.get('estimated_value')?.invalid && form.get('estimated_value')?.touched) {
-        <span class="error">{{ 'PRODUCT_FORM.ESTIMATED_VALUE_ERROR' | translate }}</span>
-      }
-    </label>
-    <label for="color-combobox">{{ 'PRODUCT_FORM.COLOR' | translate }}</label>
-    <app-combobox
-      id="color-combobox"
-      [options]="colorNames()"
-      [value]="capitalize(form.get('color')?.value?.name)"
-      (valueChangeEvent)="onColorChange($event)"
-      (addNewEvent)="onAddNewColor($event)"
-      [placeholder]="'PRODUCT_FORM.COLOR_PLACEHOLDER' | translate"
-    ></app-combobox>
-    <label
-      >{{ 'PRODUCT_FORM.WEIGHT' | translate }}
-      <input type="number" formControlName="weight" min="0" />
-    </label>
-    <label
-      >{{ 'PRODUCT_FORM.DESTINATION' | translate }}
-      <select formControlName="destination">
-        <option value="">{{ 'PRODUCT_FORM.SELECT_DESTINATION' | translate }}</option>
-        <option *ngFor="let dest of destinationOptions" [value]="dest">
-          {{ 'PRODUCT_FORM.DESTINATION_' + dest.toUpperCase() | translate }}
-        </option>
-      </select>
-    </label>
-    <label class="required">
-      <span>{{ 'PRODUCT_FORM.VISIBILITY' | translate }} <span class="req">*</span></span>
-      <small class="help-text">{{ 'PRODUCT_FORM.HELP.VISIBILITY_PRIVATE' | translate }}</small>
-      <select formControlName="visibility">
-        <option value="private">{{ 'PRODUCT_FORM.VISIBILITY_PRIVATE' | translate }}</option>
-        <option value="public">{{ 'PRODUCT_FORM.VISIBILITY_PUBLIC' | translate }}</option>
-      </select>
-    </label>
-    <label class="required"
-      ><span>{{ 'PRODUCT_FORM.LOCATION' | translate }} <span class="req">*</span></span>
-      <select formControlName="location_id">
-        <option value="">{{ 'PRODUCT_FORM.SELECT_LOCATION' | translate }}</option>
-        @for (location of locations(); track location.id) {
-          <option [value]="location.id">{{ getFinalCode(location) }} - {{ location.shelf }}</option>
-        }
-      </select>
-      @if (form.get('location_id')?.invalid && form.get('location_id')?.touched) {
-        <span class="error">{{ 'PRODUCT_FORM.LOCATION_REQUIRED' | translate }}</span>
-      }
-    </label>
-    <div class="buttons-list">
-      <button type="button" (click)="onCancel()">Cancel</button>
-      <button type="submit" [disabled]="form.invalid">Save</button>
-    </div>
-  </form>
+<div class="pf-page">
+  <!-- Page header -->
+  <div class="pf-header">
+    <h2>{{ product ? ('EDIT_PRODUCT' | translate) : ('NEW_PRODUCT' | translate) }}</h2>
+  </div>
 
-  @if (selectedProduct) {
-    <div class="images-section">
-      <h4>{{ 'PRODUCT_FORM.IMAGES' | translate }}</h4>
-      @if (imageError()) {
-        <span class="error">{{ imageError() }}</span>
-      }
-      <div
-        class="image-grid"
-        cdkDropList
-        cdkDropListOrientation="horizontal"
-        (cdkDropListDropped)="onImageDrop($event)"
-      >
-        @for (img of images(); track img.id; let i = $index) {
-          <div class="image-thumb" cdkDrag>
-            <img [src]="img.thumbnail_url ?? img.url" [alt]="img.path" />
-            @if (i === 0) {
-              <span class="cover-badge">Cover</span>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="pf-layout">
+
+      <!-- LEFT: Product information -->
+      <div class="pf-card">
+        <h3 class="pf-card-title">{{ 'PRODUCT_FORM.PRODUCT_INFO' | translate }}</h3>
+
+        <!-- Title -->
+        <label class="pf-label">
+          <span>{{ 'PRODUCT_FORM.TITLE' | translate }} <span class="req">*</span></span>
+          <input type="text" formControlName="title" class="pf-input" />
+          @if (form.get('title')?.invalid && form.get('title')?.touched) {
+            <span class="pf-error">Title is required.</span>
+          }
+        </label>
+
+        <!-- Description -->
+        <label class="pf-label">
+          <span>{{ 'PRODUCT_FORM.DESCRIPTION' | translate }}</span>
+          <textarea formControlName="description" class="pf-input pf-textarea"></textarea>
+        </label>
+
+        <!-- Category combobox -->
+        <div class="pf-field">
+          <label class="pf-label-text"><span>{{ 'PRODUCT_FORM.CATEGORY' | translate }} <span class="req">*</span></span></label>
+          <app-combobox
+            [options]="categoryNames()"
+            [value]="capitalize(form.get('category')?.value?.name)"
+            (valueChangeEvent)="onCategoryChange($event)"
+            (addNewEvent)="onAddNewCategory($event)"
+            [placeholder]="'PRODUCT_FORM.CATEGORY_PLACEHOLDER' | translate"
+          />
+        </div>
+
+        <!-- Condition + Quantity side by side -->
+        <div class="pf-row">
+          <div class="pf-field pf-flex-1">
+            <label class="pf-label-text"><span>{{ 'PRODUCT_FORM.CONDITION' | translate }} <span class="req">*</span></span></label>
+            <app-combobox
+              [options]="conditionNames()"
+              [value]="capitalize(form.get('condition')?.value?.name)"
+              (valueChangeEvent)="onConditionChange($event)"
+              (addNewEvent)="onAddNewCondition($event)"
+              [placeholder]="'PRODUCT_FORM.CONDITION_PLACEHOLDER' | translate"
+            />
+          </div>
+          <label class="pf-label pf-flex-1">
+            <span>{{ 'PRODUCT_FORM.QUANTITY' | translate }} <span class="req">*</span></span>
+            <input type="number" formControlName="quantity" class="pf-input" min="0" />
+          </label>
+        </div>
+
+        <!-- Estimated value -->
+        <label class="pf-label">
+          <span>{{ 'PRODUCT_FORM.ESTIMATED_VALUE' | translate }}</span>
+          <input type="number" formControlName="estimated_value" class="pf-input" min="0" step="0.01" />
+        </label>
+
+        <!-- Barcode -->
+        <label class="pf-label">
+          <span>{{ 'PRODUCT_FORM.BARCODE' | translate }}</span>
+          <input type="text" formControlName="barcode" class="pf-input" [placeholder]="'PRODUCT_FORM.BARCODE_PLACEHOLDER' | translate" />
+        </label>
+
+        <!-- Visible to public toggle -->
+        <div class="pf-toggle-row">
+          <button type="button" class="pf-toggle" [class.pf-toggle-on]="isPublic" (click)="toggleVisibility()">
+            <span class="pf-toggle-thumb"></span>
+          </button>
+          <div class="pf-toggle-label">
+            <span>{{ 'PRODUCT_FORM.VISIBLE_TO_PUBLIC' | translate }}</span>
+            <small>{{ 'PRODUCT_FORM.VISIBLE_TO_PUBLIC_HELP' | translate }}</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE column -->
+      <div class="pf-mid-col">
+        <!-- Location card -->
+        <div class="pf-card">
+          <h3 class="pf-card-title">{{ 'PRODUCT_FORM.LOCATION_STORAGE' | translate }}</h3>
+
+          <!-- Building -->
+          <label class="pf-label">
+            <span>{{ 'PRODUCT_FORM.BUILDING' | translate }} <span class="req">*</span></span>
+            <select class="pf-input" (change)="onBuildingChange(+$any($event.target).value)">
+              <option value="0">{{ 'PRODUCT_FORM.SELECT_BUILDING' | translate }}</option>
+              @for (b of uniqueBuildings(); track b.id) {
+                <option [value]="b.id" [selected]="cascadeBuildingId() === b.id">{{ b.name }}</option>
+              }
+            </select>
+          </label>
+
+          <!-- Zone -->
+          <label class="pf-label">
+            <span>{{ 'PRODUCT_FORM.ZONE' | translate }} <span class="req">*</span></span>
+            <select class="pf-input" (change)="onZoneChange(+$any($event.target).value)" [attr.disabled]="!cascadeBuildingId() ? '' : null">
+              <option value="0">{{ 'PRODUCT_FORM.SELECT_ZONE' | translate }}</option>
+              @for (z of filteredZones(); track z.id) {
+                <option [value]="z.id" [selected]="cascadeZoneId() === z.id">{{ z.name }}</option>
+              }
+            </select>
+          </label>
+
+          <!-- Shelf -->
+          <label class="pf-label">
+            <span>{{ 'PRODUCT_FORM.SHELF' | translate }} <span class="req">*</span></span>
+            <select class="pf-input" formControlName="location_id" (change)="onShelfChange(+$any($event.target).value)" [attr.disabled]="!cascadeZoneId() ? '' : null">
+              <option value="0">{{ 'PRODUCT_FORM.SELECT_SHELF' | translate }}</option>
+              @for (loc of filteredShelves(); track loc.id) {
+                <option [value]="loc.id">{{ loc.shelf }}</option>
+              }
+            </select>
+            @if (form.get('location_id')?.invalid && form.get('location_id')?.touched) {
+              <span class="pf-error">{{ 'PRODUCT_FORM.LOCATION_REQUIRED' | translate }}</span>
             }
-            <button type="button" class="img-delete" (click)="deleteImage(img.id)">✕</button>
+          </label>
+
+          <!-- Location code display -->
+          @if (selectedLocation()) {
+            <div class="pf-location-code">
+              <div class="pf-location-code-success">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                <span>{{ 'PRODUCT_FORM.LOCATION_CODE_UNIQUE' | translate }}</span>
+              </div>
+              <div class="pf-code-value">{{ getFinalCode(selectedLocation()!) }}</div>
+              <small>{{ 'PRODUCT_FORM.LOCATION_CODE_HELP' | translate }}</small>
+            </div>
+          }
+        </div>
+
+        <!-- Quick info card (edit mode only) -->
+        @if (product) {
+          <div class="pf-card">
+            <h3 class="pf-card-title">{{ 'PRODUCT_FORM.QUICK_INFO' | translate }}</h3>
+            <dl class="pf-info-list">
+              <dt>{{ 'PRODUCT_FORM.DATE_ADDED' | translate }}</dt>
+              <dd>{{ formatDate(product.created_at) }}</dd>
+              <dt>{{ 'PRODUCT_FORM.LAST_UPDATED' | translate }}</dt>
+              <dd>{{ formatDateTime(product.updated_at) }}</dd>
+              <dt>{{ 'PRODUCT_FORM.STATUS' | translate }}</dt>
+              <dd><span class="pf-status-badge">{{ 'PRODUCT_FORM.AVAILABLE' | translate }}</span></dd>
+            </dl>
           </div>
         }
       </div>
-      <p class="drag-hint">{{ 'PRODUCT_FORM.DRAG_TO_REORDER' | translate }}</p>
-      <label class="upload-label">
-        {{ 'PRODUCT_FORM.UPLOAD_IMAGES' | translate }}
-        <input type="file" accept="image/*" multiple (change)="onImageFilesSelected($event)" />
-      </label>
+
+      <!-- RIGHT: Photos -->
+      <div class="pf-card">
+        <h3 class="pf-card-title">
+          {{ 'PRODUCT_FORM.PHOTOS' | translate }} ({{ images().length }}/10)
+        </h3>
+        <p class="pf-photo-hint">{{ 'PRODUCT_FORM.UPLOAD_HINT_SUBTITLE' | translate }}</p>
+
+        @if (imageError()) {
+          <span class="pf-error">{{ imageError() }}</span>
+        }
+
+        @if (product) {
+          @if (images().length > 0) {
+            <div class="pf-photo-grid" cdkDropList cdkDropListOrientation="mixed" (cdkDropListDropped)="onImageDrop($event)">
+              @for (img of images(); track img.id; let i = $index) {
+                <div class="pf-photo-thumb" cdkDrag>
+                  <img [src]="img.thumbnail_url ?? img.url" [alt]="img.path" />
+                  @if (i === 0) { <span class="pf-cover-badge">Cover</span> }
+                  <button type="button" class="pf-photo-delete" (click)="deleteImage(img.id)">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              }
+            </div>
+            <p class="pf-drag-hint">{{ 'PRODUCT_FORM.DRAG_TO_REORDER' | translate }}</p>
+          }
+
+          <!-- Upload dropzone -->
+          <label class="pf-dropzone" [class.pf-dropzone-active]="isDragging()"
+            (dragover)="onFileDragOver($event)" (dragleave)="onFileDragLeave($event)" (drop)="onFileDrop($event)">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span class="pf-dropzone-text">{{ 'PRODUCT_FORM.UPLOAD_HINT' | translate }}</span>
+            <span class="pf-dropzone-formats">{{ 'PRODUCT_FORM.UPLOAD_FORMATS' | translate }}</span>
+            <input type="file" accept="image/*" multiple (change)="onImageFilesSelected($event)" />
+          </label>
+        } @else {
+          <div class="pf-photo-new-hint">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+            <p>{{ 'PRODUCT_FORM.SAVE_FIRST_FOR_PHOTOS' | translate }}</p>
+          </div>
+        }
+      </div>
     </div>
-  }
+
+    <!-- Sticky footer -->
+    <div class="pf-footer">
+      <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
+      <button type="button" class="pf-btn-secondary" (click)="onSaveAndContinue()" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CONTINUE' | translate }}</button>
+      <button type="submit" class="pf-btn-primary" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CHANGES' | translate }}</button>
+    </div>
+  </form>
 </div>
