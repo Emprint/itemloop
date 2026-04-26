@@ -83,7 +83,6 @@ select.pf-input {
 
 /* Location code display */
 .pf-location-code { margin-top: 0.75rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.75rem; }
-.pf-location-code-success { display: flex; align-items: center; gap: 0.5rem; color: #15803d; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.25rem; }
 .pf-code-value { font-family: monospace; font-size: 0.9375rem; font-weight: 600; color: #111827; }
 .pf-location-code small { color: #6b7280; font-size: 0.75rem; }
 
