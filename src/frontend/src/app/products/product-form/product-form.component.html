@@ -113,14 +113,23 @@
       @if (imageError()) {
         <span class="error">{{ imageError() }}</span>
       }
-      <div class="image-grid">
-        @for (img of images(); track img.id) {
-          <div class="image-thumb">
-            <img [src]="img.url" [alt]="img.path" />
+      <div
+        class="image-grid"
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        (cdkDropListDropped)="onImageDrop($event)"
+      >
+        @for (img of images(); track img.id; let i = $index) {
+          <div class="image-thumb" cdkDrag>
+            <img [src]="img.thumbnail_url ?? img.url" [alt]="img.path" />
+            @if (i === 0) {
+              <span class="cover-badge">Cover</span>
+            }
             <button type="button" class="img-delete" (click)="deleteImage(img.id)">✕</button>
           </div>
         }
       </div>
+      <p class="drag-hint">{{ 'PRODUCT_FORM.DRAG_TO_REORDER' | translate }}</p>
       <label class="upload-label">
         {{ 'PRODUCT_FORM.UPLOAD_IMAGES' | translate }}
         <input type="file" accept="image/*" multiple (change)="onImageFilesSelected($event)" />

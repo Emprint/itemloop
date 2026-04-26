@@ -6,10 +6,12 @@ import { environment } from '../../environments/environment';
 export interface Image {
   id: number;
   url: string;
+  thumbnail_url?: string;
   path?: string;
   format?: string;
   width?: number;
   height?: number;
+  sort_order?: number;
 }
 
 export interface Product {
@@ -63,5 +65,9 @@ export class ProductService {
 
   deleteImage(productId: number, imageId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${productId}/images/${imageId}`);
+  }
+
+  reorderImages(productId: number, ids: number[]): Observable<{ success: boolean }> {
+    return this.http.patch<{ success: boolean }>(`${this.apiUrl}/${productId}/images/reorder`, { ids });
   }
 }

@@ -282,7 +282,11 @@ class ProductController
             return [];
         }
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $stmt = $db->prepare("SELECT id, product_id, path, format, width, height FROM images WHERE product_id IN ($placeholders)");
+        $stmt = $db->prepare(
+            "SELECT id, product_id, path, thumbnail_path, format, width, height, sort_order
+             FROM images WHERE product_id IN ($placeholders)
+             ORDER BY product_id, sort_order ASC"
+        );
         $stmt->execute($ids);
         $grouped = [];
         foreach ($stmt->fetchAll() as $img) {
@@ -297,8 +301,11 @@ class ProductController
         $stmt->execute([$id]);
         $row = $stmt->fetch();
 
-        // Load images
-        $imgStmt = $db->prepare('SELECT id, path, format, width, height FROM images WHERE product_id = ?');
+        // Load images ordered by sort_order
+        $imgStmt = $db->prepare(
+            'SELECT id, path, thumbnail_path, format, width, height, sort_order
+             FROM images WHERE product_id = ? ORDER BY sort_order ASC'
+        );
         $imgStmt->execute([$id]);
         $images = $imgStmt->fetchAll();
 
@@ -333,12 +340,16 @@ class ProductController
                 'building' => $row['building_id'] ? ['id' => (int) $row['building_id'], 'name' => $row['building_name']] : null,
             ] : null,
             'images'          => array_map(fn($img) => [
-                'id'     => (int) $img['id'],
-                'url'    => '/' . $img['path'],
-                'path'   => $img['path'],
-                'format' => $img['format'],
-                'width'  => $img['width']  ? (int) $img['width']  : null,
-                'height' => $img['height'] ? (int) $img['height'] : null,
+                'id'            => (int) $img['id'],
+                'url'           => '/' . $img['path'],
+                'thumbnail_url' => isset($img['thumbnail_path']) && $img['thumbnail_path']
+                                    ? '/' . $img['thumbnail_path']
+                                    : '/' . $img['path'],
+                'path'          => $img['path'],
+                'format'        => $img['format'],
+                'width'         => $img['width']  ? (int) $img['width']  : null,
+                'height'        => $img['height'] ? (int) $img['height'] : null,
+                'sort_order'    => (int) ($img['sort_order'] ?? 0),
             ], $images ?? []),
         ];
 

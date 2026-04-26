@@ -35,6 +35,11 @@ class ProductImageController
             mkdir($storageDir, 0755, true);
         }
 
+        // Determine next sort_order (append after existing images)
+        $countStmt = $db->prepare('SELECT COUNT(*) FROM images WHERE product_id = ?');
+        $countStmt->execute([$productId]);
+        $nextOrder = (int) $countStmt->fetchColumn();
+
         $manager       = new ImageManager(new Driver());
         $createdImages = [];
 
@@ -57,34 +62,67 @@ class ProductImageController
             $img  = $manager->read($file->getStream()->getMetadata('uri'));
             $img  = $img->scaleDown(width: 1920, height: 1920);
 
-            $baseName = pathinfo($file->getClientFilename(), PATHINFO_FILENAME);
-            $webpName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $baseName) . '_' . uniqid() . '.webp';
-            $fullPath = $storageDir . '/' . $webpName;
+            $baseName  = pathinfo($file->getClientFilename(), PATHINFO_FILENAME);
+            $safeName  = preg_replace('/[^a-zA-Z0-9_-]/', '_', $baseName) . '_' . uniqid();
+            $webpName  = $safeName . '.webp';
+            $thumbName = $safeName . '_thumb.webp';
+            $fullPath  = $storageDir . '/' . $webpName;
+            $thumbPath = $storageDir . '/' . $thumbName;
 
             file_put_contents($fullPath, $img->toWebp(90));
 
+            // Generate thumbnail at max 400×400 px
+            $thumb = $manager->read($file->getStream()->getMetadata('uri'));
+            $thumb = $thumb->scaleDown(width: 400, height: 400);
+            file_put_contents($thumbPath, $thumb->toWebp(80));
+
             $stmt = $db->prepare(
-                'INSERT INTO images (product_id, path, format, width, height) VALUES (?, ?, ?, ?, ?)'
+                'INSERT INTO images (product_id, path, thumbnail_path, format, width, height, sort_order)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)'
             );
             $stmt->execute([
                 $productId,
                 'storage/products/' . $webpName,
+                'storage/products/' . $thumbName,
                 'webp',
                 $img->width(),
                 $img->height(),
+                $nextOrder++,
             ]);
 
             $createdImages[] = [
-                'id'     => (int) $db->lastInsertId(),
-                'url'    => '/storage/products/' . $webpName,
-                'path'   => 'storage/products/' . $webpName,
-                'format' => 'webp',
-                'width'  => $img->width(),
-                'height' => $img->height(),
+                'id'            => (int) $db->lastInsertId(),
+                'url'           => '/storage/products/' . $webpName,
+                'thumbnail_url' => '/storage/products/' . $thumbName,
+                'path'          => 'storage/products/' . $webpName,
+                'thumbnail_path'=> 'storage/products/' . $thumbName,
+                'format'        => 'webp',
+                'width'         => $img->width(),
+                'height'        => $img->height(),
+                'sort_order'    => $nextOrder - 1,
             ];
         }
 
         return $this->json($response, ['images' => $createdImages], 201);
+    }
+
+    public function reorder(Request $request, Response $response, array $args): Response
+    {
+        $db        = Database::get();
+        $productId = (int) $args['id'];
+        $body      = $request->getParsedBody();
+        $ids       = $body['ids'] ?? [];
+
+        if (!is_array($ids) || empty($ids)) {
+            return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['ids' => ['ids must be a non-empty array.']]], 422);
+        }
+
+        $stmt = $db->prepare('UPDATE images SET sort_order = ? WHERE id = ? AND product_id = ?');
+        foreach ($ids as $order => $id) {
+            $stmt->execute([(int) $order, (int) $id, $productId]);
+        }
+
+        return $this->json($response, ['success' => true]);
     }
 
     public function destroy(Request $request, Response $response, array $args): Response
@@ -104,6 +142,13 @@ class ProductImageController
         $filePath = __DIR__ . '/../../public/' . $image['path'];
         if (file_exists($filePath)) {
             unlink($filePath);
+        }
+
+        if (!empty($image['thumbnail_path'])) {
+            $thumbFilePath = __DIR__ . '/../../public/' . $image['thumbnail_path'];
+            if (file_exists($thumbFilePath)) {
+                unlink($thumbFilePath);
+            }
         }
 
         $db->prepare('DELETE FROM images WHERE id = ?')->execute([$imageId]);

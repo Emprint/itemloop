@@ -117,7 +117,8 @@
     "ESTIMATED_VALUE": "Estimated Value",
     "ESTIMATED_VALUE_ERROR": "Estimated value must be 0 or more.",
     "IMAGES": "Images",
-    "UPLOAD_IMAGES": "Upload images…"
+    "UPLOAD_IMAGES": "Upload images…",
+    "DRAG_TO_REORDER": "Drag images to reorder · First image is the cover"
   },
   "PRODUCT": "Product",
   "ADD_PRODUCT": "Add Product"

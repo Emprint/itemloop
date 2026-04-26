@@ -20,7 +20,7 @@
       @for (product of products(); track product.id) {
         <div class="product-card">
           @if (product.images && product.images.length) {
-            <img [src]="product.images[0].url" alt="Thumbnail" class="thumbnail" />
+            <img [src]="product.images[0].thumbnail_url ?? product.images[0].url" alt="Thumbnail" class="thumbnail" />
           }
           <div class="product-info">
             <h3>

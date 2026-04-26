@@ -113,6 +113,7 @@ $app->group('/api', function (RouteCollectorProxy $group) {
 
     // Product images
     $group->post('/products/{id}/images',                    [ProductImageController::class, 'store'])->add(new EditorMiddleware());
+    $group->patch('/products/{id}/images/reorder',           [ProductImageController::class, 'reorder'])->add(new EditorMiddleware());
     $group->delete('/products/{id}/images/{image_id}',       [ProductImageController::class, 'destroy'])->add(new EditorMiddleware());
 
     // Taxonomy

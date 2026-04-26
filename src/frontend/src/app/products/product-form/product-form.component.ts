@@ -34,11 +34,12 @@ import { ComboboxComponent } from '../../shared/combobox/combobox.component';
 import { ProductColorService } from '../product-color.service';
 import { ProductCategoryService } from '../product-category.service';
 import { ProductConditionService } from '../product-condition.service';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ComboboxComponent],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ComboboxComponent, DragDropModule],
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css'],
 })
@@ -185,6 +186,17 @@ export class ProductFormComponent implements OnChanges, OnInit {
     this.productService.deleteImage(this.product.id, imageId).subscribe({
       next: () => this.images.update(imgs => imgs.filter(i => i.id !== imageId)),
       error: () => this.imageError.set('Failed to delete image.'),
+    });
+  }
+
+  onImageDrop(event: CdkDragDrop<Image[]>) {
+    if (!this.product) return;
+    const imgs = [...this.images()];
+    moveItemInArray(imgs, event.previousIndex, event.currentIndex);
+    this.images.set(imgs);
+    const ids = imgs.map(i => i.id);
+    this.productService.reorderImages(this.product.id, ids).subscribe({
+      error: () => this.imageError.set('Failed to save image order.'),
     });
   }
 

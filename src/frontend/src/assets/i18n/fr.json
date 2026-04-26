@@ -38,7 +38,8 @@
     "ESTIMATED_VALUE": "Valeur estimée",
     "ESTIMATED_VALUE_ERROR": "La valeur estimée doit être supérieure ou égale à 0.",
     "IMAGES": "Images",
-    "UPLOAD_IMAGES": "Importer des images…"
+    "UPLOAD_IMAGES": "Importer des images…",
+    "DRAG_TO_REORDER": "Glisser les images pour les réordonner · La première image est la couverture"
   },
   "USER_MANAGEMENT": "Gestion des utilisateurs",
   "EDIT": "Modifier",
