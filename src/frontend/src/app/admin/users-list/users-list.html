@@ -15,13 +15,13 @@
     <div class="form-card">
       <h3>{{ selectedUser ? ('EDIT_USER' | translate) : ('NEW_USER' | translate) }}</h3>
       <form [formGroup]="form" (ngSubmit)="saveUser()" autocomplete="off">
-        <label for="name">{{ 'NAME' | translate }}</label>
+        <label for="name"><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label>
         <input formControlName="name" id="name" type="text" required autocomplete="off" />
         @if (serverErrors()['name']) {
           <small class="field-error">{{ serverErrors()['name'][0] }}</small>
         }
 
-        <label for="email">{{ 'EMAIL' | translate }}</label>
+        <label for="email"><span>{{ 'EMAIL' | translate }} <span class="req">*</span></span></label>
         <input formControlName="email" id="email" type="email" required autocomplete="off" />
         @if (serverErrors()['email']) {
           <small class="field-error">{{ serverErrors()['email'][0] }}</small>

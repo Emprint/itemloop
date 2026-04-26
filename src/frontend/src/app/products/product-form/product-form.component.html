@@ -1,7 +1,7 @@
 <div class="form-card">
   <h3>{{ selectedProduct ? ('EDIT_PRODUCT' | translate) : ('NEW_PRODUCT' | translate) }}</h3>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <label for="category-combobox">{{ 'PRODUCT_FORM.CATEGORY' | translate }}</label>
+    <label for="category-combobox"><span>{{ 'PRODUCT_FORM.CATEGORY' | translate }} <span class="req">*</span></span></label>
     <app-combobox
       id="category-combobox"
       [options]="categoryNames()"
@@ -10,8 +10,8 @@
       (addNewEvent)="onAddNewCategory($event)"
       [placeholder]="'PRODUCT_FORM.CATEGORY_PLACEHOLDER' | translate"
     ></app-combobox>
-    <label
-      >{{ 'PRODUCT_FORM.TITLE' | translate }}
+    <label class="required"
+      ><span>{{ 'PRODUCT_FORM.TITLE' | translate }} <span class="req">*</span></span>
       <input type="text" formControlName="title" />
       @if (form.get('title')?.invalid && form.get('title')?.touched) {
         <span class="error">Title is required.</span>
@@ -21,7 +21,7 @@
       >{{ 'PRODUCT_FORM.DESCRIPTION' | translate }}
       <textarea formControlName="description"></textarea>
     </label>
-    <label for="condition-combobox">{{ 'PRODUCT_FORM.CONDITION' | translate }}</label>
+    <label for="condition-combobox"><span>{{ 'PRODUCT_FORM.CONDITION' | translate }} <span class="req">*</span></span></label>
     <app-combobox
       id="condition-combobox"
       [options]="conditionNames()"
@@ -30,8 +30,8 @@
       (addNewEvent)="onAddNewCondition($event)"
       [placeholder]="'PRODUCT_FORM.CONDITION_PLACEHOLDER' | translate"
     ></app-combobox>
-    <label
-      >{{ 'PRODUCT_FORM.QUANTITY' | translate }}
+    <label class="required"
+      ><span>{{ 'PRODUCT_FORM.QUANTITY' | translate }} <span class="req">*</span></span>
       <input type="number" formControlName="quantity" min="0" />
       @if (form.get('quantity')?.invalid && form.get('quantity')?.touched) {
         <span class="error">Quantity must be 0 or more.</span>
@@ -81,16 +81,16 @@
         </option>
       </select>
     </label>
-    <label>
-      {{ 'PRODUCT_FORM.VISIBILITY' | translate }}
+    <label class="required">
+      <span>{{ 'PRODUCT_FORM.VISIBILITY' | translate }} <span class="req">*</span></span>
       <small class="help-text">{{ 'PRODUCT_FORM.HELP.VISIBILITY_PRIVATE' | translate }}</small>
       <select formControlName="visibility">
         <option value="private">{{ 'PRODUCT_FORM.VISIBILITY_PRIVATE' | translate }}</option>
         <option value="public">{{ 'PRODUCT_FORM.VISIBILITY_PUBLIC' | translate }}</option>
       </select>
     </label>
-    <label
-      >{{ 'PRODUCT_FORM.LOCATION' | translate }}
+    <label class="required"
+      ><span>{{ 'PRODUCT_FORM.LOCATION' | translate }} <span class="req">*</span></span>
       <select formControlName="location_id">
         <option value="">{{ 'PRODUCT_FORM.SELECT_LOCATION' | translate }}</option>
         @for (location of locations(); track location.id) {

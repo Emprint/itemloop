@@ -6,7 +6,7 @@
     <div class="form-card">
       <h3>{{ selectedBuilding ? ('EDIT_BUILDING' | translate) : ('NEW_BUILDING' | translate) }}</h3>
       <form [formGroup]="form" (ngSubmit)="saveBuilding()" autocomplete="off">
-        <label for="buildingName">{{ 'NAME' | translate }}</label>
+        <label for="buildingName"><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label>
         <input
           formControlName="name"
           id="buildingName"
@@ -14,7 +14,7 @@
           required
           (input)="onNameInput()"
         />
-        <label for="buildingCode">{{ 'CODE' | translate }}</label>
+        <label for="buildingCode"><span>{{ 'CODE' | translate }} <span class="req">*</span></span></label>
         <input
           formControlName="code"
           id="buildingCode"

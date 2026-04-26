@@ -177,6 +177,12 @@ button:disabled {
   margin-top: 0.25rem;
 }
 
+// Required field indicator
+.req {
+  color: #ef4444;
+  font-weight: 700;
+}
+
 // Buttons row
 .buttons-list {
   display: flex;
