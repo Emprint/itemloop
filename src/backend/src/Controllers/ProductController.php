@@ -42,21 +42,32 @@ class ProductController
         $stmt->execute($binds);
         $rows = $stmt->fetchAll();
 
-        return $this->json($response, array_map([$this, 'hydrate'], $rows));
+        $productIds = array_column($rows, 'id');
+        $imagesByProduct = $this->loadImagesByProductIds($db, $productIds);
+
+        return $this->json($response, array_map(
+            fn($row) => $this->hydrate($row, $imagesByProduct[(int) $row['id']] ?? []),
+            $rows
+        ));
     }
 
     public function show(Request $request, Response $response, array $args): Response
     {
-        $db   = Database::get();
+        $db  = Database::get();
+        $id  = (int) $args['id'];
         $stmt = $db->prepare($this->selectProductSql(['p.id = ?']));
-        $stmt->execute([(int) $args['id']]);
+        $stmt->execute([$id]);
         $row = $stmt->fetch();
 
         if (!$row) {
             return $this->json($response, ['error' => 'NOT_FOUND'], 404);
         }
 
-        return $this->json($response, $this->hydrate($row));
+        $imgStmt = $db->prepare('SELECT id, path, format, width, height FROM images WHERE product_id = ?');
+        $imgStmt->execute([$id]);
+        $images = $imgStmt->fetchAll();
+
+        return $this->json($response, $this->hydrate($row, $images));
     }
 
     public function store(Request $request, Response $response): Response
@@ -263,6 +274,21 @@ class ProductController
                 LEFT JOIN zones              z   ON z.id   = l.zone_id
                 LEFT JOIN buildings          b   ON b.id   = z.building_id
                 {$whereClause}";
+    }
+
+    private function loadImagesByProductIds(\PDO $db, array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $db->prepare("SELECT id, product_id, path, format, width, height FROM images WHERE product_id IN ($placeholders)");
+        $stmt->execute($ids);
+        $grouped = [];
+        foreach ($stmt->fetchAll() as $img) {
+            $grouped[(int) $img['product_id']][] = $img;
+        }
+        return $grouped;
     }
 
     private function findProduct(\PDO $db, int $id): array
