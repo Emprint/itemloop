@@ -23,12 +23,14 @@
 
   @if (user()) {
     <div class="sidebar-user">
-      <div class="user-avatar">{{ userInitials() }}</div>
+      <div class="user-avatar">
+        {{ userInitials() }}
+        <span class="user-online"></span>
+      </div>
       <div class="user-info">
         <span class="user-name">{{ user()!.name }}</span>
         <span class="user-role">{{ roleLabel() }}</span>
       </div>
-      <span class="user-online"></span>
     </div>
   }
 
