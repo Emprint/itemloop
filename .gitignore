@@ -12,3 +12,4 @@ mockup-*.png
 *-check.png
 *.screenshot.png
 dashboard*.png
+!mockups/dashboard*.png
