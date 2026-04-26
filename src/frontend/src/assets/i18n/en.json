@@ -145,7 +145,8 @@
     "SELECT_BUILDING": "Select building",
     "SELECT_ZONE": "Select zone",
     "SELECT_SHELF": "Select shelf",
-    "SAVE_FIRST_FOR_PHOTOS": "Save the product first, then you can upload photos."
+    "SAVE_FIRST_FOR_PHOTOS": "Save the product first, then you can upload photos.",
+    "NO_PHOTOS": "No photos for this product."
   },
   "PRODUCT": "Product",
   "ADD_PRODUCT": "Add Product",

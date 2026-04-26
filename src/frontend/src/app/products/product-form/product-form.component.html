@@ -154,9 +154,11 @@
       <!-- RIGHT: Photos -->
       <div class="pf-card">
         <h3 class="pf-card-title">
-          {{ 'PRODUCT_FORM.PHOTOS' | translate }} ({{ images().length }}/10)
+          {{ 'PRODUCT_FORM.PHOTOS' | translate }}{{ !readOnly ? ' (' + images().length + '/10)' : '' }}
         </h3>
-        <p class="pf-photo-hint">{{ 'PRODUCT_FORM.UPLOAD_HINT_SUBTITLE' | translate }}</p>
+        @if (!readOnly) {
+          <p class="pf-photo-hint">{{ 'PRODUCT_FORM.UPLOAD_HINT_SUBTITLE' | translate }}</p>
+        }
 
         @if (imageError()) {
           <span class="pf-error">{{ imageError() }}</span>
@@ -177,7 +179,14 @@
                 </div>
               }
             </div>
-            <p class="pf-drag-hint">{{ 'PRODUCT_FORM.DRAG_TO_REORDER' | translate }}</p>
+            @if (!readOnly) {
+              <p class="pf-drag-hint">{{ 'PRODUCT_FORM.DRAG_TO_REORDER' | translate }}</p>
+            }
+          } @else if (readOnly) {
+            <div class="pf-photo-new-hint">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <p>{{ 'PRODUCT_FORM.NO_PHOTOS' | translate }}</p>
+            </div>
           }
 
           @if (!readOnly) {

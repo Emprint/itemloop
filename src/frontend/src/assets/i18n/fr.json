@@ -65,7 +65,8 @@
     "SELECT_BUILDING": "Sélectionner un bâtiment",
     "SELECT_ZONE": "Sélectionner une zone",
     "SELECT_SHELF": "Sélectionner un rayon",
-    "SAVE_FIRST_FOR_PHOTOS": "Enregistrez d'abord le produit pour pouvoir ajouter des photos."
+    "SAVE_FIRST_FOR_PHOTOS": "Enregistrez d'abord le produit pour pouvoir ajouter des photos.",
+    "NO_PHOTOS": "Aucune photo pour ce produit."
   },
   "USER_MANAGEMENT": "Gestion des utilisateurs",
   "EDIT": "Modifier",
