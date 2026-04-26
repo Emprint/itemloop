@@ -13,7 +13,7 @@
     ></app-product-form>
   } @else {
     @if (isEditorOrAdmin) {
-      <button (click)="showAddProductForm()">{{ 'ADD_PRODUCT' | translate }}</button>
+      <button class="add-btn" (click)="showAddProductForm()">{{ 'ADD_PRODUCT' | translate }}</button>
     }
 
     <div class="products-grid">

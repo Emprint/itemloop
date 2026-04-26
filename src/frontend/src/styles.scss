@@ -84,6 +84,10 @@ button {
   transition: background 0.15s;
   margin-bottom: 0;
 
+  &.add-btn {
+    margin-bottom: 1.25rem;
+  }
+
   &:hover:not(:disabled) {
     background: var(--primary-dark);
   }
