@@ -1,0 +1,144 @@
+-- Itemloop database schema
+-- Import this file via phpMyAdmin or any MySQL client.
+-- No SSH or CLI required.
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Users
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `users` (
+    `id`                BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name`              VARCHAR(255)    NOT NULL,
+    `email`             VARCHAR(255)    NOT NULL UNIQUE,
+    `email_verified_at` TIMESTAMP       NULL DEFAULT NULL,
+    `password`          VARCHAR(255)    NOT NULL,
+    `role`              ENUM('admin','editor','member','customer') NOT NULL DEFAULT 'customer',
+    `created_at`        TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`        TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Buildings
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `buildings` (
+    `id`         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name`       VARCHAR(255)    NOT NULL UNIQUE,
+    `code`       VARCHAR(8)      NOT NULL UNIQUE,
+    `created_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Zones
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `zones` (
+    `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name`        VARCHAR(255)    NOT NULL,
+    `code`        VARCHAR(8)      NOT NULL,
+    `building_id` BIGINT UNSIGNED NOT NULL,
+    `created_at`  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `zones_code_building_unique` (`code`, `building_id`),
+    CONSTRAINT `fk_zones_building` FOREIGN KEY (`building_id`) REFERENCES `buildings` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Locations (shelves)
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `locations` (
+    `id`          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `shelf`       VARCHAR(255)    NOT NULL,
+    `code`        VARCHAR(16)     NOT NULL,
+    `zone_id`     BIGINT UNSIGNED NULL DEFAULT NULL,
+    `building_id` BIGINT UNSIGNED NULL DEFAULT NULL,
+    `created_at`  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `locations_code_zone_unique` (`code`, `zone_id`),
+    CONSTRAINT `fk_locations_zone`     FOREIGN KEY (`zone_id`)     REFERENCES `zones`     (`id`) ON DELETE SET NULL,
+    CONSTRAINT `fk_locations_building` FOREIGN KEY (`building_id`) REFERENCES `buildings` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Product conditions (e.g. "New", "Good", "Damaged")
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `product_conditions` (
+    `id`         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name`       VARCHAR(255)    NOT NULL UNIQUE,
+    `created_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Product colors
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `product_colors` (
+    `id`         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name`       VARCHAR(255)    NOT NULL UNIQUE,
+    `created_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Product categories
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `product_categories` (
+    `id`         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name`       VARCHAR(255)    NOT NULL UNIQUE,
+    `created_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Products
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `products` (
+    `id`              BIGINT UNSIGNED  NOT NULL AUTO_INCREMENT,
+    `title`           VARCHAR(255)     NOT NULL,
+    `description`     TEXT             NULL DEFAULT NULL,
+    `quantity`        INT UNSIGNED     NOT NULL DEFAULT 1,
+    `estimated_value` DECIMAL(10,2)    NULL DEFAULT NULL,
+    `location_id`     BIGINT UNSIGNED  NOT NULL,
+    `barcode`         VARCHAR(255)     NULL DEFAULT NULL,
+    `length`          DECIMAL(10,2)    NULL DEFAULT NULL,
+    `width`           DECIMAL(10,2)    NULL DEFAULT NULL,
+    `height`          DECIMAL(10,2)    NULL DEFAULT NULL,
+    `weight`          DECIMAL(10,2)    NULL DEFAULT NULL,
+    `destination`     VARCHAR(16)      NULL DEFAULT NULL,
+    `visibility`      VARCHAR(10)      NOT NULL DEFAULT 'private',
+    `condition_id`    BIGINT UNSIGNED  NULL DEFAULT NULL,
+    `color_id`        BIGINT UNSIGNED  NULL DEFAULT NULL,
+    `category_id`     BIGINT UNSIGNED  NULL DEFAULT NULL,
+    `created_at`      TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`      TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_products_location`  FOREIGN KEY (`location_id`)  REFERENCES `locations`          (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_products_condition` FOREIGN KEY (`condition_id`) REFERENCES `product_conditions` (`id`) ON DELETE SET NULL,
+    CONSTRAINT `fk_products_color`     FOREIGN KEY (`color_id`)     REFERENCES `product_colors`     (`id`) ON DELETE SET NULL,
+    CONSTRAINT `fk_products_category`  FOREIGN KEY (`category_id`)  REFERENCES `product_categories` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Product images
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `images` (
+    `id`         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `product_id` BIGINT UNSIGNED NOT NULL,
+    `path`       VARCHAR(512)    NOT NULL,
+    `format`     VARCHAR(16)     NOT NULL DEFAULT 'webp',
+    `width`      INT UNSIGNED    NULL DEFAULT NULL,
+    `height`     INT UNSIGNED    NULL DEFAULT NULL,
+    `created_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_images_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+SET FOREIGN_KEY_CHECKS = 1;

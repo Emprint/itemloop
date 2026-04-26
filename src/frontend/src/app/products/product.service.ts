@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Image {
   id: number;
@@ -32,7 +33,7 @@ export interface Product {
 @Injectable({ providedIn: 'root' })
 export class ProductService {
   private http = inject(HttpClient);
-  private apiUrl = '/api/products';
+  private apiUrl = `${environment.apiUrl}products`;
 
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl);

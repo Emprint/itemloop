@@ -1,3 +1,5 @@
+# Exclude deployment build output
+deploy_package/
 /.devdbrc
 /.vscode
 src/frontend/src/environments/environment.prod.ts

@@ -35,53 +35,53 @@ export class LocationService {
 
   // Locations
   getLocations(): Observable<Location[]> {
-    return this.http.get<Location[]>(`${this.apiUrl}/locations`);
+    return this.http.get<Location[]>(`${this.apiUrl}locations`);
   }
 
   addLocation(location: Partial<Location>): Observable<Location> {
-    return this.http.post<Location>(`${this.apiUrl}/locations`, location);
+    return this.http.post<Location>(`${this.apiUrl}locations`, location);
   }
 
   updateLocation(id: number, location: Partial<Location>): Observable<Location> {
-    return this.http.put<Location>(`${this.apiUrl}/locations/${id}`, location);
+    return this.http.put<Location>(`${this.apiUrl}locations/${id}`, location);
   }
 
   deleteLocation(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/locations/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}locations/${id}`);
   }
 
   // Buildings
   getBuildings(): Observable<Building[]> {
-    return this.http.get<Building[]>(`${this.apiUrl}/buildings`);
+    return this.http.get<Building[]>(`${this.apiUrl}buildings`);
   }
 
   addBuilding(building: Partial<Building>): Observable<Building> {
-    return this.http.post<Building>(`${this.apiUrl}/buildings`, building);
+    return this.http.post<Building>(`${this.apiUrl}buildings`, building);
   }
 
   updateBuilding(id: number, building: Partial<Building>): Observable<Building> {
-    return this.http.put<Building>(`${this.apiUrl}/buildings/${id}`, building);
+    return this.http.put<Building>(`${this.apiUrl}buildings/${id}`, building);
   }
 
   deleteBuilding(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/buildings/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}buildings/${id}`);
   }
 
   // Zones
   getZones(): Observable<Zone[]> {
-    return this.http.get<Zone[]>(`${this.apiUrl}/zones`);
+    return this.http.get<Zone[]>(`${this.apiUrl}zones`);
   }
 
   addZone(zone: Partial<Zone>): Observable<Zone> {
-    return this.http.post<Zone>(`${this.apiUrl}/zones`, zone);
+    return this.http.post<Zone>(`${this.apiUrl}zones`, zone);
   }
 
   updateZone(id: number, zone: Partial<Zone>): Observable<Zone> {
-    return this.http.put<Zone>(`${this.apiUrl}/zones/${id}`, zone);
+    return this.http.put<Zone>(`${this.apiUrl}zones/${id}`, zone);
   }
 
   deleteZone(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/zones/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}zones/${id}`);
   }
 
   /**
