@@ -40,16 +40,16 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US2 | Admin | As an admin, I want to create, edit, and delete user accounts to manage access control. | High | 🟡 Medium | ✅ |
 | US3 | User | As a user, I want to add a product with a title, description, condition, quantity, estimated value, location, multiple photos, barcode, and date so I can track inventory items. | High | 🔴 Complex | ✅ |
 | US4 | User | As a user, I want to edit or delete product entries to keep information up to date. | High | 🟡 Medium | ✅ |
-| US5 | User | As a user, I want to view and filter the product list (by condition, location, keyword) to find items easily. | High | 🔴 Complex | 🔲 (list done, filters pending) |
+| US5 | User | As a user, I want to view and filter the product list (by condition, location, keyword) to find items easily. | High | 🔴 Complex | ✅ |
 | US6 | User | As a user, I want to scan a barcode to quickly search or add an item. | Medium | 🔴 Complex | ⚪ |
 | US7 | Public visitor | As a visitor, I want to browse available items so I can prepare for an in-person visit. | Medium | 🟡 Medium | ✅ (public visibility filter) |
 | US8 | Public visitor | As a visitor, I want to reserve items online to pick them up later. | Low | 🔴 Complex | ⚪ |
 | US9 | User | As a user, I want to use the app from a smartphone or browser so I can manage inventory anywhere. | High | 🟡 Medium | 🔲 (responsive layout in progress) |
 | US10 | User | As a user, I want to use the app offline and sync data when reconnected so I can keep working without internet. | Medium | 🔴 Complex | ⚪ |
 | US11 | User | As a user, I want to be notified if data fails to sync so I don't lose updates. | Medium | 🟡 Medium | ⚪ |
-| US12 | Admin | As an admin, I want to export inventory data to CSV or PDF for backup or reporting. | Low | 🟡 Medium | ⚪ |
+| US12 | Admin | As an admin, I want to export inventory data to CSV for backup or reporting. | Low | 🟡 Medium | ✅ (CSV export on products page) |
 | US13 | User | As a user, I want to view product photos to better identify each item. | High | ⚪ Simple | ✅ |
-| US14 | Admin | As an admin, I want to see statistics (total quantity, estimated value, etc.) to monitor reuse activity. | Low | 🔴 Complex | ⚪ |
+| US14 | Admin | As an admin, I want to see statistics (total quantity, estimated value, etc.) to monitor reuse activity. | Low | 🔴 Complex | ✅ (dashboard with donut chart, KPI cards) |
 | US15 | Developer | As a developer, I want the app to support multiple languages (French, English) so it's accessible to a wider community. | High | 🟡 Medium | ✅ |
 | US16 | User | As a user, I want to upload **multiple photos per item** to fully document its condition. | High | 🟡 Medium | ✅ |
 | US17 | System | As the system, I want to automatically resize images on upload (max 1920×1920 px) and convert them to WebP format to optimize storage and web delivery. | High | 🟡 Medium | ✅ |
@@ -76,13 +76,11 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 
 ## 📌 Roadmap Ideas
 
-- Product list filtering (by condition, category, location, keyword)
 - Public item browsing with reservation / cart checkout flow
 - Barcode scanning for quick product lookup or creation
 - User notification system (email, browser alerts)
 - Item history & audit log
-- Export to CSV / PDF (admin reporting)
-- Statistics dashboard (quantity, estimated value by category/location)
+- Export to PDF (admin reporting)
 - PWA offline sync with conflict resolution
 - Weight / volume tracking for reuse impact reporting
 
