@@ -11,7 +11,7 @@ This project is developed with a non-commercial, open community spirit. Contribu
 ## 🔧 Tech Stack
 
 - **Frontend**: Angular 20+ (standalone components, signals, Angular CDK, PWA support)
-- **Backend**: PHP 8.2+ · **Slim Framework 4** (lightweight, FTP-deployable — no SSH or post-deploy commands needed)
+- **Backend**: PHP 8.2+ · Slim Framework 4 (lightweight, FTP-deployable — no SSH or post-deploy commands needed)
 - **Database**: MySQL 5.7+
 
 ---
