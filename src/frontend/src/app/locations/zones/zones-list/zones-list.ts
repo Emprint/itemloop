@@ -39,6 +39,17 @@ export class ZonesList {
     this.loadBuildings();
   }
 
+  get isCodeUnique(): boolean {
+    const code = this.form.value.code?.trim().toUpperCase();
+    const buildingId = this.form.value.building_id ? +this.form.value.building_id : null;
+    if (!code || !buildingId) return false;
+    return !this.zones().some(
+      (z) => z.code?.toUpperCase() === code &&
+             (z.building_id ?? z.building?.id) === buildingId &&
+             z.id !== this.selectedZone?.id
+    );
+  }
+
   onBuildingChange() {
     this.updateFinalZoneCode();
   }

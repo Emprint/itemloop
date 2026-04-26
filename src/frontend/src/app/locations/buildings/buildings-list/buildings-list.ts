@@ -35,6 +35,14 @@ export class BuildingsList {
     this.loadBuildings();
   }
 
+  get isCodeUnique(): boolean {
+    const code = this.form.value.code?.trim().toUpperCase();
+    if (!code) return false;
+    return !this.buildings().some(
+      (b) => b.code?.toUpperCase() === code && b.id !== this.selectedBuilding?.id
+    );
+  }
+
   loadBuildings() {
     this.service.getBuildings().subscribe({
       next: (buildings) => {

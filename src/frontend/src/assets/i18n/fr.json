@@ -141,6 +141,7 @@
   "SELECT_BUILDING": "Sélectionner un bâtiment",
   "CONFIRM_DELETE_ZONE_MSG": "Êtes-vous sûr de vouloir supprimer la zone :",
   "FINAL_CODE": "Code final",
+  "CODE_UNIQUE": "Code unique",
   "SHELF_MANAGEMENT": "Gestion des rayons",
   "EDIT_SHELF": "Modifier le rayon",
   "NEW_SHELF": "Nouveau rayon",

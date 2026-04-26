@@ -31,6 +31,17 @@ export class LocationsList {
   finalCode = '';
   codeChangedManually = false;
 
+  get isCodeUnique(): boolean {
+    const code = this.form.value.code?.trim().toUpperCase();
+    const zoneId = this.form.value.zone_id ? +this.form.value.zone_id : null;
+    if (!code || !zoneId) return false;
+    return !this.locations().some(
+      (l) => l.code?.toUpperCase() === code &&
+             (l.zone_id ?? l.zone?.id) === zoneId &&
+             l.id !== this.selectedLocation?.id
+    );
+  }
+
   getFormLocation(): Partial<Location> {
     // Normalize form values for getFinalCode
     const value = this.form.value;

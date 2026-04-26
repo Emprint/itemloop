@@ -72,6 +72,7 @@
   "SELECT_BUILDING": "Select building",
   "CONFIRM_DELETE_ZONE_MSG": "Are you sure you want to delete the zone:",
   "FINAL_CODE": "Final code",
+  "CODE_UNIQUE": "Code is unique",
   "SHELF_MANAGEMENT": "Shelf Management",
   "EDIT_SHELF": "Edit Shelf",
   "NEW_SHELF": "New Shelf",
