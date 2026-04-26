@@ -71,14 +71,30 @@ class ProductController
 
         $this->resolveRelations($db, $body, $data);
 
+        // Ensure every INSERT column has a value (optional fields default to null)
+        $data = array_merge([
+            'description'     => null,
+            'estimated_value' => null,
+            'barcode'         => null,
+            'length'          => null,
+            'width'           => null,
+            'height'          => null,
+            'weight'          => null,
+            'destination'     => null,
+            'visibility'      => 'private',
+            'condition_id'    => null,
+            'color_id'        => null,
+            'category_id'     => null,
+        ], $data);
+
         $sql = 'INSERT INTO products
                     (title, description, quantity, estimated_value, location_id, barcode,
                      length, width, height, weight, destination, visibility,
-                     condition_id, color_id, category_id)
+                     condition_id, color_id, category_id, created_at, updated_at)
                 VALUES
                     (:title, :description, :quantity, :estimated_value, :location_id, :barcode,
                      :length, :width, :height, :weight, :destination, :visibility,
-                     :condition_id, :color_id, :category_id)';
+                     :condition_id, :color_id, :category_id, NOW(), NOW())';
         $stmt = $db->prepare($sql);
         $stmt->execute($data);
         $id = (int) $db->lastInsertId();
@@ -245,7 +261,7 @@ class ProductController
                 LEFT JOIN product_categories cat ON cat.id = p.category_id
                 LEFT JOIN locations          l   ON l.id   = p.location_id
                 LEFT JOIN zones              z   ON z.id   = l.zone_id
-                LEFT JOIN buildings          b   ON b.id   = l.building_id
+                LEFT JOIN buildings          b   ON b.id   = z.building_id
                 {$whereClause}";
     }
 
