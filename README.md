@@ -17,7 +17,7 @@ This project is open source and welcomes contributions under the AGPL v3 license
 | Backend | PHP 8.2+ · Slim Framework 4 |
 | Database | MySQL 5.7+ |
 | Image processing | Intervention Image (GD driver) — WebP conversion + thumbnails |
-| Hosting target | Shared PHP/MySQL hosting (e.g., OVH) — **no SSH required after deploy** |
+| Hosting target | Shared PHP/MySQL hosting (e.g., OVH) — no SSH required after deploy |
 
 > The backend is built on Slim Framework 4 — fully assembled locally with no post-deploy server-side commands required.
 
