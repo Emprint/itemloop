@@ -3,3 +3,11 @@ deploy_package/
 /.devdbrc
 /.vscode
 src/frontend/src/environments/environment.prod.ts
+
+# Playwright MCP artifacts
+.playwright-mcp/
+
+# Design reference & screenshots
+mockup-*.png
+*-check.png
+*.screenshot.png

@@ -1,4 +1,0 @@
-[      59ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=8304abed:14370
-[      62ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4200/api/me:0
-[     175ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "new-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4200/auth/register:0
-[     175ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "new-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4200/auth/register:0
