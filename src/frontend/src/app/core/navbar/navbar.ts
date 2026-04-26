@@ -1,71 +1,57 @@
-import { Component, effect, signal, inject } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { Component, computed, effect, signal, inject } from '@angular/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
-import { User, UserRole } from '../../auth/auth-response';
+import { UserRole } from '../../auth/auth-response';
 
 @Component({
   selector: 'app-navbar',
+  standalone: true,
   imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
 export class Navbar {
   private authService = inject(AuthService);
-  readonly links = signal<{ label: string; route: string }[]>([]);
-  public translate = inject(TranslateService);
-  public showMenu = signal(false);
-  public get currentLang() {
-    return this.translate.currentLang;
-  }
+  private translateService = inject(TranslateService);
 
-  constructor() {
-    const updateLinks = () => {
-      const user = this.authService.user();
-      this.links.set(this.generateLinks(user));
-    };
-    effect(updateLinks);
-    this.translate.onLangChange.subscribe(updateLinks);
+  readonly user = this.authService.user;
+  readonly sidebarOpen = signal(false);
+
+  readonly userInitials = computed(() => {
+    const name = this.user()?.name ?? '';
+    return name.split(' ').map(w => w[0] ?? '').join('').toUpperCase().slice(0, 2);
+  });
+
+  readonly roleLabel = computed(() => {
+    const role = this.user()?.role;
+    if (role === UserRole.Admin) return 'Admin';
+    if (role === UserRole.Editor) return 'Éditeur';
+    return 'Client';
+  });
+
+  readonly isEditorOrAdmin = computed(() => {
+    const role = this.user()?.role;
+    return role === UserRole.Editor || role === UserRole.Admin;
+  });
+
+  readonly isAdmin = computed(() => this.user()?.role === UserRole.Admin);
+
+  get currentLang() {
+    return this.translateService.currentLang;
   }
 
   switchLang(lang: string) {
-    this.translate.use(lang);
+    this.translateService.use(lang);
   }
 
-  toggleMenu() {
-    this.showMenu.update((v) => !v);
+  toggleSidebar() {
+    this.sidebarOpen.update(v => !v);
   }
 
-  closeMenu() {
-    this.showMenu.set(false);
-  }
-
-  private generateLinks(user: User | null) {
-    const links = [
-      { label: 'PRODUCTS', route: '/products' },
-      { label: 'CART', route: '/cart' },
-    ];
-
-    // Only show login/logout if user is truly logged in/out
-    if (!user || !user.id) {
-      links.push({ label: 'LOGIN', route: '/auth/login' });
-      return links;
-    }
-
-    if (user.role === UserRole.Editor || user.role === UserRole.Admin) {
-      links.push({ label: 'LOCATIONS', route: '/locations' });
-    }
-
-    if (user.role === UserRole.Admin) {
-      links.push({ label: 'USERS', route: '/admin/users' });
-    }
-
-    // Add a logout link for logged-in users with valid id
-    links.push({ label: 'LOGOUT', route: '' });
-
-    return links;
+  closeSidebar() {
+    this.sidebarOpen.set(false);
   }
 
   logout() {

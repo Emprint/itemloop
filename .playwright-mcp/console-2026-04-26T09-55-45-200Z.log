@@ -1,0 +1,12 @@
+[      61ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=8304abed:14370
+[      70ms] [ERROR] ERROR RuntimeError: NG04002: Cannot match any routes. URL Segment: 'admin/products/new'
+    at Recognizer.noMatchError (http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/@angular_router.js?v=8304abed:2965:12)
+    at http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/@angular_router.js?v=8304abed:2997:20
+    at http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-SESUV4G6.js?v=8304abed:3555:33
+    at OperatorSubscriber2._this._error (http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-SESUV4G6.js?v=8304abed:835:9)
+    at Subscriber2.error (http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-SESUV4G6.js?v=8304abed:539:12)
+    at Subscriber2._error (http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-SESUV4G6.js?v=8304abed:562:24)
+    at Subscriber2.error (http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-SESUV4G6.js?v=8304abed:539:12)
+    at Subscriber2._error (http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-SESUV4G6.js?v=8304abed:562:24)
+    at Subscriber2.error (http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-SESUV4G6.js?v=8304abed:539:12)
+    at Subscriber2._error (http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-SESUV4G6.js?v=8304abed:562:24) @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=8304abed:2623

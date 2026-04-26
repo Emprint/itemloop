@@ -1,0 +1,48 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - link "Itemloop Home" [ref=e6] [cursor=pointer]:
+      - /url: /
+      - img "Itemloop logo" [ref=e7]
+    - generic [ref=e8]:
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - link "Products" [ref=e11] [cursor=pointer]:
+            - /url: /products
+        - listitem [ref=e12]:
+          - link "Cart" [ref=e13] [cursor=pointer]:
+            - /url: /cart
+        - listitem [ref=e14]:
+          - link "Locations" [ref=e15] [cursor=pointer]:
+            - /url: /locations
+        - listitem [ref=e16]:
+          - link "Users" [ref=e17] [cursor=pointer]:
+            - /url: /admin/users
+        - listitem [ref=e18]:
+          - link "Logout" [ref=e19] [cursor=pointer]:
+            - /url: "#"
+      - combobox "Language" [ref=e21]:
+        - option "English" [selected]
+        - option "Français"
+  - main [ref=e22]:
+    - generic [ref=e24]:
+      - heading "User Management" [level=2] [ref=e25]
+      - generic [ref=e67]:
+        - heading "New User" [level=3] [ref=e68]
+        - generic [ref=e69]:
+          - generic [ref=e70]: Name
+          - textbox "Name" [ref=e71]
+          - generic [ref=e72]: Email
+          - textbox "Email" [ref=e73]
+          - generic [ref=e74]: Role
+          - combobox "Role" [ref=e75]:
+            - option "Customer" [selected]
+            - option "Member"
+            - option "Editor"
+            - option "Admin"
+          - generic [ref=e76]: Password
+          - generic [ref=e77]:
+            - textbox "Password" [ref=e78]
+            - button "Show" [ref=e79] [cursor=pointer]
+          - generic [ref=e80]:
+            - button "Cancel" [ref=e81] [cursor=pointer]
+            - button "Save" [ref=e82] [cursor=pointer]

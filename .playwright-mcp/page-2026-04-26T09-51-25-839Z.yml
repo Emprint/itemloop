@@ -1,0 +1,74 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - link "Itemloop Home" [ref=e12] [cursor=pointer]:
+      - /url: /
+      - img "Itemloop logo" [ref=e7]
+    - generic [ref=e8]:
+      - list [ref=e13]:
+        - listitem [ref=e14]:
+          - link "Products" [ref=e15] [cursor=pointer]:
+            - /url: /products
+        - listitem [ref=e16]:
+          - link "Cart" [ref=e17] [cursor=pointer]:
+            - /url: /cart
+        - listitem [ref=e18]:
+          - link "Locations" [ref=e19] [cursor=pointer]:
+            - /url: /locations
+        - listitem [ref=e20]:
+          - link "Users" [ref=e21] [cursor=pointer]:
+            - /url: /admin/users
+        - listitem [ref=e22]:
+          - link "Logout" [ref=e23] [cursor=pointer]:
+            - /url: "#"
+      - combobox "Language" [ref=e10]:
+        - option "English" [selected]
+        - option "Français"
+  - main [ref=e11]:
+    - generic [ref=e25]:
+      - navigation [ref=e26]:
+        - button "Shelf Management" [ref=e27] [cursor=pointer]
+        - button "Zone Management" [ref=e28] [cursor=pointer]
+        - button "Building Management" [ref=e29] [cursor=pointer]
+      - generic [ref=e32]:
+        - button "New Shelf" [ref=e33] [cursor=pointer]
+        - table [ref=e34]:
+          - rowgroup [ref=e35]:
+            - row "Building Zone Shelf Code Actions" [ref=e36]:
+              - columnheader "Building" [ref=e37]
+              - columnheader "Zone" [ref=e38]
+              - columnheader "Shelf" [ref=e39]
+              - columnheader "Code" [ref=e40]
+              - columnheader "Actions" [ref=e41]
+          - rowgroup [ref=e42]:
+            - row "Étable Cuisine Buffet Porte Droite ETA-CUI-BPD Edit Delete" [ref=e43]:
+              - cell "Étable" [ref=e44]
+              - cell "Cuisine" [ref=e45]
+              - cell "Buffet Porte Droite" [ref=e46]
+              - cell "ETA-CUI-BPD" [ref=e47]
+              - cell "Edit Delete" [ref=e48]:
+                - button "Edit" [ref=e49] [cursor=pointer]
+                - button "Delete" [ref=e50] [cursor=pointer]
+            - row "Étable Cuisine Buffet Porte Gauche ETA-CUI-BPG Edit Delete" [ref=e51]:
+              - cell "Étable" [ref=e52]
+              - cell "Cuisine" [ref=e53]
+              - cell "Buffet Porte Gauche" [ref=e54]
+              - cell "ETA-CUI-BPG" [ref=e55]
+              - cell "Edit Delete" [ref=e56]:
+                - button "Edit" [ref=e57] [cursor=pointer]
+                - button "Delete" [ref=e58] [cursor=pointer]
+            - row "Espace Formation Cuisine Frigo FOR-CUI-FRB Edit Delete" [ref=e67]:
+              - cell "Espace Formation" [ref=e68]
+              - cell "Cuisine" [ref=e69]
+              - cell "Frigo" [ref=e70]
+              - cell "FOR-CUI-FRB" [ref=e71]
+              - cell "Edit Delete" [ref=e72]:
+                - button "Edit" [ref=e73] [cursor=pointer]
+                - button "Delete" [ref=e74] [cursor=pointer]
+            - row "Étable Cuisine Réfrigérateur ETA-CUI-FRI Edit Delete" [ref=e75]:
+              - cell "Étable" [ref=e76]
+              - cell "Cuisine" [ref=e77]
+              - cell "Réfrigérateur" [ref=e78]
+              - cell "ETA-CUI-FRI" [ref=e79]
+              - cell "Edit Delete" [ref=e80]:
+                - button "Edit" [ref=e81] [cursor=pointer]
+                - button "Delete" [ref=e82] [cursor=pointer]

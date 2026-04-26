@@ -1,0 +1,19 @@
+[      58ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=8304abed:14370
+[      63ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4200/api/me:0
+[   27358ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=8304abed:14370
+[   27361ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4200/api/me:0
+[  734825ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=8304abed:14370
+[  738845ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=8304abed:14370
+[  747172ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=8304abed:14370
+[  750628ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=8304abed:14370
+[  751727ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=23e2268f:14370
+[  756792ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=23e2268f:14370
+[  808110ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=23e2268f:14370
+[  814010ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=23e2268f:14370
+[  862955ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:4200/@vite/client:864
+[  862956ms] [ERROR] WebSocket connection to 'ws://localhost:4200/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4200/@vite/client:921
+[  863958ms] [ERROR] WebSocket connection to 'ws://localhost:4200/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4200/@vite/client:921
+[  864960ms] [ERROR] WebSocket connection to 'ws://localhost:4200/' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4200/@vite/client:921
+[  866079ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=23e2268f:14370
+[ 4692897ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=23e2268f:14370
+[ 4739795ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/JUKR/Documents/Personal/itemloop/src/frontend/.angular/cache/20.1.6/itemloop-frontend/vite/deps/chunk-WAHOY4T6.js?v=23e2268f:14370

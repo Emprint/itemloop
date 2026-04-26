@@ -1,0 +1,34 @@
+- generic [ref=e33]:
+  - navigation [ref=e34]:
+    - link "Itemloop Home" [ref=e36] [cursor=pointer]:
+      - /url: /
+      - img "Itemloop logo" [ref=e37]
+    - generic [ref=e38]:
+      - list [ref=e39]:
+        - listitem [ref=e40]:
+          - link "Products" [ref=e41] [cursor=pointer]:
+            - /url: /products
+        - listitem [ref=e42]:
+          - link "Cart" [ref=e43] [cursor=pointer]:
+            - /url: /cart
+        - listitem [ref=e44]:
+          - link "Locations" [ref=e45] [cursor=pointer]:
+            - /url: /locations
+        - listitem [ref=e46]:
+          - link "Users" [ref=e47] [cursor=pointer]:
+            - /url: /admin/users
+        - listitem [ref=e48]:
+          - link "Logout" [ref=e49] [cursor=pointer]:
+            - /url: "#"
+      - combobox "Language" [ref=e51]:
+        - option "English" [selected]
+        - option "Français"
+  - main [ref=e52]:
+    - generic [ref=e54]:
+      - heading "Product" [level=2] [ref=e55]
+      - button "Add Product" [ref=e56] [cursor=pointer]
+      - generic [ref=e59]:
+        - heading "Produit public Edit" [level=3] [ref=e60]:
+          - text: Produit public
+          - button "Edit" [ref=e61] [cursor=pointer]
+        - paragraph [ref=e62]: Produit public

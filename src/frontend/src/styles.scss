@@ -1,31 +1,49 @@
-/* Generic style for readonly input fields */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #22c55e;
+  --primary-dark: #16a34a;
+  --sidebar-bg: #111827;
+  --bg: #f9fafb;
+  --card-bg: #ffffff;
+  --card-border: #e5e7eb;
+  --text: #111827;
+  --text-muted: #6b7280;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h2 {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+h3 {
+  margin-top: 0;
+  font-weight: 600;
+}
+
+h4 {
+  margin-top: 0;
+  font-weight: 600;
+}
+
 input[readonly] {
   background-color: #f5f5f5;
   color: #888;
   border: 1px dashed #ccc;
   cursor: not-allowed;
-}
-:root {
-  --primary-color: #28a745;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-}
-
-body {
-  margin: 0;
-}
-
-h2 {
-  margin: 1rem 0;
-}
-
-h3 {
-  margin-top: 0;
-}
-
-main {
-  padding: 1rem;
-  padding-top: 73px;
-  box-sizing: border-box;
 }
 
 input[type='text'],
@@ -33,16 +51,23 @@ input[type='email'],
 input[type='password'],
 input[type='number'],
 textarea,
-select,
-button {
+select {
   width: 100%;
   box-sizing: border-box;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.95rem;
   background: #fff;
+  color: var(--text);
+  transition: border-color 0.15s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+  }
 }
 
 button {
@@ -50,124 +75,108 @@ button {
   background: var(--primary-color);
   color: #fff;
   border: none;
-  padding: 0.75rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
   cursor: pointer;
-  margin-bottom: 1rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background 0.15s;
+  margin-bottom: 0;
+
+  &:hover:not(:disabled) {
+    background: var(--primary-dark);
+  }
 
   &.compact-button {
-    padding: 0.2em 0.6em;
-    font-size: 0.85em;
+    padding: 0.25em 0.7em;
+    font-size: 0.82em;
     margin-right: 0.3em;
     margin-bottom: 0;
 
     &.danger {
-      background: #e53935;
-      border-color: #c62828;
-      color: #fff;
-
-      &:hover { background: #c62828; }
+      background: #ef4444;
+      &:hover:not(:disabled) { background: #dc2626; }
     }
+  }
+
+  &.btn-outline {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text);
+    &:hover:not(:disabled) { background: #f3f4f6; }
   }
 }
 
 button:disabled {
-  background: #e0e0e0 !important;
-  color: #888 !important;
-  border: 1px solid #ccc !important;
+  background: #e5e7eb !important;
+  color: #9ca3af !important;
+  border-color: #e5e7eb !important;
   cursor: not-allowed !important;
   opacity: 1 !important;
 }
 
-.form-card {
-  max-width: 400px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  font-family: inherit;
+// Card component
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
 
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
+// Auth form card (centered)
+.form-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+
+  h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
   }
 
-  input,
-  button,
-  select {
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text);
     margin-bottom: 1rem;
   }
 
-  .error {
-    color: #d00;
-    margin-top: 1rem;
-  }
-
-  .field-error {
-    color: #d00;
-    font-size: 0.8em;
-    margin-top: 0.2rem;
-    display: block;
-  }
-
   .link {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-muted);
     margin-top: 1rem;
-    font-size: 0.95rem;
 
     a {
       color: var(--primary-color);
-      text-decoration: underline;
+      text-decoration: none;
       font-weight: 500;
+      margin-left: 0.25rem;
+      &:hover { text-decoration: underline; }
     }
   }
 }
 
-select {
-  padding-right: 2.2em;
-  background: #fff;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2328a745' stroke-width='2'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.8em center;
-  background-size: 1em;
+// Error
+.error {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
 }
 
-// Common table for all item lists (users, locations, etc.)
-.item-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1em;
-  display: block;
-  overflow-x: auto;
-  white-space: nowrap;
-
-  th,
-  td {
-    padding: 0.4em 0.7em;
-    border-bottom: 1px solid #eee;
-    text-align: left;
-  }
-
-  th {
-    background: #f8f8f8;
-    font-weight: 600;
-  }
-
-  td {
-    font-size: 0.98em;
-  }
-}
-
+// Buttons row
 .buttons-list {
   display: flex;
-  gap: 1rem;
-  align-content: stretch;
+  gap: 0.75rem;
   margin-top: 1rem;
 
   button {
@@ -176,17 +185,88 @@ select {
   }
 }
 
-/* Product list thumbnail */
+// Product list
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
 .product-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.15s;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-info {
+    padding: 1rem;
+
+    h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+  }
 }
 
 .thumbnail {
   width: 100%;
   height: 160px;
   object-fit: cover;
-  border-radius: 6px;
   display: block;
+}
+
+// Help text
+.help-text {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 400;
+  margin-bottom: 0.2rem;
+}
+
+// Tables
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: #f9fafb;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 0.925rem;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover td {
+    background: #fafafa;
+  }
 }

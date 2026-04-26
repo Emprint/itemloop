@@ -1,0 +1,21 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - link "Itemloop Home" [ref=e6] [cursor=pointer]:
+      - /url: /
+      - img "Itemloop logo" [ref=e7]
+    - generic [ref=e8]:
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - link "Products" [ref=e11] [cursor=pointer]:
+            - /url: /products
+        - listitem [ref=e12]:
+          - link "Cart" [ref=e13] [cursor=pointer]:
+            - /url: /cart
+        - listitem [ref=e14]:
+          - link "Login" [ref=e15] [cursor=pointer]:
+            - /url: /auth/login
+      - combobox "Language" [ref=e17]:
+        - option "English" [selected]
+        - option "Français"
+  - main [ref=e18]:
+    - heading "Product" [level=2] [ref=e21]

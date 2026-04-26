@@ -1,0 +1,97 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - link "Itemloop Home" [ref=e6] [cursor=pointer]:
+      - /url: /
+      - img "Itemloop logo" [ref=e7]
+    - generic [ref=e8]:
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - link "Products" [ref=e11] [cursor=pointer]:
+            - /url: /products
+        - listitem [ref=e12]:
+          - link "Cart" [ref=e13] [cursor=pointer]:
+            - /url: /cart
+        - listitem [ref=e14]:
+          - link "Locations" [ref=e15] [cursor=pointer]:
+            - /url: /locations
+        - listitem [ref=e16]:
+          - link "Users" [ref=e17] [cursor=pointer]:
+            - /url: /admin/users
+        - listitem [ref=e18]:
+          - link "Logout" [ref=e19] [cursor=pointer]:
+            - /url: "#"
+      - combobox "Language" [ref=e21]:
+        - option "English" [selected]
+        - option "Français"
+  - main [ref=e22]:
+    - generic [ref=e24]:
+      - heading "Product" [level=2] [ref=e25]
+      - generic [ref=e34]:
+        - heading "New Product" [level=3] [ref=e35]
+        - generic [ref=e36]:
+          - generic [ref=e37]: Category
+          - generic [ref=e40]:
+            - textbox "Enter or select a category" [ref=e41]
+            - generic:
+              - img
+          - generic [ref=e42]:
+            - text: Title
+            - textbox "Title" [ref=e43]: Test Slim Product
+          - generic [ref=e44]:
+            - text: Description
+            - textbox "Description" [ref=e45]: Created by Copilot via Playwright to verify Slim backend
+          - generic [ref=e46]: Condition
+          - generic [ref=e49]:
+            - textbox "Enter or select a condition" [ref=e50]
+            - generic:
+              - img
+          - generic [ref=e51]:
+            - text: Quantity
+            - spinbutton "Quantity" [active] [ref=e52]: "3"
+          - generic [ref=e53]:
+            - text: Length (cm) Front-to-back (depth)
+            - spinbutton "Length (cm) Front-to-back (depth)" [ref=e54]: "0"
+          - generic [ref=e55]:
+            - text: Width (cm) Left-to-right; for round items (screws, rods, axes), enter diameter.
+            - spinbutton "Width (cm) Left-to-right; for round items (screws, rods, axes), enter diameter." [ref=e56]: "0"
+          - generic [ref=e57]:
+            - text: Height (cm) Bottom-to-top (vertical)
+            - spinbutton "Height (cm) Bottom-to-top (vertical)" [ref=e58]: "0"
+          - generic [ref=e59]:
+            - text: Estimated Value
+            - spinbutton "Estimated Value" [ref=e60]: "0"
+          - generic [ref=e61]: Color
+          - generic [ref=e64]:
+            - textbox "Enter or select a color" [ref=e65]
+            - generic:
+              - img
+          - generic [ref=e66]:
+            - text: Weight (kg)
+            - spinbutton "Weight (kg)" [ref=e67]: "0"
+          - generic [ref=e68]:
+            - text: Destination
+            - combobox "Destination" [ref=e69]:
+              - option "Select a destination" [selected]
+              - option "Review"
+              - option "Keep"
+              - option "Reuse"
+              - option "Sell"
+              - option "Donate"
+              - option "Recycle"
+              - option "Trash"
+          - generic [ref=e70]:
+            - text: "Visibility Private: only visible to members and editors"
+            - 'combobox "Visibility Private: only visible to members and editors" [ref=e71]':
+              - option "Private" [selected]
+              - option "Public"
+          - generic [ref=e72]:
+            - text: Location
+            - combobox "Location" [ref=e73]:
+              - option "Select location"
+              - option "CUI - Buffet Porte Droite"
+              - option "CUI - Buffet Porte Gauche"
+              - option "CUI - Frigo" [selected]
+              - option "CUI - Réfrigérateur"
+          - generic [ref=e74]:
+            - button "Cancel" [ref=e75] [cursor=pointer]
+            - button "Save" [disabled] [ref=e76]

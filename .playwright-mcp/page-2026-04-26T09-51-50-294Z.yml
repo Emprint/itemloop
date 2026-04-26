@@ -1,0 +1,70 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - link "Itemloop Home" [ref=e12] [cursor=pointer]:
+      - /url: /
+      - img "Itemloop logo" [ref=e7]
+    - generic [ref=e8]:
+      - list [ref=e13]:
+        - listitem [ref=e14]:
+          - link "Products" [ref=e15] [cursor=pointer]:
+            - /url: /products
+        - listitem [ref=e16]:
+          - link "Cart" [ref=e17] [cursor=pointer]:
+            - /url: /cart
+        - listitem [ref=e18]:
+          - link "Locations" [ref=e19] [cursor=pointer]:
+            - /url: /locations
+        - listitem [ref=e20]:
+          - link "Users" [ref=e21] [cursor=pointer]:
+            - /url: /admin/users
+        - listitem [ref=e22]:
+          - link "Logout" [ref=e23] [cursor=pointer]:
+            - /url: "#"
+      - combobox "Language" [ref=e10]:
+        - option "English" [selected]
+        - option "Français"
+  - main [ref=e11]:
+    - generic [ref=e25]:
+      - navigation [ref=e26]:
+        - button "Shelf Management" [ref=e27] [cursor=pointer]
+        - button "Zone Management" [ref=e28] [cursor=pointer]
+        - button "Building Management" [ref=e29] [cursor=pointer]
+      - generic [ref=e129]:
+        - generic [ref=e130]:
+          - button "New Building" [ref=e131] [cursor=pointer]
+          - table [ref=e132]:
+            - rowgroup [ref=e133]:
+              - row "Name Code Actions" [ref=e134]:
+                - columnheader "Name" [ref=e135]
+                - columnheader "Code" [ref=e136]
+                - columnheader "Actions" [ref=e137]
+            - rowgroup [ref=e138]:
+              - row "Espace Administratif BUR Edit Delete" [ref=e139]:
+                - cell "Espace Administratif" [ref=e140]
+                - cell "BUR" [ref=e141]
+                - cell "Edit Delete" [ref=e142]:
+                  - button "Edit" [ref=e143] [cursor=pointer]
+                  - button "Delete" [ref=e144] [cursor=pointer]
+              - row "Espace Formation FOR Edit Delete" [ref=e145]:
+                - cell "Espace Formation" [ref=e146]
+                - cell "FOR" [ref=e147]
+                - cell "Edit Delete" [ref=e148]:
+                  - button "Edit" [ref=e149] [cursor=pointer]
+                  - button "Delete" [ref=e150] [cursor=pointer]
+              - row "Étable ETA Edit Delete" [ref=e151]:
+                - cell "Étable" [ref=e152]
+                - cell "ETA" [ref=e153]
+                - cell "Edit Delete" [ref=e154]:
+                  - button "Edit" [ref=e155] [cursor=pointer]
+                  - button "Delete" [ref=e156] [cursor=pointer]
+              - row "Hangar Test HNG Edit Delete" [ref=e157]:
+                - cell "Hangar Test" [ref=e158]
+                - cell "HNG" [ref=e159]
+                - cell "Edit Delete" [ref=e160]:
+                  - button "Edit" [ref=e161] [cursor=pointer]
+                  - button "Delete" [active] [ref=e162] [cursor=pointer]
+        - generic [ref=e165]:
+          - paragraph [ref=e166]: "Are you sure you want to delete the building: Hangar Test?"
+          - generic [ref=e167]:
+            - button "Cancel" [ref=e168] [cursor=pointer]
+            - button "Delete" [ref=e169] [cursor=pointer]

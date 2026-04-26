@@ -1,0 +1,72 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - link "Itemloop Home" [ref=e6] [cursor=pointer]:
+      - /url: /
+      - img "Itemloop logo" [ref=e7]
+    - generic [ref=e8]:
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - link "Products" [ref=e11] [cursor=pointer]:
+            - /url: /products
+        - listitem [ref=e12]:
+          - link "Cart" [ref=e13] [cursor=pointer]:
+            - /url: /cart
+        - listitem [ref=e14]:
+          - link "Locations" [ref=e15] [cursor=pointer]:
+            - /url: /locations
+        - listitem [ref=e16]:
+          - link "Users" [ref=e17] [cursor=pointer]:
+            - /url: /admin/users
+        - listitem [ref=e18]:
+          - link "Logout" [ref=e19] [cursor=pointer]:
+            - /url: "#"
+      - combobox "Language" [ref=e21]:
+        - option "English" [selected]
+        - option "Français"
+  - main [ref=e22]:
+    - generic [ref=e24]:
+      - heading "Product" [level=2] [ref=e25]
+      - button "Add Product" [ref=e26] [cursor=pointer]
+      - generic [ref=e27]:
+        - generic [ref=e29]:
+          - heading "Test product A Edit Delete" [level=3] [ref=e30]:
+            - text: Test product A
+            - button "Edit" [ref=e31] [cursor=pointer]
+            - button "Delete" [ref=e32] [cursor=pointer]
+          - paragraph [ref=e33]: Description
+        - generic [ref=e35]:
+          - heading "Produit public Edit Delete" [level=3] [ref=e36]:
+            - text: Produit public
+            - button "Edit" [ref=e37] [cursor=pointer]
+            - button "Delete" [ref=e38] [cursor=pointer]
+          - paragraph [ref=e39]: Produit public
+        - generic [ref=e41]:
+          - heading "Raclette Edit Delete" [level=3] [ref=e42]:
+            - text: Raclette
+            - button "Edit" [ref=e43] [cursor=pointer]
+            - button "Delete" [ref=e44] [cursor=pointer]
+          - paragraph [ref=e45]: Raclette moisie
+        - generic [ref=e47]:
+          - heading "Fromage fondu Edit Delete" [level=3] [ref=e48]:
+            - text: Fromage fondu
+            - button "Edit" [ref=e49] [cursor=pointer]
+            - button "Delete" [ref=e50] [cursor=pointer]
+          - paragraph [ref=e51]: Fromage fondu
+        - generic [ref=e53]:
+          - heading "Tournevis Edit Delete" [level=3] [ref=e54]:
+            - text: Tournevis
+            - button "Edit" [ref=e55] [cursor=pointer]
+            - button "Delete" [ref=e56] [cursor=pointer]
+          - paragraph [ref=e57]: Rouge
+        - generic [ref=e59]:
+          - heading "Tool 1 Edit Delete" [level=3] [ref=e60]:
+            - text: Tool 1
+            - button "Edit" [ref=e61] [cursor=pointer]
+            - button "Delete" [ref=e62] [cursor=pointer]
+          - paragraph
+        - generic [ref=e64]:
+          - heading "Marteau de test Edit Delete" [level=3] [ref=e65]:
+            - text: Marteau de test
+            - button "Edit" [ref=e66] [cursor=pointer]
+            - button "Delete" [ref=e67] [cursor=pointer]
+          - paragraph [ref=e68]: Un marteau pour tester

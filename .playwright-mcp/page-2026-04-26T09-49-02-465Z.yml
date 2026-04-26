@@ -1,0 +1,74 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - link "Itemloop Home" [ref=e6] [cursor=pointer]:
+      - /url: /
+      - img "Itemloop logo" [ref=e7]
+    - generic [ref=e8]:
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - link "Products" [ref=e11] [cursor=pointer]:
+            - /url: /products
+        - listitem [ref=e12]:
+          - link "Cart" [ref=e13] [cursor=pointer]:
+            - /url: /cart
+        - listitem [ref=e14]:
+          - link "Locations" [ref=e15] [cursor=pointer]:
+            - /url: /locations
+        - listitem [ref=e16]:
+          - link "Users" [ref=e17] [cursor=pointer]:
+            - /url: /admin/users
+        - listitem [ref=e18]:
+          - link "Logout" [ref=e19] [cursor=pointer]:
+            - /url: "#"
+      - combobox "Language" [ref=e21]:
+        - option "English" [selected]
+        - option "Français"
+  - main [ref=e22]:
+    - generic [ref=e24]:
+      - navigation [ref=e25]:
+        - button "Shelf Management" [active] [ref=e26] [cursor=pointer]
+        - button "Zone Management" [ref=e27] [cursor=pointer]
+        - button "Building Management" [ref=e28] [cursor=pointer]
+      - generic [ref=e215]:
+        - button "New Shelf" [ref=e216] [cursor=pointer]
+        - table [ref=e217]:
+          - rowgroup [ref=e218]:
+            - row "Building Zone Shelf Code Actions" [ref=e219]:
+              - columnheader "Building" [ref=e220]
+              - columnheader "Zone" [ref=e221]
+              - columnheader "Shelf" [ref=e222]
+              - columnheader "Code" [ref=e223]
+              - columnheader "Actions" [ref=e224]
+          - rowgroup [ref=e225]:
+            - row "Cuisine Buffet Porte Droite CUI Edit Delete" [ref=e226]:
+              - cell [ref=e227]
+              - cell "Cuisine" [ref=e228]
+              - cell "Buffet Porte Droite" [ref=e229]
+              - cell "CUI" [ref=e230]
+              - cell "Edit Delete" [ref=e231]:
+                - button "Edit" [ref=e232] [cursor=pointer]
+                - button "Delete" [ref=e233] [cursor=pointer]
+            - row "Cuisine Buffet Porte Gauche CUI Edit Delete" [ref=e234]:
+              - cell [ref=e235]
+              - cell "Cuisine" [ref=e236]
+              - cell "Buffet Porte Gauche" [ref=e237]
+              - cell "CUI" [ref=e238]
+              - cell "Edit Delete" [ref=e239]:
+                - button "Edit" [ref=e240] [cursor=pointer]
+                - button "Delete" [ref=e241] [cursor=pointer]
+            - row "Cuisine Frigo CUI Edit Delete" [ref=e242]:
+              - cell [ref=e243]
+              - cell "Cuisine" [ref=e244]
+              - cell "Frigo" [ref=e245]
+              - cell "CUI" [ref=e246]
+              - cell "Edit Delete" [ref=e247]:
+                - button "Edit" [ref=e248] [cursor=pointer]
+                - button "Delete" [ref=e249] [cursor=pointer]
+            - row "Cuisine Réfrigérateur CUI Edit Delete" [ref=e250]:
+              - cell [ref=e251]
+              - cell "Cuisine" [ref=e252]
+              - cell "Réfrigérateur" [ref=e253]
+              - cell "CUI" [ref=e254]
+              - cell "Edit Delete" [ref=e255]:
+                - button "Edit" [ref=e256] [cursor=pointer]
+                - button "Delete" [ref=e257] [cursor=pointer]

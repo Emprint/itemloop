@@ -1,0 +1,33 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - link "Itemloop Home" [ref=e6] [cursor=pointer]:
+      - /url: /
+      - img "Itemloop logo" [ref=e7]
+    - generic [ref=e8]:
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - link "Products" [ref=e11] [cursor=pointer]:
+            - /url: /products
+        - listitem [ref=e12]:
+          - link "Cart" [ref=e13] [cursor=pointer]:
+            - /url: /cart
+        - listitem [ref=e14]:
+          - link "Login" [ref=e15] [cursor=pointer]:
+            - /url: /auth/login
+      - combobox "Language" [ref=e17]:
+        - option "English" [selected]
+        - option "Français"
+  - main [ref=e18]:
+    - generic [ref=e20]:
+      - heading "Login" [level=2] [ref=e21]
+      - generic [ref=e22]:
+        - generic [ref=e23]: Email
+        - textbox "Email" [ref=e24]
+      - generic [ref=e25]:
+        - generic [ref=e26]: Password
+        - textbox "Password" [ref=e27]
+      - button "Login" [ref=e29] [cursor=pointer]
+      - generic [ref=e30]:
+        - generic [ref=e31]: Don't have an account?
+        - link "Register" [ref=e32] [cursor=pointer]:
+          - /url: /auth/register

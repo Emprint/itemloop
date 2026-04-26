@@ -1,0 +1,10 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic "Itemloop Home" [ref=e6]:
+      - img "Itemloop logo" [ref=e7]
+    - generic [ref=e8]:
+      - list
+      - combobox "Language" [ref=e10]:
+        - option "English" [selected]
+        - option "Français"
+  - main [ref=e11]

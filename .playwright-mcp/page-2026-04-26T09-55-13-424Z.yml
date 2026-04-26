@@ -1,0 +1,29 @@
+- generic [ref=e44]:
+  - navigation [ref=e45]:
+    - link "Itemloop Home" [ref=e47] [cursor=pointer]:
+      - /url: /
+      - img "Itemloop logo" [ref=e48]
+    - generic [ref=e49]:
+      - list [ref=e50]:
+        - listitem [ref=e51]:
+          - link "Products" [ref=e52] [cursor=pointer]:
+            - /url: /products
+        - listitem [ref=e53]:
+          - link "Cart" [ref=e54] [cursor=pointer]:
+            - /url: /cart
+        - listitem [ref=e55]:
+          - link "Logout" [ref=e56] [cursor=pointer]:
+            - /url: "#"
+      - combobox "Language" [ref=e58]:
+        - option "English" [selected]
+        - option "Français"
+  - main [ref=e59]:
+    - generic [ref=e61]:
+      - heading "Product" [level=2] [ref=e62]
+      - generic [ref=e63]:
+        - generic [ref=e65]:
+          - heading "Produit public" [level=3] [ref=e66]
+          - paragraph [ref=e67]: Produit public
+        - generic [ref=e69]:
+          - heading "Marteau de test" [level=3] [ref=e70]
+          - paragraph [ref=e71]: Un marteau pour tester
