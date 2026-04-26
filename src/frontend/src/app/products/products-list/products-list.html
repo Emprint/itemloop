@@ -34,6 +34,12 @@
 
     <!-- Filter chips -->
     <div class="filter-bar">
+      <select [value]="selectedCategory()" (change)="selectedCategory.set($any($event.target).value); onFilterChange()">
+        <option value="">{{ 'ALL_CATEGORIES' | translate }}</option>
+        @for (c of categoryOptions(); track c) {
+          <option [value]="c">{{ capitalize(c) }}</option>
+        }
+      </select>
       <select [value]="selectedCondition()" (change)="selectedCondition.set($any($event.target).value); onFilterChange()">
         <option value="">{{ 'ALL_CONDITIONS' | translate }}</option>
         @for (c of conditionOptions(); track c) {
@@ -44,12 +50,6 @@
         <option value="">{{ 'ALL_LOCATIONS' | translate }}</option>
         @for (l of locationOptions(); track l) {
           <option [value]="l">{{ l }}</option>
-        }
-      </select>
-      <select [value]="selectedCategory()" (change)="selectedCategory.set($any($event.target).value); onFilterChange()">
-        <option value="">{{ 'ALL_CATEGORIES' | translate }}</option>
-        @for (c of categoryOptions(); track c) {
-          <option [value]="c">{{ capitalize(c) }}</option>
         }
       </select>
     </div>
@@ -79,7 +79,6 @@
         <table class="products-table">
           <thead>
             <tr>
-              <th class="col-check"><input type="checkbox" /></th>
               <th>{{ 'PRODUCT' | translate }}</th>
               <th>{{ 'CATEGORY' | translate }}</th>
               <th>{{ 'CONDITION' | translate }}</th>
@@ -93,7 +92,6 @@
           <tbody>
             @for (product of paginatedProducts(); track product.id) {
               <tr class="product-row" (click)="viewProduct(product)">
-                <td class="col-check" (click)="$event.stopPropagation()"><input type="checkbox" /></td>
                 <td class="product-cell">
                   <div class="thumb-wrap">
                     @if (product.images?.length) {
@@ -109,7 +107,7 @@
                     <div class="product-code">{{ productCode(product.id) }}</div>
                   </div>
                 </td>
-                <td>{{ product.category?.name ?? '—' }}</td>
+                <td>{{ capitalize(product.category?.name) || '—' }}</td>
                 <td>
                   @if (product.condition) {
                     <span class="badge {{ conditionClass(product.condition.name) }}">{{ capitalize(product.condition.name) }}</span>

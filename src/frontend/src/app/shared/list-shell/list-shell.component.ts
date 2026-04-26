@@ -21,6 +21,7 @@ export class ListShellComponent implements OnChanges {
   @Input() addable = true;
   @Input() searchable = true;
   @Input() searchPlaceholder = 'Search…';
+  @Input() countLabel = '';
   @Input() items: any[] = [];
   @Input() searchFn?: (item: any, query: string) => boolean;
 

@@ -65,6 +65,7 @@
     <app-list-shell
       [items]="users()"
       [addLabel]="'NEW_USER_BTN' | translate"
+      [countLabel]="'USERS_UNIT' | translate"
       [searchFn]="userSearchFn"
       [searchPlaceholder]="'SEARCH' | translate"
       (addClicked)="newUserForm()"

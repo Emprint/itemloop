@@ -42,6 +42,7 @@
     <app-list-shell
       [items]="buildings()"
       [addLabel]="'NEW_BUILDING_BTN' | translate"
+      [countLabel]="'BUILDINGS_UNIT' | translate"
       [searchFn]="buildingSearchFn"
       [searchPlaceholder]="'SEARCH' | translate"
       (addClicked)="newBuildingForm()"

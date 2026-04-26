@@ -50,6 +50,7 @@
     <app-list-shell
       [items]="zones()"
       [addLabel]="'NEW_ZONE_BTN' | translate"
+      [countLabel]="'ZONES_UNIT' | translate"
       [searchFn]="zoneSearchFn"
       [searchPlaceholder]="'SEARCH' | translate"
       (addClicked)="newZoneForm()"

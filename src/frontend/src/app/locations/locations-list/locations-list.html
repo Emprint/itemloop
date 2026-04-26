@@ -51,6 +51,7 @@
     <app-list-shell
       [items]="locations()"
       [addLabel]="'NEW_SHELF_BTN' | translate"
+      [countLabel]="'LOCATIONS_UNIT' | translate"
       [searchFn]="locationSearchFn"
       [searchPlaceholder]="'SEARCH' | translate"
       (addClicked)="newLocationForm()"
