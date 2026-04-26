@@ -8,8 +8,5 @@ src/frontend/src/environments/environment.prod.ts
 .playwright-mcp/
 
 # Design reference & screenshots
-mockup-*.png
 *-check.png
 *.screenshot.png
-dashboard*.png
-!mockups/dashboard*.png
