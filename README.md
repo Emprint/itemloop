@@ -3,7 +3,7 @@
 
 ## 🌍 Overview
 
-**Itemloop** is a full-stack, multilingual web application for reuse and recycling centers to manage their inventory of second-hand items. It is optimized for collaborative, community-based use, supporting desktop and mobile devices, and includes offline access via PWA features.
+**Itemloop** is a full-stack, multilingual web application for reuse and recycling centers to manage their inventory of second-hand items. It is optimized for collaborative, community-based use, supports desktop and mobile devices, and includes PWA features for offline access.
 
 This project is open source and welcomes contributions under the AGPL v3 license.
 
@@ -11,74 +11,106 @@ This project is open source and welcomes contributions under the AGPL v3 license
 
 ## 🔧 Tech Stack
 
-- **Frontend**: Angular (PWA support for installable and offline-capable app)
-- **Backend**: PHP 8+ (Laravel API)
-- **Database**: MySQL
-- **Image processing**: Server-side resizing and WebP conversion
-- **Hosting target**: Compatible with inexpensive hosting providers supporting PHP and MySQL (no need for complex cloud infrastructure)
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Angular 20+ (standalone components, signals, Angular CDK) |
+| Backend | PHP 8.2+ · **Slim Framework 4** |
+| Database | MySQL 5.7+ |
+| Image processing | Intervention Image (GD driver) — WebP conversion + thumbnails |
+| Hosting target | Shared PHP/MySQL hosting (e.g., OVH) — **no SSH required after deploy** |
+
+> ⚠️ The backend was migrated from Laravel to **Slim Framework 4** to allow fully local builds with no post-deploy server-side commands required (no `artisan`, no migrations to run on the server).
 
 ---
 
 ## 🚀 Features
-- Product CRUD (title, description, condition, quantity, value, location, barcode, date)
-- Location CRUD (structured: building, zone, shelf)
-- Image upload (multiple images per product, resizing, WebP conversion, aspect ratio preserved)
-- Separate endpoints for product data and image management
-- Filtering by condition, location, keyword
-- Authentication via Laravel Sanctum
-- Multilingual UI (French, English)
-- PWA: offline access, installable on mobile/desktop
-- Admin features: user management, location management, export to CSV/PDF
+
+- **Product CRUD** — title, description, condition, quantity, estimated value, barcode, dimensions, weight, destination, visibility
+- **Structured locations** — Building → Zone → Shelf with auto-generated, editable codes
+- **Image management** — multiple images per product, WebP conversion, thumbnail generation, drag-to-reorder, cover image (first image by sort order)
+- **Role-based access** — Customer, Editor, Admin
+- **Public / private visibility** — guests see only public products; editors/admins see all
+- **Authentication** — register, login, logout (PHP session-based)
+- **User management** (admin only)
+- **Multilingual UI** — French + English, auto-detected from browser, manually switchable
+- **Comboboxes with inline create** — colors and categories created on the fly
+- **Angular CDK drag-and-drop** for image ordering
+
+---
+
+## 🗂️ Project Structure
+
+```
+itemloop/
+├── src/
+│   ├── backend/              # Slim Framework 4 API
+│   │   ├── public/           # Web root (index.php entry point, storage/)
+│   │   │   └── storage/products/   # Uploaded images (WebP)
+│   │   └── src/
+│   │       ├── Controllers/  # ProductController, LocationController, etc.
+│   │       └── Middleware/   # Auth, Editor, Admin, OptionalAuth, CSRF
+│   └── frontend/             # Angular 20 app
+│       └── src/
+│           ├── app/          # Features: products, locations, users, auth, cart
+│           └── assets/i18n/  # en.json, fr.json
+├── deploy_package/           # Built output after running deploy.sh
+├── deploy.sh                 # Local build script — no SSH needed
+└── REQUIREMENTS.md           # User stories and roadmap
+```
 
 ---
 
 ## 🛠️ Getting Started
 
+### Prerequisites
+
+- PHP 8.2+ with the **GD extension** enabled
+- Composer
+- Node.js 18+ and npm
+- MySQL 5.7+
+
 ### 1. Clone the repository
+
 ```sh
 git clone https://github.com/Emprint/itemloop.git
-cd itemloop/src/api
+cd itemloop
 ```
 
-### 2. Install backend dependencies
+### 2. Backend setup
+
 ```sh
+cd src/backend
 composer install
-```
-
-### 3. Set up environment
-
-**Tip:** Developers can use the [DevDB extension](https://marketplace.visualstudio.com/items?itemName=damms005.devdb) to manage the MySQL database directly from within Visual Studio Code.
-Copy `.env.example` to `.env` and set your database credentials:
-```sh
 cp .env.example .env
+# Edit .env — set DB_HOST, DB_NAME, DB_USER, DB_PASS
 ```
-Edit `.env` and set `DB_USERNAME` and `DB_PASSWORD`.
 
-### 4. Generate app key
+> **Tip:** The [DevDB VS Code extension](https://marketplace.visualstudio.com/items?itemName=damms005.devdb) lets you browse and query the MySQL database directly from the editor.
+
+Import the database schema (first time only):
+
 ```sh
-php artisan key:generate
+mysql -u youruser -p yourdb < schema.sql
 ```
 
-### 5. Run migrations
-```sh
-php artisan migrate
-```
+Start the backend dev server:
 
-### 6. Start the backend server
-For Laravel 11+:
 ```sh
 php -S localhost:8000 -t public
 ```
 
-### 7. Frontend setup (Angular)
-Navigate to the frontend directory (to be created):
+### 3. Frontend setup
+
 ```sh
-cd ../frontend
+cd src/frontend
 npm install
-npm start
+npm start        # runs ng serve → http://localhost:4200
 ```
 
-**Before committing changes, ensure the solution is formatted and linted:**
+The dev server proxies `/api` and `/storage` to `http://localhost:8000` via `proxy.conf.json`.  
+If you change `proxy.conf.json`, restart `ng serve` to pick up the new proxy rules.
+
+**Before committing, format and lint:**
 
 ```sh
 npx prettier --write src
@@ -87,56 +119,122 @@ ng lint
 
 ---
 
-## 📋 API Endpoints
+## 🔌 API Reference
 
-### Products
-- `GET /api/products` — List products
-- `GET /api/products/{id}` — Get product details
-- `POST /api/products` — Create product
-- `PUT /api/products/{id}` — Update product
-- `DELETE /api/products/{id}` — Delete product
-
-### Product Images
-- `POST /api/products/{id}/images` — Add images to product (multipart/form-data, field: `images[]`)
-- `DELETE /api/products/{id}/images/{image_id}` — Remove image from product
-
-### Locations
-- `GET /api/locations` — List locations
-- `POST /api/locations` — Create location
-- `PUT /api/locations/{id}` — Update location
-- `DELETE /api/locations/{id}` — Delete location
+All routes are prefixed with `/api`.
 
 ### Authentication
-- Register: `POST /api/register`
-- Login: `POST /api/login`
-- Logout: `POST /api/logout`
+
+| Method | Path | Auth required | Description |
+|--------|------|:---:|-------------|
+| POST | `/register` | — | Register a new account |
+| POST | `/login` | — | Login |
+| GET | `/logout` | ✅ | Logout |
+| GET | `/me` | — | Returns current user info (or `null`) |
+
+### Products
+
+| Method | Path | Auth required | Description |
+|--------|------|:---:|-------------|
+| GET | `/products` | optional | List products — all for editors/admins, public-only for guests |
+| GET | `/products/{id}` | optional | Get a single product |
+| POST | `/products` | Editor+ | Create product |
+| PUT | `/products/{id}` | Editor+ | Update product |
+| DELETE | `/products/{id}` | Editor+ | Delete product |
+
+### Product Images
+
+| Method | Path | Auth required | Description |
+|--------|------|:---:|-------------|
+| POST | `/products/{id}/images` | Editor+ | Upload images (`multipart/form-data`, field: `images[]`) |
+| PATCH | `/products/{id}/images/reorder` | Editor+ | Reorder images — body: `{"ids":[3,1,2]}` |
+| DELETE | `/products/{id}/images/{image_id}` | Editor+ | Delete image |
+
+### Locations
+
+| Method | Path | Auth required | Description |
+|--------|------|:---:|-------------|
+| GET | `/buildings` | — | List buildings |
+| POST | `/buildings` | Editor+ | Create building |
+| PUT | `/buildings/{id}` | Editor+ | Update building |
+| DELETE | `/buildings/{id}` | Editor+ | Delete building |
+| GET | `/zones` | — | List zones |
+| POST | `/zones` | Editor+ | Create zone |
+| PUT | `/zones/{id}` | Editor+ | Update zone |
+| DELETE | `/zones/{id}` | Editor+ | Delete zone |
+| GET | `/locations` | — | List locations (shelf level) |
+| POST | `/locations` | Editor+ | Create location |
+| PUT | `/locations/{id}` | Editor+ | Update location |
+| DELETE | `/locations/{id}` | Editor+ | Delete location |
+
+### Users *(Admin only)*
+
+| Method | Path | Auth required | Description |
+|--------|------|:---:|-------------|
+| GET | `/users` | Admin | List all users |
+| POST | `/users/save` | Admin | Create or update a user |
+| POST | `/users/delete` | Admin | Delete a user |
+
+### Metadata
+
+| Method | Path | Auth required | Description |
+|--------|------|:---:|-------------|
+| GET | `/product-conditions` | — | List conditions |
+| POST | `/product-conditions` | — | Create condition |
+| GET | `/product-colors` | — | List colors |
+| POST | `/product-colors` | — | Create color |
 
 ---
 
 ## 🖼️ Image Handling
-- Multiple images per product
-- Images resized on upload to max 1920x1920 px
-- Images converted to WebP
-- Optimized for fast load and reduced hosting usage
+
+| Property | Value |
+|----------|-------|
+| Accepted formats | JPEG, PNG, WebP, GIF |
+| Max upload size | 4 MB per image |
+| Full image | Resized to max **1920×1920 px**, WebP quality 90 |
+| Thumbnail | Resized to max **400×400 px**, WebP quality 80 |
+| Storage | `src/backend/public/storage/products/` |
+| URL | `/storage/products/{name}.webp` / `{name}_thumb.webp` |
+| Cover image | First image by `sort_order` — drag to reorder in the form |
+| Delete | Removes both full-size and thumbnail files from disk |
 
 ---
 
-## 📁 Notes and Constraints
-- Internationalization: French and English, auto-detect by browser, user override
-- Locations: Building → Zone → Shelf, managed by admins
-- Images: stored in `storage/app/public/products`, served via `public/storage/products`
-- PWA: offline access, sync when reconnected
+## 🚢 Deployment (OVH Shared Hosting)
+
+No SSH access is required after uploading files.
+
+```sh
+./deploy.sh
+```
+
+This script builds the Angular frontend (production mode) and assembles the `deploy_package/` folder. Upload via FTP:
+
+- `deploy_package/frontend/` → your public web root (e.g., `www/`)
+- `deploy_package/backend/` → a directory outside the public root (e.g., `api/`)
+
+Configure the backend `.env` on the server with your hosting MySQL credentials.
+
+---
+
+## 📋 Notes
+
+- **Roles**: Customer (browse public items, cart), Editor (full product/location CRUD), Admin (everything + user management)
+- **Password policy**: min 8 characters, at least 1 letter, 1 digit, 1 special character
+- **Passwords**: hashed with PHP `password_hash()` (bcrypt / `PASSWORD_DEFAULT`)
+- **Sessions**: PHP native session handling (no JWT, no Sanctum)
+- **CSRF**: token-based protection on mutating API routes
 
 ---
 
 ## 🔐 License
+
 This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
-You are free to use, modify, and redistribute this software under the following conditions:
-
-- Any modifications must be published under the same license (AGPL-3.0).
-- If you run the app as a service (e.g., website), the source code must be made available to users.
-- Commercial use is allowed for your own operations, but reselling the code under a proprietary license is strictly forbidden.
+- Any modifications must be published under the same license.
+- If you run the app as a network service, the source code must be made available to users.
+- Commercial use is permitted for your own operations; reselling under a proprietary license is not.
 
 See [LICENSE](./LICENSE) for full terms.
 

@@ -1,28 +1,29 @@
 #!/bin/bash
 
-
 # Prepare deploy folder
 rm -rf deploy_package
 mkdir -p deploy_package/frontend
 mkdir -p deploy_package/backend
 
-# Build Angular frontend (outputPath set in angular.json)
+# Build Angular frontend
 cd src/frontend
 npm install
 ng build --configuration production
 cd ../..
 
-# Build Laravel backend
+# Install Slim backend dependencies (production only, no dev)
 cd src/backend
 composer install --optimize-autoloader --no-dev
-php artisan config:cache
-php artisan route:cache
 cd ../..
 
-# Copy backend files (excluding node_modules, .git, .env, etc.)
+# Copy backend files (excluding dev artifacts)
 rsync -av --exclude='node_modules' --exclude='.git' --exclude='.env*' src/backend/ deploy_package/backend/
 
-# Optional: Export database (uncomment and set credentials if needed)
-# mysqldump --no-tablespaces -u itemloopuser -pyourpassword itemloop > deploy_package/database.sql
+# Optional: Export database schema/data (uncomment and set credentials if needed)
+# mysqldump --no-tablespaces -u itemloopuser -p itemloop > deploy_package/database.sql
 
-echo "Build complete. Upload deploy_package to your server via FTP or SCP."
+echo ""
+echo "✅ Build complete."
+echo "Upload deploy_package/frontend/ to your web root (e.g. www/) via FTP."
+echo "Upload deploy_package/backend/ to a directory outside the web root (e.g. api/) via FTP."
+echo "Create a .env file in the backend directory on the server with your MySQL credentials."
