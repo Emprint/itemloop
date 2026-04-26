@@ -95,6 +95,13 @@ button:disabled {
     margin-top: 1rem;
   }
 
+  .field-error {
+    color: #d00;
+    font-size: 0.8em;
+    margin-top: 0.2rem;
+    display: block;
+  }
+
   .link {
     display: flex;
     gap: 0.5rem;

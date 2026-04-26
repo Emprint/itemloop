@@ -3,14 +3,23 @@
   <div>
     <label for="name">{{ 'NAME' | translate }}</label>
     <input type="text" formControlName="name" id="name" required />
+    @if (serverErrors()['name']) {
+      <small class="field-error">{{ serverErrors()['name'][0] }}</small>
+    }
   </div>
   <div>
     <label for="email">{{ 'EMAIL' | translate }}</label>
     <input type="email" formControlName="email" id="email" required />
+    @if (serverErrors()['email']) {
+      <small class="field-error">{{ serverErrors()['email'][0] }}</small>
+    }
   </div>
   <div>
     <label for="password">{{ 'PASSWORD' | translate }}</label>
     <input type="password" formControlName="password" id="password" required />
+    @if (serverErrors()['password']) {
+      <small class="field-error">{{ serverErrors()['password'][0] }}</small>
+    }
     <small class="helper-text">
       {{ 'PASSWORD_HELPER' | translate }}
       <ul>

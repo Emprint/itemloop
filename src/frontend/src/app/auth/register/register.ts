@@ -22,6 +22,7 @@ export class Register {
 
   form: FormGroup;
   error = signal('');
+  serverErrors = signal<Record<string, string[]>>({});
 
   constructor() {
     this.form = this.fb.group({
@@ -60,13 +61,16 @@ export class Register {
         this.router.navigate(['/products']);
       },
       error: (err) => {
-        let msg = err?.error?.errors
-          ? Object.values(err.error.errors).join(' ')
-          : err?.error?.message || 'ERRORS.REGISTRATION_FAILED';
-        if (msg === 'The email has already been taken.') {
-          msg = 'ERRORS.EMAIL_TAKEN';
+        if (err?.error?.error === 'ERROR_VALIDATION' && err?.error?.errors) {
+          this.serverErrors.set(err.error.errors);
+          this.error.set('');
+        } else {
+          this.serverErrors.set({});
+          const msg = err?.error?.message || 'ERRORS.REGISTRATION_FAILED';
+          this.error.set(
+            msg === 'The email has already been taken.' ? 'ERRORS.EMAIL_TAKEN' : msg,
+          );
         }
-        this.error.set(msg);
       },
     });
   }

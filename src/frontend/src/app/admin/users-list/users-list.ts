@@ -30,6 +30,7 @@ export class UsersList implements OnInit {
   showDeleteModal = false;
   userToDelete: User | null = null;
   errorMessage = signal<string | null>(null);
+  serverErrors = signal<Record<string, string[]>>({});
 
   constructor() {
     this.form = this.fb.group({
@@ -73,6 +74,7 @@ export class UsersList implements OnInit {
       }
       return;
     }
+    this.serverErrors.set({});
     this.userService.saveUser(this.form.value).subscribe({
       next: (user) => {
         if (user.id === this.authService.user()?.id && this.form.get('password')?.value) {
@@ -88,7 +90,10 @@ export class UsersList implements OnInit {
       },
       error: (err) => {
         const code = err?.error?.error;
-        if (code) {
+        if (code === 'ERROR_VALIDATION' && err?.error?.errors) {
+          this.serverErrors.set(err.error.errors);
+          this.errorMessage.set(null);
+        } else if (code) {
           this.errorMessage.set(this.translate.instant('ERRORS.' + code));
         } else {
           this.errorMessage.set(this.translate.instant('ERRORS.FAILED_SAVE_USER'));
@@ -145,6 +150,7 @@ export class UsersList implements OnInit {
   cancel() {
     this.selectedUser = null;
     this.showForm = false;
+    this.serverErrors.set({});
     this.resetForm();
   }
 

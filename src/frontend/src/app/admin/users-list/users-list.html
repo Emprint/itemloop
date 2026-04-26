@@ -17,9 +17,15 @@
       <form [formGroup]="form" (ngSubmit)="saveUser()" autocomplete="off">
         <label for="name">{{ 'NAME' | translate }}</label>
         <input formControlName="name" id="name" type="text" required autocomplete="off" />
+        @if (serverErrors()['name']) {
+          <small class="field-error">{{ serverErrors()['name'][0] }}</small>
+        }
 
         <label for="email">{{ 'EMAIL' | translate }}</label>
         <input formControlName="email" id="email" type="email" required autocomplete="off" />
+        @if (serverErrors()['email']) {
+          <small class="field-error">{{ serverErrors()['email'][0] }}</small>
+        }
 
         <label for="role">{{ 'ROLE' | translate }}</label>
         <select formControlName="role" id="role" autocomplete="off">
@@ -43,6 +49,9 @@
             {{ showPassword ? ('HIDE' | translate) : ('SHOW' | translate) }}
           </button>
         </div>
+        @if (serverErrors()['password']) {
+          <small class="field-error">{{ serverErrors()['password'][0] }}</small>
+        }
 
         <div class="buttons-list">
           <button type="button" (click)="cancel()">{{ 'CANCEL' | translate }}</button>
