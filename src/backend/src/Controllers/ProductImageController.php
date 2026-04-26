@@ -76,6 +76,7 @@ class ProductImageController
 
             $createdImages[] = [
                 'id'     => (int) $db->lastInsertId(),
+                'url'    => '/storage/products/' . $webpName,
                 'path'   => 'storage/products/' . $webpName,
                 'format' => 'webp',
                 'width'  => $img->width(),

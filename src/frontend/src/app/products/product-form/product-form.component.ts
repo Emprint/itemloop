@@ -23,7 +23,7 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { Product } from '../product.service';
+import { Product, ProductService, Image } from '../product.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { inject } from '@angular/core';
 import { LocationService, Location } from '../../locations/locations-list/location.service';
@@ -84,8 +84,11 @@ export class ProductFormComponent implements OnChanges, OnInit {
   private locationService = inject(LocationService);
   private colorService = inject(ProductColorService);
   private conditionService = inject(ProductConditionService);
+  private productService = inject(ProductService);
   locations = signal<Location[]>([]);
   categories = signal<{ id: number; name: string }[]>([]);
+  images = signal<Image[]>([]);
+  imageError = signal<string | null>(null);
   form: FormGroup;
 
   constructor() {
@@ -118,7 +121,9 @@ export class ProductFormComponent implements OnChanges, OnInit {
     if (this.product) {
       this.form.patchValue({
         ...this.product,
+        location_id: this.product.location?.id ?? this.product.location_id ?? 0,
       });
+      this.images.set(this.product.images ?? []);
     }
     let loaded = 0;
     const checkLoaded = () => {
@@ -159,6 +164,28 @@ export class ProductFormComponent implements OnChanges, OnInit {
 
   get selectedProduct(): Product | null {
     return this.product;
+  }
+
+  onImageFilesSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length || !this.product) return;
+    const files = Array.from(input.files);
+    this.imageError.set(null);
+    this.productService.uploadImages(this.product.id, files).subscribe({
+      next: (res) => {
+        this.images.update(imgs => [...imgs, ...res.images]);
+        input.value = '';
+      },
+      error: () => this.imageError.set('Image upload failed.'),
+    });
+  }
+
+  deleteImage(imageId: number) {
+    if (!this.product) return;
+    this.productService.deleteImage(this.product.id, imageId).subscribe({
+      next: () => this.images.update(imgs => imgs.filter(i => i.id !== imageId)),
+      error: () => this.imageError.set('Failed to delete image.'),
+    });
   }
 
   capitalize(value?: string): string {

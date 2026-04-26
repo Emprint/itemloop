@@ -29,6 +29,9 @@
                 <button class="compact-button" (click)="editProduct(product)">
                   {{ 'EDIT' | translate }}
                 </button>
+                <button class="compact-button danger" (click)="deleteProduct(product)">
+                  {{ 'DELETE' | translate }}
+                </button>
               }
             </h3>
             <p>{{ product.description }}</p>

@@ -36,7 +36,9 @@
     "LOCATION_REQUIRED": "L'emplacement est requis.",
     "CATEGORY": "Catégorie",
     "ESTIMATED_VALUE": "Valeur estimée",
-    "ESTIMATED_VALUE_ERROR": "La valeur estimée doit être supérieure ou égale à 0."
+    "ESTIMATED_VALUE_ERROR": "La valeur estimée doit être supérieure ou égale à 0.",
+    "IMAGES": "Images",
+    "UPLOAD_IMAGES": "Importer des images…"
   },
   "USER_MANAGEMENT": "Gestion des utilisateurs",
   "EDIT": "Modifier",

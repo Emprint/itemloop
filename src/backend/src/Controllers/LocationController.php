@@ -141,7 +141,7 @@ class LocationController
     {
         $sql = 'SELECT l.*,
                     z.name AS zone_name, z.code AS zone_code,
-                    b.id AS building_id, b.name AS building_name, b.code AS building_code
+                    b.id AS b_id, b.name AS b_name, b.code AS b_code
                 FROM locations l
                 LEFT JOIN zones     z ON z.id = l.zone_id
                 LEFT JOIN buildings b ON b.id = z.building_id
@@ -289,7 +289,7 @@ class LocationController
     {
         $sql = 'SELECT l.*,
                     z.name AS zone_name, z.code AS zone_code,
-                    b.id AS building_id, b.name AS building_name, b.code AS building_code
+                    b.id AS b_id, b.name AS b_name, b.code AS b_code
                 FROM locations l
                 LEFT JOIN zones     z ON z.id = l.zone_id
                 LEFT JOIN buildings b ON b.id = z.building_id
@@ -314,16 +314,25 @@ class LocationController
 
     private function hydrateLocation(array $row): array
     {
+        $building = !empty($row['b_id']) ? [
+            'id'   => (int) $row['b_id'],
+            'name' => $row['b_name'],
+            'code' => $row['b_code'],
+        ] : null;
+
         return [
             'id'          => (int) $row['id'],
             'shelf'       => $row['shelf'],
             'code'        => $row['code'],
             'zone_id'     => $row['zone_id'] ? (int) $row['zone_id'] : null,
-            'building_id' => $row['building_id'] ? (int) $row['building_id'] : null,
-            'zone'        => $row['zone_id'] ? ['id' => (int) $row['zone_id'], 'name' => $row['zone_name'], 'code' => $row['zone_code']] : null,
-            'building'    => isset($row['building_id']) && $row['building_id']
-                ? ['id' => (int) $row['building_id'], 'name' => $row['building_name'], 'code' => $row['building_code']]
-                : null,
+            'building_id' => $building ? $building['id'] : null,
+            'zone'        => $row['zone_id'] ? [
+                'id'       => (int) $row['zone_id'],
+                'name'     => $row['zone_name'],
+                'code'     => $row['zone_code'],
+                'building' => $building,
+            ] : null,
+            'building'    => $building,
             'created_at'  => $row['created_at'],
             'updated_at'  => $row['updated_at'],
         ];

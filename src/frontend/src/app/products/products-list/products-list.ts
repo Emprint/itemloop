@@ -51,6 +51,14 @@ export class ProductsList {
     this.showForm.set(true);
   }
 
+  deleteProduct(product: Product) {
+    if (!confirm(`Delete "${product.title}"?`)) return;
+    this.service.deleteProduct(product.id).subscribe({
+      next: () => this.loadProducts(),
+      error: () => { this.errorMessage = 'Failed to delete product'; },
+    });
+  }
+
   editProduct(product: Product) {
     this.selectedProduct = product;
     this.showForm.set(true);

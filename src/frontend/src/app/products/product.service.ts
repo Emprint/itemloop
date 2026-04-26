@@ -6,7 +6,10 @@ import { environment } from '../../environments/environment';
 export interface Image {
   id: number;
   url: string;
-  // Add other image properties as needed
+  path?: string;
+  format?: string;
+  width?: number;
+  height?: number;
 }
 
 export interface Product {
@@ -26,6 +29,7 @@ export interface Product {
   category_id?: number;
   visibility: 'private' | 'public';
   location_id: number;
+  location?: { id: number; shelf?: string; code?: string; zone?: { id: number; name: string; building?: { id: number; name: string } } };
   barcode?: string;
   images?: Image[];
 }
@@ -49,5 +53,15 @@ export class ProductService {
 
   deleteProduct(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  uploadImages(productId: number, files: File[]): Observable<{ images: Image[] }> {
+    const form = new FormData();
+    files.forEach(f => form.append('images[]', f));
+    return this.http.post<{ images: Image[] }>(`${this.apiUrl}/${productId}/images`, form);
+  }
+
+  deleteImage(productId: number, imageId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${productId}/images/${imageId}`);
   }
 }

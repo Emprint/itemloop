@@ -306,7 +306,14 @@ class ProductController
                 'zone'  => $row['zone_id'] ? ['id' => (int) $row['zone_id'], 'name' => $row['zone_name']] : null,
                 'building' => $row['building_id'] ? ['id' => (int) $row['building_id'], 'name' => $row['building_name']] : null,
             ] : null,
-            'images'          => $images ?? [],
+            'images'          => array_map(fn($img) => [
+                'id'     => (int) $img['id'],
+                'url'    => '/' . $img['path'],
+                'path'   => $img['path'],
+                'format' => $img['format'],
+                'width'  => $img['width']  ? (int) $img['width']  : null,
+                'height' => $img['height'] ? (int) $img['height'] : null,
+            ], $images ?? []),
         ];
 
         return $product;

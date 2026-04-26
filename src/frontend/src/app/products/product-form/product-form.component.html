@@ -106,4 +106,25 @@
       <button type="submit" [disabled]="form.invalid">Save</button>
     </div>
   </form>
+
+  @if (selectedProduct) {
+    <div class="images-section">
+      <h4>{{ 'PRODUCT_FORM.IMAGES' | translate }}</h4>
+      @if (imageError()) {
+        <span class="error">{{ imageError() }}</span>
+      }
+      <div class="image-grid">
+        @for (img of images(); track img.id) {
+          <div class="image-thumb">
+            <img [src]="img.url" [alt]="img.path" />
+            <button type="button" class="img-delete" (click)="deleteImage(img.id)">✕</button>
+          </div>
+        }
+      </div>
+      <label class="upload-label">
+        {{ 'PRODUCT_FORM.UPLOAD_IMAGES' | translate }}
+        <input type="file" accept="image/*" multiple (change)="onImageFilesSelected($event)" />
+      </label>
+    </div>
+  }
 </div>

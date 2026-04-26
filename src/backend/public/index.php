@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 use App\Middleware\AuthMiddleware;
+use App\Middleware\OptionalAuthMiddleware;
 use App\Middleware\CsrfMiddleware;
 use App\Middleware\EditorMiddleware;
 use App\Middleware\AdminMiddleware;
@@ -101,8 +102,8 @@ $app->get('/api/me', [AuthController::class, 'me'])->add(new AuthMiddleware());
 // ---------------------------------------------------------------------------
 // Products — public reads, auth writes
 // ---------------------------------------------------------------------------
-$app->get('/api/products',         [ProductController::class, 'index']);
-$app->get('/api/products/{id}',    [ProductController::class, 'show']);
+$app->get('/api/products',         [ProductController::class, 'index'])->add(new OptionalAuthMiddleware());
+$app->get('/api/products/{id}',    [ProductController::class, 'show'])->add(new OptionalAuthMiddleware());
 $app->get('/api/product-categories', [ProductCategoryController::class, 'index']);
 
 $app->group('/api', function (RouteCollectorProxy $group) {

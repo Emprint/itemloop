@@ -115,7 +115,9 @@
     "CATEGORY": "Category",
     "CATEGORY_PLACEHOLDER": "Enter or select a category",
     "ESTIMATED_VALUE": "Estimated Value",
-    "ESTIMATED_VALUE_ERROR": "Estimated value must be 0 or more."
+    "ESTIMATED_VALUE_ERROR": "Estimated value must be 0 or more.",
+    "IMAGES": "Images",
+    "UPLOAD_IMAGES": "Upload images…"
   },
   "PRODUCT": "Product",
   "ADD_PRODUCT": "Add Product"
