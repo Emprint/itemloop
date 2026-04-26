@@ -61,6 +61,7 @@
   border-top: 1px solid #eee;
   background: #fafcff;
 }
-.combobox-add:hover {
-  background: #e6f0ff;
+.combobox-readonly .combobox-input {
+  background: #f9fafb;
+  cursor: default;
 }

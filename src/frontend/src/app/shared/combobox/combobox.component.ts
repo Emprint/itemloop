@@ -35,6 +35,7 @@ export class ComboboxComponent implements OnInit {
   @Input() value = '';
   @Input() placeholder = '';
   @Input() disabled = false;
+  @Input() readOnly = false;
   @Output() valueChangeEvent = new EventEmitter<string>();
   @Output() addNewEvent = new EventEmitter<string>();
 

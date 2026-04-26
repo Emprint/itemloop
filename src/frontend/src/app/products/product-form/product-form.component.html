@@ -35,6 +35,7 @@
             (valueChangeEvent)="onCategoryChange($event)"
             (addNewEvent)="onAddNewCategory($event)"
             [placeholder]="'PRODUCT_FORM.CATEGORY_PLACEHOLDER' | translate"
+            [readOnly]="readOnly"
           />
         </div>
 
@@ -48,6 +49,7 @@
               (valueChangeEvent)="onConditionChange($event)"
               (addNewEvent)="onAddNewCondition($event)"
               [placeholder]="'PRODUCT_FORM.CONDITION_PLACEHOLDER' | translate"
+              [readOnly]="readOnly"
             />
           </div>
           <label class="pf-label pf-flex-1">
