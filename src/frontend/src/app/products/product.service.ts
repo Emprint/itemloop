@@ -31,8 +31,9 @@ export interface Product {
   category_id?: number;
   visibility: 'private' | 'public';
   location_id: number;
-  location?: { id: number; shelf?: string; code?: string; zone?: { id: number; name: string; building?: { id: number; name: string } } };
+  location?: { id: number; shelf?: string; code?: string; zone?: { id: number; name: string }; building?: { id: number; name: string } };
   barcode?: string;
+  created_at?: string;
   images?: Image[];
 }
 
