@@ -30,6 +30,7 @@ session_start();
 
 // Bootstrap Slim
 $app = AppFactory::create();
+$app->addBodyParsingMiddleware(); // parses application/json, form-urlencoded, multipart
 $app->addRoutingMiddleware();
 $app->addErrorMiddleware(
     (bool) ($_ENV['APP_DEBUG'] ?? false),
