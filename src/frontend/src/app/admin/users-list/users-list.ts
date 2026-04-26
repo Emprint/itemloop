@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, HostListener } from '@angular/core';
 import { UserService, User } from '../user.service';
 import { UserRole } from '../../auth/auth-response';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -7,11 +7,12 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../auth/auth.service';
 import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
+import { ListShellComponent } from '../../shared/list-shell/list-shell.component';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ConfirmModal, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, ConfirmModal, TranslateModule, ListShellComponent],
   templateUrl: './users-list.html',
   styleUrl: './users-list.scss',
 })
@@ -31,6 +32,18 @@ export class UsersList implements OnInit {
   userToDelete: User | null = null;
   errorMessage = signal<string | null>(null);
   serverErrors = signal<Record<string, string[]>>({});
+  openActionId = signal<number | null>(null);
+
+  @HostListener('document:click')
+  closeActions() { this.openActionId.set(null); }
+
+  toggleAction(id: number, e: MouseEvent) {
+    e.stopPropagation();
+    this.openActionId.set(this.openActionId() === id ? null : id);
+  }
+
+  userSearchFn = (user: User, q: string) =>
+    user.name.toLowerCase().includes(q) || user.email.toLowerCase().includes(q);
 
   constructor() {
     this.form = this.fb.group({

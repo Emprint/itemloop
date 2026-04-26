@@ -48,36 +48,40 @@
   }
 
   @if (!showForm()) {
-    <button (click)="newLocationForm()">{{ 'NEW_SHELF_BTN' | translate }}</button>
-    <table class="item-table">
-      <thead>
+    <app-list-shell
+      [items]="locations()"
+      [addLabel]="'NEW_SHELF_BTN' | translate"
+      [searchFn]="locationSearchFn"
+      [searchPlaceholder]="'SEARCH' | translate"
+      (addClicked)="newLocationForm()"
+    >
+      <ng-template #headTpl>
         <tr>
           <th>{{ 'BUILDING' | translate }}</th>
           <th>{{ 'ZONE' | translate }}</th>
           <th>{{ 'SHELF' | translate }}</th>
           <th>{{ 'CODE' | translate }}</th>
-          <th>{{ 'ACTIONS' | translate }}</th>
+          <th style="width: 48px"></th>
         </tr>
-      </thead>
-      <tbody>
-        @for (location of locations(); track location.id) {
-          <tr>
-            <td>{{ location.zone?.building?.name || '' }}</td>
-            <td>{{ location.zone?.name || '' }}</td>
-            <td>{{ location.shelf }}</td>
-            <td>{{ getFinalCode(location) }}</td>
-            <td>
-              <button class="compact-button" (click)="editLocation(location)">
-                {{ 'EDIT' | translate }}
-              </button>
-              <button class="compact-button" (click)="deleteLocation(location)">
-                {{ 'DELETE' | translate }}
-              </button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+      </ng-template>
+      <ng-template #rowTpl let-location>
+        <tr>
+          <td>{{ location.zone?.building?.name || '' }}</td>
+          <td>{{ location.zone?.name || '' }}</td>
+          <td>{{ location.shelf }}</td>
+          <td>{{ getFinalCode(location) }}</td>
+          <td class="ls-actions">
+            <button class="ls-action-btn" (click)="toggleAction(location.id, $event)">⋮</button>
+            @if (openActionId() === location.id) {
+              <div class="ls-action-dropdown">
+                <button (click)="editLocation(location)">{{ 'EDIT' | translate }}</button>
+                <button class="danger" (click)="deleteLocation(location)">{{ 'DELETE' | translate }}</button>
+              </div>
+            }
+          </td>
+        </tr>
+      </ng-template>
+    </app-list-shell>
   }
 </div>
 

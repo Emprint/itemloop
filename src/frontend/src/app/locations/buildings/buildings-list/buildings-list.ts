@@ -1,14 +1,15 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, HostListener } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocationService, Building } from '../../locations-list/location.service';
 import { ConfirmModal } from '../../../shared/confirm-modal/confirm-modal';
 import { TranslateModule } from '@ngx-translate/core';
+import { ListShellComponent } from '../../../shared/list-shell/list-shell.component';
 
 @Component({
   selector: 'app-buildings-list',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmModal, TranslateModule],
+  imports: [ReactiveFormsModule, ConfirmModal, TranslateModule, ListShellComponent],
   templateUrl: './buildings-list.html',
   styleUrl: './buildings-list.scss',
 })
@@ -21,6 +22,19 @@ export class BuildingsList {
   showDeleteModal = false;
   buildingToDelete: Building | null = null;
   codeChangedManually = false;
+  openActionId = signal<number | null>(null);
+
+  @HostListener('document:click')
+  closeActions() { this.openActionId.set(null); }
+
+  toggleAction(id: number, e: MouseEvent) {
+    e.stopPropagation();
+    this.openActionId.set(this.openActionId() === id ? null : id);
+  }
+
+  buildingSearchFn = (b: Building, q: string) =>
+    (b.name ?? '').toLowerCase().includes(q) ||
+    (b.code ?? '').toLowerCase().includes(q);
 
   private fb = inject(FormBuilder);
   private service = inject(LocationService);

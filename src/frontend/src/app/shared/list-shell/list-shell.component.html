@@ -1,0 +1,70 @@
+<div class="ls-page">
+
+  @if (title) {
+    <h2 class="ls-title">{{ title }}</h2>
+  }
+
+  <div class="ls-toolbar">
+    @if (searchable) {
+      <div class="ls-search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" [value]="searchQuery()" (input)="onSearch($any($event.target).value)" [placeholder]="searchPlaceholder" />
+      </div>
+    }
+    @if (addable && addLabel) {
+      <button class="ls-btn-add" (click)="addClicked.emit()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        {{ addLabel }}
+      </button>
+    }
+  </div>
+
+  <div class="ls-count-row">
+    <span class="ls-count">{{ filteredItems().length }}</span>
+  </div>
+
+  <div class="ls-table-wrap">
+    <table class="ls-table">
+      <thead>
+        <ng-container [ngTemplateOutlet]="headTpl ?? null"></ng-container>
+      </thead>
+      <tbody>
+        @for (item of paginatedItems(); track item.id ?? $index) {
+          <ng-container
+            [ngTemplateOutlet]="rowTpl ?? null"
+            [ngTemplateOutletContext]="{ $implicit: item }"
+          ></ng-container>
+        }
+        @if (paginatedItems().length === 0) {
+          <tr><td colspan="99" class="ls-empty">{{ 'NO_RESULTS' | translate }}</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (filteredItems().length > pageSize()) {
+    <div class="ls-pagination">
+      <div class="ls-rows-per-page">
+        {{ 'ROWS_PER_PAGE' | translate }}
+        <select [value]="pageSize()" (change)="onPageSizeChange(+$any($event.target).value)">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+      <span class="ls-page-info">{{ pageRange().start }}–{{ pageRange().end }} {{ 'OF' | translate }} {{ filteredItems().length }}</span>
+      <div class="ls-page-numbers">
+        <button class="ls-page-btn" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">‹</button>
+        @for (p of pageNumbers(); track $index) {
+          @if (p === '...') {
+            <span class="ls-page-ellipsis">…</span>
+          } @else {
+            <button class="ls-page-btn" [class.active]="p === currentPage()" (click)="setPage(p)">{{ p }}</button>
+          }
+        }
+        <button class="ls-page-btn" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">›</button>
+      </div>
+    </div>
+  }
+
+</div>

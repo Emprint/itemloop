@@ -62,40 +62,40 @@
   }
 
   @if (!showForm && !showReLoginNotice) {
-    <button (click)="newUserForm()">{{ 'NEW_USER_BTN' | translate }}</button>
-    <table class="item-table">
-      <thead>
+    <app-list-shell
+      [items]="users()"
+      [addLabel]="'NEW_USER_BTN' | translate"
+      [searchFn]="userSearchFn"
+      [searchPlaceholder]="'SEARCH' | translate"
+      (addClicked)="newUserForm()"
+    >
+      <ng-template #headTpl>
         <tr>
           <th>{{ 'NAME' | translate }}</th>
           <th>{{ 'EMAIL' | translate }}</th>
           <th>{{ 'ROLE' | translate }}</th>
-          <th style="width: 90px">{{ 'ACTIONS' | translate }}</th>
+          <th style="width: 48px"></th>
         </tr>
-      </thead>
-      <tbody>
-        @for (user of users(); track user.id) {
-          <tr>
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.role | uppercase | translate }}</td>
-            <td>
-              <span style="display: flex; gap: 0.3em; align-items: center">
-                <button class="compact-button" (click)="selectUser(user)">
-                  {{ 'EDIT' | translate }}
-                </button>
-                <button
-                  class="compact-button"
-                  (click)="confirmDeleteUser(user)"
-                  [disabled]="isLastAdmin(user)"
-                >
-                  {{ 'DELETE' | translate }}
-                </button>
-              </span>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+      </ng-template>
+      <ng-template #rowTpl let-user>
+        <tr>
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="role-badge role-{{ user.role }}">{{ user.role | uppercase | translate }}</span>
+          </td>
+          <td class="ls-actions">
+            <button class="ls-action-btn" (click)="toggleAction(user.id, $event)">⋮</button>
+            @if (openActionId() === user.id) {
+              <div class="ls-action-dropdown">
+                <button (click)="selectUser(user)">{{ 'EDIT' | translate }}</button>
+                <button class="danger" (click)="confirmDeleteUser(user)" [disabled]="isLastAdmin(user)">{{ 'DELETE' | translate }}</button>
+              </div>
+            }
+          </td>
+        </tr>
+      </ng-template>
+    </app-list-shell>
   }
 </div>
 

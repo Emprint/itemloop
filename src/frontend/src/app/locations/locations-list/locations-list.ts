@@ -1,14 +1,15 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { LocationService, Location, Building, Zone } from './location.service';
 import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
 import { TranslateModule } from '@ngx-translate/core';
+import { ListShellComponent } from '../../shared/list-shell/list-shell.component';
 
 @Component({
   selector: 'app-locations-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ConfirmModal, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, ConfirmModal, TranslateModule, ListShellComponent],
   templateUrl: './locations-list.html',
   styleUrl: './locations-list.scss',
 })
@@ -21,6 +22,21 @@ export class LocationsList {
   errorMessage = signal<string | null>(null);
   showForm = signal(false);
   selectedLocation: Location | null = null;
+  openActionId = signal<number | null>(null);
+
+  @HostListener('document:click')
+  closeActions() { this.openActionId.set(null); }
+
+  toggleAction(id: number, e: MouseEvent) {
+    e.stopPropagation();
+    this.openActionId.set(this.openActionId() === id ? null : id);
+  }
+
+  locationSearchFn = (loc: Location, q: string) =>
+    (loc.shelf ?? '').toLowerCase().includes(q) ||
+    (loc.zone?.name ?? '').toLowerCase().includes(q) ||
+    (loc.zone?.building?.name ?? '').toLowerCase().includes(q) ||
+    (loc.code ?? '').toLowerCase().includes(q);
   private service = inject(LocationService);
   private fb = inject(FormBuilder);
   form = this.fb.group({

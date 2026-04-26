@@ -1,14 +1,15 @@
 import { ConfirmModal } from '../../../shared/confirm-modal/confirm-modal';
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, HostListener } from '@angular/core';
 import { LocationService, Zone, Building } from '../../locations-list/location.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { ListShellComponent } from '../../../shared/list-shell/list-shell.component';
 
 @Component({
   selector: 'app-zones-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ConfirmModal, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, ConfirmModal, TranslateModule, ListShellComponent],
   templateUrl: './zones-list.html',
   styleUrl: './zones-list.scss',
 })
@@ -23,6 +24,20 @@ export class ZonesList {
   form: FormGroup;
   finalZoneCode = '';
   codeChangedManually = false;
+  openActionId = signal<number | null>(null);
+
+  @HostListener('document:click')
+  closeActions() { this.openActionId.set(null); }
+
+  toggleAction(id: number, e: MouseEvent) {
+    e.stopPropagation();
+    this.openActionId.set(this.openActionId() === id ? null : id);
+  }
+
+  zoneSearchFn = (zone: Zone, q: string) =>
+    (zone.name ?? '').toLowerCase().includes(q) ||
+    (zone.building?.name ?? '').toLowerCase().includes(q) ||
+    (zone.code ?? '').toLowerCase().includes(q);
 
   private fb = inject(FormBuilder);
   private service = inject(LocationService);

@@ -39,32 +39,36 @@
     </div>
   }
   @if (!showForm()) {
-    <button (click)="newBuildingForm()">{{ 'NEW_BUILDING_BTN' | translate }}</button>
-    <table class="item-table">
-      <thead>
+    <app-list-shell
+      [items]="buildings()"
+      [addLabel]="'NEW_BUILDING_BTN' | translate"
+      [searchFn]="buildingSearchFn"
+      [searchPlaceholder]="'SEARCH' | translate"
+      (addClicked)="newBuildingForm()"
+    >
+      <ng-template #headTpl>
         <tr>
           <th>{{ 'NAME' | translate }}</th>
           <th>{{ 'CODE' | translate }}</th>
-          <th>{{ 'ACTIONS' | translate }}</th>
+          <th style="width: 48px"></th>
         </tr>
-      </thead>
-      <tbody>
-        @for (building of buildings(); track building.id) {
-          <tr>
-            <td>{{ building.name }}</td>
-            <td>{{ building.code }}</td>
-            <td>
-              <button class="compact-button" (click)="editBuilding(building)">
-                {{ 'EDIT' | translate }}
-              </button>
-              <button class="compact-button" (click)="confirmDeleteBuilding(building)">
-                {{ 'DELETE' | translate }}
-              </button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+      </ng-template>
+      <ng-template #rowTpl let-building>
+        <tr>
+          <td>{{ building.name }}</td>
+          <td>{{ building.code }}</td>
+          <td class="ls-actions">
+            <button class="ls-action-btn" (click)="toggleAction(building.id, $event)">⋮</button>
+            @if (openActionId() === building.id) {
+              <div class="ls-action-dropdown">
+                <button (click)="editBuilding(building)">{{ 'EDIT' | translate }}</button>
+                <button class="danger" (click)="confirmDeleteBuilding(building)">{{ 'DELETE' | translate }}</button>
+              </div>
+            }
+          </td>
+        </tr>
+      </ng-template>
+    </app-list-shell>
   }
 </div>
 

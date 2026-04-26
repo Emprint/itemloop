@@ -47,40 +47,44 @@
     </div>
   }
   @if (!showForm()) {
-    <button (click)="newZoneForm()">{{ 'NEW_ZONE_BTN' | translate }}</button>
-    <table class="item-table">
-      <thead>
+    <app-list-shell
+      [items]="zones()"
+      [addLabel]="'NEW_ZONE_BTN' | translate"
+      [searchFn]="zoneSearchFn"
+      [searchPlaceholder]="'SEARCH' | translate"
+      (addClicked)="newZoneForm()"
+    >
+      <ng-template #headTpl>
         <tr>
           <th>{{ 'BUILDING' | translate }}</th>
           <th>{{ 'NAME' | translate }}</th>
           <th>{{ 'CODE' | translate }}</th>
-          <th>{{ 'ACTIONS' | translate }}</th>
+          <th style="width: 48px"></th>
         </tr>
-      </thead>
-      <tbody>
-        @for (zone of zones(); track zone.id) {
-          <tr>
-            <td>{{ zone.building?.name || '' }}</td>
-            <td>{{ zone.name || '' }}</td>
-            <td>
-              {{
-                zone.building?.code && zone.code
-                  ? (zone.building?.code || '') + '-' + (zone.code || '')
-                  : zone.code || ''
-              }}
-            </td>
-            <td>
-              <button class="compact-button" (click)="editZone(zone)">
-                {{ 'EDIT' | translate }}
-              </button>
-              <button class="compact-button" (click)="confirmDeleteZone(zone)">
-                {{ 'DELETE' | translate }}
-              </button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+      </ng-template>
+      <ng-template #rowTpl let-zone>
+        <tr>
+          <td>{{ zone.building?.name || '' }}</td>
+          <td>{{ zone.name || '' }}</td>
+          <td>
+            {{
+              zone.building?.code && zone.code
+                ? (zone.building?.code || '') + '-' + (zone.code || '')
+                : zone.code || ''
+            }}
+          </td>
+          <td class="ls-actions">
+            <button class="ls-action-btn" (click)="toggleAction(zone.id, $event)">⋮</button>
+            @if (openActionId() === zone.id) {
+              <div class="ls-action-dropdown">
+                <button (click)="editZone(zone)">{{ 'EDIT' | translate }}</button>
+                <button class="danger" (click)="confirmDeleteZone(zone)">{{ 'DELETE' | translate }}</button>
+              </div>
+            }
+          </td>
+        </tr>
+      </ng-template>
+    </app-list-shell>
   }
 </div>
 
