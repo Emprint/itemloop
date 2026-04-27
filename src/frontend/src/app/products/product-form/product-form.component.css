@@ -224,6 +224,11 @@ button:disabled { opacity: 0.5; cursor: not-allowed !important; }
   color: #374151;
   cursor: default;
 }
+.pf-readonly .pf-input::placeholder,
+.pf-readonly textarea.pf-input::placeholder,
+.pf-readonly input::placeholder {
+  color: transparent;
+}
 .pf-readonly .pf-toggle { pointer-events: none; opacity: 0.7; cursor: default; }
 .pf-readonly .pf-photo-thumb { cursor: zoom-in; }
 .pf-readonly .pf-photo-grid { margin-bottom: 0; }

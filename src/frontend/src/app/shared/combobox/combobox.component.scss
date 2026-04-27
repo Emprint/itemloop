@@ -66,6 +66,9 @@
   cursor: default;
   padding-right: 12px;
 }
+.combobox-readonly .combobox-input::placeholder {
+  color: transparent;
+}
 .combobox-readonly .combobox-arrow {
   display: none;
 }

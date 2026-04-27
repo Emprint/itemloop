@@ -61,7 +61,7 @@
         <label class="pf-label">
           <span>{{ 'PRODUCT_FORM.DESTINATION' | translate }}</span>
           <select formControlName="destination" class="pf-input">
-            <option value="">{{ 'PRODUCT_FORM.SELECT_DESTINATION' | translate }}</option>
+            <option value="">{{ readOnly ? '' : ('PRODUCT_FORM.SELECT_DESTINATION' | translate) }}</option>
             <option value="review">{{ 'PRODUCT_FORM.DESTINATION_REVIEW' | translate }}</option>
             <option value="keep">{{ 'PRODUCT_FORM.DESTINATION_KEEP' | translate }}</option>
             <option value="reuse">{{ 'PRODUCT_FORM.DESTINATION_REUSE' | translate }}</option>
@@ -149,7 +149,7 @@
           <label class="pf-label">
             <span>{{ 'PRODUCT_FORM.BUILDING' | translate }} <span class="req">*</span></span>
             <select class="pf-input" (change)="onBuildingChange(+$any($event.target).value)">
-              <option value="0">{{ 'PRODUCT_FORM.SELECT_BUILDING' | translate }}</option>
+              <option value="0">{{ readOnly ? '' : ('PRODUCT_FORM.SELECT_BUILDING' | translate) }}</option>
               @for (b of uniqueBuildings(); track b.id) {
                 <option [value]="b.id" [selected]="cascadeBuildingId() === b.id">{{ b.name }}</option>
               }
@@ -160,7 +160,7 @@
           <label class="pf-label">
             <span>{{ 'PRODUCT_FORM.ZONE' | translate }} <span class="req">*</span></span>
             <select class="pf-input" (change)="onZoneChange(+$any($event.target).value)" [attr.disabled]="!cascadeBuildingId() ? '' : null">
-              <option value="0">{{ 'PRODUCT_FORM.SELECT_ZONE' | translate }}</option>
+              <option value="0">{{ readOnly ? '' : ('PRODUCT_FORM.SELECT_ZONE' | translate) }}</option>
               @for (z of filteredZones(); track z.id) {
                 <option [value]="z.id" [selected]="cascadeZoneId() === z.id">{{ z.name }}</option>
               }
@@ -171,7 +171,7 @@
           <label class="pf-label">
             <span>{{ 'PRODUCT_FORM.SHELF' | translate }} <span class="req">*</span></span>
             <select class="pf-input" formControlName="location_id" (change)="onShelfChange(+$any($event.target).value)" [attr.disabled]="!cascadeZoneId() ? '' : null">
-              <option value="0">{{ 'PRODUCT_FORM.SELECT_SHELF' | translate }}</option>
+              <option value="0">{{ readOnly ? '' : ('PRODUCT_FORM.SELECT_SHELF' | translate) }}</option>
               @for (loc of filteredShelves(); track loc.id) {
                 <option [value]="loc.id">{{ loc.shelf }}</option>
               }
@@ -255,9 +255,9 @@
             <h3 class="pf-card-title">{{ 'PRODUCT_FORM.QUICK_INFO' | translate }}</h3>
             <dl class="pf-info-list">
               <dt>{{ 'PRODUCT_FORM.DATE_ADDED' | translate }}</dt>
-              <dd>{{ formatDate(product.created_at) }}</dd>
+              <dd>{{ isEditorOrAdmin() ? formatDateTime(product.created_at) : formatDate(product.created_at) }}</dd>
               <dt>{{ 'PRODUCT_FORM.LAST_UPDATED' | translate }}</dt>
-              <dd>{{ formatDateTime(product.updated_at) }}</dd>
+              <dd>{{ isEditorOrAdmin() ? formatDateTime(product.updated_at) : formatDate(product.updated_at) }}</dd>
               <dt>{{ 'PRODUCT_FORM.STATUS' | translate }}</dt>
               <dd><span class="pf-status-badge">{{ 'PRODUCT_FORM.AVAILABLE' | translate }}</span></dd>
             </dl>
