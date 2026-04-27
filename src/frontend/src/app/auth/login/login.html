@@ -1,10 +1,10 @@
 <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
   <h2>{{ 'LOGIN' | translate }}</h2>
-  <div>
+  <div class="form-field">
     <label for="email"><span>{{ 'EMAIL' | translate }} <span class="req">*</span></span></label>
     <input type="email" formControlName="email" id="email" required autocomplete="email" />
   </div>
-  <div>
+  <div class="form-field">
     <label for="password"><span>{{ 'PASSWORD' | translate }} <span class="req">*</span></span></label>
     <input
       type="password"

@@ -6,32 +6,40 @@
     <div class="form-card">
       <h3>{{ selectedZone ? ('EDIT_ZONE' | translate) : ('NEW_ZONE' | translate) }}</h3>
       <form [formGroup]="form" (ngSubmit)="saveZone()" autocomplete="off">
-        <label for="buildingSelect"><span>{{ 'BUILDING' | translate }} <span class="req">*</span></span></label>
-        <select
-          formControlName="building_id"
-          id="buildingSelect"
-          required
-          (change)="onBuildingChange()"
-        >
-          <option value="" disabled>{{ 'SELECT_BUILDING' | translate }}</option>
-          @for (building of buildings(); track building.id) {
-            <option [value]="building.id">{{ building.name }}</option>
-          }
-        </select>
-        <label for="zoneName"><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label>
-        <input formControlName="name" id="zoneName" type="text" required (input)="onNameInput()" />
-        <label for="zoneCode"><span>{{ 'CODE' | translate }} <span class="req">*</span></span></label>
-        <input
-          formControlName="code"
-          id="zoneCode"
-          type="text"
-          maxlength="3"
-          required
-          (input)="onCodeInput()"
-          (blur)="onCodeBlur()"
-        />
-        <label for="finalZoneCode">{{ 'FINAL_CODE' | translate }}</label>
-        <input type="text" id="finalZoneCode" [value]="finalZoneCode" readonly />
+        <div class="form-field">
+          <label for="buildingSelect"><span>{{ 'BUILDING' | translate }} <span class="req">*</span></span></label>
+          <select
+            formControlName="building_id"
+            id="buildingSelect"
+            required
+            (change)="onBuildingChange()"
+          >
+            <option value="" disabled>{{ 'SELECT_BUILDING' | translate }}</option>
+            @for (building of buildings(); track building.id) {
+              <option [value]="building.id">{{ building.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="zoneName"><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label>
+          <input formControlName="name" id="zoneName" type="text" required (input)="onNameInput()" />
+        </div>
+        <div class="form-field">
+          <label for="zoneCode"><span>{{ 'CODE' | translate }} <span class="req">*</span></span></label>
+          <input
+            formControlName="code"
+            id="zoneCode"
+            type="text"
+            maxlength="3"
+            required
+            (input)="onCodeInput()"
+            (blur)="onCodeBlur()"
+          />
+        </div>
+        <div class="form-field">
+          <label for="finalZoneCode">{{ 'FINAL_CODE' | translate }}</label>
+          <input type="text" id="finalZoneCode" [value]="finalZoneCode" readonly />
+        </div>
 
         @if (isCodeUnique && form.value.code) {
           <div class="code-unique-badge">

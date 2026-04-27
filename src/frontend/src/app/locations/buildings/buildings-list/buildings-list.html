@@ -6,24 +6,28 @@
     <div class="form-card">
       <h3>{{ selectedBuilding ? ('EDIT_BUILDING' | translate) : ('NEW_BUILDING' | translate) }}</h3>
       <form [formGroup]="form" (ngSubmit)="saveBuilding()" autocomplete="off">
-        <label for="buildingName"><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label>
-        <input
-          formControlName="name"
-          id="buildingName"
-          type="text"
-          required
-          (input)="onNameInput()"
-        />
-        <label for="buildingCode"><span>{{ 'CODE' | translate }} <span class="req">*</span></span></label>
-        <input
-          formControlName="code"
-          id="buildingCode"
-          type="text"
-          maxlength="3"
-          required
-          (input)="onCodeInput()"
-          (blur)="onCodeBlur()"
-        />
+        <div class="form-field">
+          <label for="buildingName"><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label>
+          <input
+            formControlName="name"
+            id="buildingName"
+            type="text"
+            required
+            (input)="onNameInput()"
+          />
+        </div>
+        <div class="form-field">
+          <label for="buildingCode"><span>{{ 'CODE' | translate }} <span class="req">*</span></span></label>
+          <input
+            formControlName="code"
+            id="buildingCode"
+            type="text"
+            maxlength="3"
+            required
+            (input)="onCodeInput()"
+            (blur)="onCodeBlur()"
+          />
+        </div>
 
         @if (isCodeUnique && form.value.code) {
           <div class="code-unique-badge">

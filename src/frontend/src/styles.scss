@@ -163,13 +163,11 @@ button:disabled {
   }
 
   label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+    display: block;
     font-weight: 500;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     color: var(--text);
-    margin-bottom: 1rem;
+    margin-bottom: 0.375rem;
   }
 
   .link {
@@ -186,6 +184,11 @@ button:disabled {
       &:hover { text-decoration: underline; }
     }
   }
+}
+
+// Field wrapper — label + input with consistent spacing
+.form-field {
+  margin-bottom: 1rem;
 }
 
 // Error
