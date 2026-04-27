@@ -56,14 +56,19 @@ cd src/frontend
 ng build --configuration production
 cd ../..
 
+echo "📋 Copying server config files into build package..."
+cp deploy/frontend.htaccess deploy_package/frontend/.htaccess
+mkdir -p deploy_package/frontend/api
+cp deploy/frontend-api.htaccess deploy_package/frontend/api/.htaccess
+cp deploy/frontend-api-index.php deploy_package/frontend/api/index.php
+
 echo "📦 Installing backend dependencies (production)..."
 cd src/backend
 composer install --optimize-autoloader --no-dev
 cd ../..
 
-echo "🚀 Deploying frontend (excluding .htaccess — managed on server)..."
+echo "🚀 Deploying frontend..."
 sshpass -p "$SSH_PASS" rsync -az --no-perms \
-  --exclude='.htaccess' \
   -e "ssh -o StrictHostKeyChecking=no -p $SSH_PORT" \
   deploy_package/frontend/ \
   "$SSH_USER@$SSH_HOST:~/frontend/"
