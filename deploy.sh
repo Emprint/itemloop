@@ -36,7 +36,7 @@ SSH_USER="${SSH_USER:-}"
 SSH_HOST="${SSH_HOST:-}"
 SSH_PORT="${SSH_PORT:-22}"
 SSH_PASS="${SSH_PASS:-}"
-SITE_URL="${SITE_URL:-https://yourdomain.com}"
+SITE_URL="${SITE_URL:-}"
 
 if [ -z "$SSH_USER" ] || [ -z "$SSH_HOST" ]; then
   echo "❌ SSH_USER and SSH_HOST are required."
@@ -76,6 +76,6 @@ sshpass -p "$SSH_PASS" rsync -az --no-perms \
   "$SSH_USER@$SSH_HOST:~/backend/"
 
 echo ""
-echo "✅ Deploy complete! Site: $SITE_URL"
+echo "✅ Deploy complete!${SITE_URL:+ Site: $SITE_URL}"
 echo ""
 echo "⚠️  Note: OVH caches .htaccess changes for ~35-60s. Wait before testing."
