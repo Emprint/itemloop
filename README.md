@@ -209,20 +209,82 @@ All routes are prefixed with `/api`.
 
 ---
 
-## 🚢 Deployment (OVH Shared Hosting)
+## 🚢 Deployment (Shared Hosting via SSH/rsync)
 
-No SSH access is required after uploading files.
+`deploy.sh` builds the Angular frontend + installs Composer dependencies locally, then pushes both to your server using `rsync` over SSH.
+
+### Prerequisites
+
+- **`sshpass`** — feeds the SSH password non-interactively to rsync:
+  ```sh
+  brew install hudochenkov/sshpass/sshpass   # macOS
+  sudo apt install sshpass                   # Linux/Debian
+  ```
+  > **Recommended alternative:** set up SSH key authentication on your server and remove the `sshpass -p "$SSH_PASS"` wrapper from `deploy.sh`. SSH keys are more secure and don't require `sshpass` at all.
+
+- **`rsync`** — usually pre-installed on macOS and Linux.
+- **`ng`** (Angular CLI) and **`composer`** — must be available in your `PATH`.
+
+### One-time server setup
+
+These steps configure the server directory layout and only need to be done once:
+
+1. **Create the API entry point** at `~/frontend/api/index.php`:
+   ```php
+   <?php require __DIR__ . '/../../backend/public/index.php';
+   ```
+
+2. **Create `~/frontend/api/.htaccess`** — enables Slim routing and passes the `X-XSRF-TOKEN` header through to PHP.
+
+3. **Create `~/frontend/.htaccess`** — redirects HTTP → HTTPS and handles Angular HTML5 routing.
+
+4. **Create `~/backend/.env`** from `src/backend/.env.example` with your production DB credentials and `APP_URL`.
+
+5. **Create the image storage directory** at `~/frontend/storage/products/` and set `STORAGE_PATH` in `~/backend/.env`:
+   ```
+   STORAGE_PATH=/absolute/real/path/to/frontend/storage/products
+   ```
+   > **OVH note:** PHP-FPM's `open_basedir` uses the real filesystem path, not the `/home/username` alias. Run `echo $HOME` via SSH to get the real path (e.g. `/homez.NNN/account/sitename`).
+
+6. **Set PHP upload limits** via `~/.user.ini` and `~/backend/public/.user.ini`:
+   ```ini
+   upload_max_filesize = 20M
+   post_max_size = 25M
+   ```
+
+7. **Import the database schema** once via phpMyAdmin (or `mysql` CLI):
+   ```sh
+   mysql -u youruser -p yourdb < src/backend/sql/schema.sql
+   ```
+
+### Deploy config (`deploy.env`)
+
+Copy `deploy.env.example` to `deploy.env` (gitignored — never commit it) and fill in your values:
 
 ```sh
-./deploy.sh
+cp deploy.env.example deploy.env
 ```
 
-This script builds the Angular frontend (production mode) and assembles the `deploy_package/` folder. Upload via FTP:
+```ini
+SSH_USER=your_ssh_username
+SSH_HOST=your_ssh_host
+SSH_PORT=22
+SITE_URL=https://yourdomain.com
+```
 
-- `deploy_package/frontend/` → your public web root (e.g., `www/`)
-- `deploy_package/backend/` → a directory outside the public root (e.g., `api/`)
+### Running the deploy
 
-Configure the backend `.env` on the server with your hosting MySQL credentials.
+```sh
+SSH_PASS=yourpassword ./deploy.sh
+```
+
+The script will:
+1. Build the Angular app to `deploy_package/frontend/`
+2. Run `composer install --no-dev` in `src/backend/`
+3. rsync `deploy_package/frontend/` → `~/frontend/` on the server (skips `.htaccess`)
+4. rsync `src/backend/` → `~/backend/` on the server (skips `.env`)
+
+> **OVH cache note:** `.htaccess` changes may take 35–60 seconds to take effect due to PHP-FPM opcode caching.
 
 ---
 
