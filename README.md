@@ -234,9 +234,9 @@ These steps configure the server directory layout and only need to be done once:
    <?php require __DIR__ . '/../../backend/public/index.php';
    ```
 
-2. **Create `~/frontend/api/.htaccess`** — enables Slim routing and passes the `X-XSRF-TOKEN` header through to PHP.
+2. **Create `~/frontend/api/.htaccess`** — enables Slim routing and passes the `X-XSRF-TOKEN` and `X-Http-Method-Override` headers through to PHP. Use [`deploy/frontend-api.htaccess`](deploy/frontend-api.htaccess) as the content.
 
-3. **Create `~/frontend/.htaccess`** — redirects HTTP → HTTPS and handles Angular HTML5 routing.
+3. **Create `~/frontend/.htaccess`** — redirects HTTP → HTTPS and handles Angular HTML5 routing. Use [`deploy/frontend.htaccess`](deploy/frontend.htaccess) as the content.
 
 4. **Create `~/backend/.env`** from `src/backend/.env.example` with your production DB credentials and `APP_URL`.
 

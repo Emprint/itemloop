@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# HTTP to HTTPS
+RewriteCond %{ENV:HTTPS} !on
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Angular HTML5 routing fallback (skip /api/ requests)
+RewriteCond %{REQUEST_URI} !^/api(/|$)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
