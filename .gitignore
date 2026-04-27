@@ -4,6 +4,9 @@ deploy_package/
 /.vscode
 src/frontend/src/environments/environment.prod.ts
 
+# Private deploy config (copy deploy.env.example → deploy.env)
+deploy.env
+
 # Playwright MCP artifacts
 .playwright-mcp/
 
