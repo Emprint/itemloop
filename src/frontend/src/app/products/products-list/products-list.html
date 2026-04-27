@@ -58,10 +58,12 @@
     <div class="list-controls">
       <span class="count">{{ totalProducts() }} {{ 'PRODUCTS_UNIT' | translate }}</span>
       <div class="controls-right">
+        @if (isEditorOrAdmin()) {
         <button class="btn-outline" (click)="exportCsv()">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           {{ 'EXPORT_CSV' | translate }}
         </button>
+        }
         <div class="view-toggle">
           <button [class.active]="viewMode() === 'grid'" (click)="viewMode.set('grid')" title="Grid view">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
