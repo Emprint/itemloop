@@ -38,6 +38,8 @@ import { ProductCategoryService } from '../product-category.service';
 import { ProductConditionService } from '../product-condition.service';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CartService } from '../../cart/cart.service';
+import { AuthService } from '../../auth/auth.service';
+import { UserRole } from '../../auth/auth-response';
 
 @Component({
   selector: 'app-product-form',
@@ -70,6 +72,12 @@ export class ProductFormComponent implements OnChanges, OnInit {
   private conditionService = inject(ProductConditionService);
   private productService = inject(ProductService);
   readonly cartService = inject(CartService);
+  private auth = inject(AuthService);
+
+  isEditorOrAdmin = computed(() => {
+    const user = this.auth.user();
+    return !!user && (user.role === UserRole.Admin || user.role === UserRole.Editor);
+  });
 
   // Cart qty picker (view mode)
   cartQty = signal(1);

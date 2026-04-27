@@ -73,6 +73,7 @@
         </label>
 
         <!-- Visible to public toggle -->
+        @if (isEditorOrAdmin()) {
         <div class="pf-toggle-row">
           <button type="button" class="pf-toggle" [class.pf-toggle-on]="isPublic" (click)="toggleVisibility()">
             <span class="pf-toggle-thumb"></span>
@@ -82,6 +83,7 @@
             <small>{{ 'PRODUCT_FORM.VISIBLE_TO_PUBLIC_HELP' | translate }}</small>
           </div>
         </div>
+        }
       </div>
 
       <!-- MIDDLE column -->
