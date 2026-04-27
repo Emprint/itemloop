@@ -1,7 +1,8 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, HostListener } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './auth/auth.service';
 import { RouterOutlet } from '@angular/router';
+import { DropdownService } from './shared/dropdown.service';
 
 @Component({
   selector: 'app-root',
@@ -11,8 +12,15 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   private auth = inject(AuthService);
+  protected dropdown = inject(DropdownService);
 
   protected readonly title = signal('itemloop-frontend');
+
+  @HostListener('document:click')
+  closeDropdown() { this.dropdown.close(); }
+
+  @HostListener('window:scroll')
+  onScroll() { this.dropdown.close(); }
 
   constructor() {
     this.auth.restoreSession();

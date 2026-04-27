@@ -118,14 +118,12 @@
 
 // ── Actions menu (used in projected row templates) ────────
 .ls-actions {
-  position: relative;
   text-align: right;
   white-space: nowrap;
   width: 48px;
 }
 
-.ls-action-btn {
-  display: inline-flex !important;
+.ls-action-btn {  display: inline-flex !important;
   align-items: center;
   justify-content: center;
   background: none !important;
@@ -141,36 +139,6 @@
   transition: background 0.15s;
 
   &:hover { background: #f3f4f6 !important; color: #111827 !important; }
-}
-
-.ls-action-dropdown {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-  min-width: 120px;
-  overflow: hidden;
-
-  button {
-    display: block !important;
-    width: 100%;
-    padding: 0.5rem 1rem !important;
-    border: none;
-    background: none !important;
-    text-align: left;
-    font-size: 0.875rem;
-    color: #374151 !important;
-    cursor: pointer;
-    transition: background 0.15s;
-
-    &:hover { background: #f9fafb !important; }
-    &.danger { color: #ef4444 !important; }
-    &.danger:hover { background: #fef2f2 !important; }
-  }
 }
 
 // ── Role badge ────────────────────────────────────────────

@@ -1,10 +1,11 @@
 import { ConfirmModal } from '../../../shared/confirm-modal/confirm-modal';
-import { Component, signal, inject, HostListener } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LocationService, Zone, Building } from '../../locations-list/location.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ListShellComponent } from '../../../shared/list-shell/list-shell.component';
+import { DropdownService } from '../../../shared/dropdown.service';
 
 @Component({
   selector: 'app-zones-list',
@@ -24,28 +25,22 @@ export class ZonesList {
   form: FormGroup;
   finalZoneCode = '';
   codeChangedManually = false;
-  openActionId = signal<number | null>(null);
 
-  @HostListener('document:click')
-  closeActions() { this.openActionId.set(null); }
-
-  toggleAction(id: number, e: MouseEvent) {
-    e.stopPropagation();
-    this.openActionId.set(this.openActionId() === id ? null : id);
-  }
+  private translate = inject(TranslateService);
+  private fb = inject(FormBuilder);
+  private service = inject(LocationService);
+  private dropdown = inject(DropdownService);
 
   zoneSearchFn = (zone: Zone, q: string) =>
     (zone.name ?? '').toLowerCase().includes(q) ||
     (zone.building?.name ?? '').toLowerCase().includes(q) ||
     (zone.code ?? '').toLowerCase().includes(q);
 
-  private fb = inject(FormBuilder);
-  private service = inject(LocationService);
   constructor() {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(255)]],
       building_id: ['', [Validators.required]],
-      code: ['', [Validators.required, Validators.maxLength(3)]],
+      code: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]],
     });
     this.form.valueChanges.subscribe(() => {
       this.updateFinalZoneCode();
@@ -210,6 +205,13 @@ export class ZonesList {
   cancelDeleteZone() {
     this.zoneToDelete = null;
     this.showDeleteModal = false;
+  }
+
+  openDropdown(zone: Zone, e: MouseEvent) {
+    this.dropdown.open([
+      { label: this.translate.instant('EDIT'), action: () => this.editZone(zone) },
+      { label: this.translate.instant('DELETE'), danger: true, action: () => this.confirmDeleteZone(zone) },
+    ], e);
   }
 
   cancel() {

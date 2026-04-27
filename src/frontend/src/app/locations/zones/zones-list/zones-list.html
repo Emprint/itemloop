@@ -75,13 +75,7 @@
             }}
           </td>
           <td class="ls-actions">
-            <button class="ls-action-btn" (click)="toggleAction(zone.id, $event)">⋮</button>
-            @if (openActionId() === zone.id) {
-              <div class="ls-action-dropdown">
-                <button (click)="editZone(zone)">{{ 'EDIT' | translate }}</button>
-                <button class="danger" (click)="confirmDeleteZone(zone)">{{ 'DELETE' | translate }}</button>
-              </div>
-            }
+            <button class="ls-action-btn" (click)="openDropdown(zone, $event)">⋮</button>
           </td>
         </tr>
       </ng-template>

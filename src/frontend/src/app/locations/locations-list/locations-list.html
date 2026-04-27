@@ -72,13 +72,7 @@
           <td>{{ location.shelf }}</td>
           <td>{{ getFinalCode(location) }}</td>
           <td class="ls-actions">
-            <button class="ls-action-btn" (click)="toggleAction(location.id, $event)">⋮</button>
-            @if (openActionId() === location.id) {
-              <div class="ls-action-dropdown">
-                <button (click)="editLocation(location)">{{ 'EDIT' | translate }}</button>
-                <button class="danger" (click)="deleteLocation(location)">{{ 'DELETE' | translate }}</button>
-              </div>
-            }
+            <button class="ls-action-btn" (click)="openDropdown(location, $event)">⋮</button>
           </td>
         </tr>
       </ng-template>

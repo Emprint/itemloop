@@ -112,6 +112,24 @@ button {
   }
 }
 
+a.btn-outline {
+  display: inline-block;
+  background: transparent;
+  border: 1px solid var(--card-border);
+  color: var(--text);
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-grow: 1;
+  &:hover { background: #f3f4f6; }
+}
+
 button:disabled {
   background: #e5e7eb !important;
   color: #9ca3af !important;
@@ -293,4 +311,33 @@ table {
   font-size: 0.85rem;
   color: #16a34a;
   margin-top: 0.5rem;
+}
+
+// ── Global action dropdown (position: fixed, rendered in app root) ──
+.global-dropdown {
+  position: fixed;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 120px;
+  overflow: hidden;
+
+  button {
+    display: block !important;
+    width: 100%;
+    padding: 0.5rem 1rem !important;
+    border: none;
+    background: none !important;
+    text-align: left;
+    font-size: 0.875rem;
+    color: #374151 !important;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover { background: #f9fafb !important; }
+    &.danger { color: #ef4444 !important; }
+    &.danger:hover { background: #fef2f2 !important; }
+  }
 }

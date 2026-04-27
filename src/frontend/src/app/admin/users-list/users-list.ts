@@ -1,4 +1,5 @@
-import { Component, OnInit, signal, inject, HostListener } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
+import { DropdownService } from '../../shared/dropdown.service';
 import { UserService, User } from '../user.service';
 import { UserRole } from '../../auth/auth-response';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -21,6 +22,7 @@ export class UsersList implements OnInit {
   private userService = inject(UserService);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private dropdown = inject(DropdownService);
 
   showReLoginNotice = false;
   users = signal<User[]>([]);
@@ -32,15 +34,6 @@ export class UsersList implements OnInit {
   userToDelete: User | null = null;
   errorMessage = signal<string | null>(null);
   serverErrors = signal<Record<string, string[]>>({});
-  openActionId = signal<number | null>(null);
-
-  @HostListener('document:click')
-  closeActions() { this.openActionId.set(null); }
-
-  toggleAction(id: number, e: MouseEvent) {
-    e.stopPropagation();
-    this.openActionId.set(this.openActionId() === id ? null : id);
-  }
 
   userSearchFn = (user: User, q: string) =>
     user.name.toLowerCase().includes(q) || user.email.toLowerCase().includes(q);
@@ -165,6 +158,18 @@ export class UsersList implements OnInit {
     this.showForm = false;
     this.serverErrors.set({});
     this.resetForm();
+  }
+
+  openDropdown(user: User, e: MouseEvent) {
+    this.dropdown.open([
+      { label: this.translate.instant('EDIT'), action: () => this.selectUser(user) },
+      {
+        label: this.translate.instant('DELETE'),
+        danger: true,
+        disabled: this.isLastAdmin(user),
+        action: () => this.confirmDeleteUser(user),
+      },
+    ], e);
   }
 
   isLastAdmin(user: User): boolean {

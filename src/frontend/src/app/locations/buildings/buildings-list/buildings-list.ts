@@ -1,4 +1,6 @@
-import { Component, signal, inject, HostListener } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { DropdownService } from '../../../shared/dropdown.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocationService, Building } from '../../locations-list/location.service';
@@ -22,26 +24,20 @@ export class BuildingsList {
   showDeleteModal = false;
   buildingToDelete: Building | null = null;
   codeChangedManually = false;
-  openActionId = signal<number | null>(null);
 
-  @HostListener('document:click')
-  closeActions() { this.openActionId.set(null); }
-
-  toggleAction(id: number, e: MouseEvent) {
-    e.stopPropagation();
-    this.openActionId.set(this.openActionId() === id ? null : id);
-  }
+  private translate = inject(TranslateService);
+  private fb = inject(FormBuilder);
+  private service = inject(LocationService);
+  private dropdown = inject(DropdownService);
 
   buildingSearchFn = (b: Building, q: string) =>
     (b.name ?? '').toLowerCase().includes(q) ||
     (b.code ?? '').toLowerCase().includes(q);
 
-  private fb = inject(FormBuilder);
-  private service = inject(LocationService);
   constructor() {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(255)]],
-      code: ['', [Validators.required, Validators.maxLength(3)]],
+      code: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]],
     });
     this.form.valueChanges.subscribe(() => {
       // Optionally, update any preview code here
@@ -171,6 +167,13 @@ export class BuildingsList {
   cancelDeleteBuilding() {
     this.buildingToDelete = null;
     this.showDeleteModal = false;
+  }
+
+  openDropdown(building: Building, e: MouseEvent) {
+    this.dropdown.open([
+      { label: this.translate.instant('EDIT'), action: () => this.editBuilding(building) },
+      { label: this.translate.instant('DELETE'), danger: true, action: () => this.confirmDeleteBuilding(building) },
+    ], e);
   }
 
   cancel() {

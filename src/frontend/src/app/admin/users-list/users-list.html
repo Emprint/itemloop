@@ -86,13 +86,7 @@
             <span class="role-badge role-{{ user.role }}">{{ user.role | uppercase | translate }}</span>
           </td>
           <td class="ls-actions">
-            <button class="ls-action-btn" (click)="toggleAction(user.id, $event)">⋮</button>
-            @if (openActionId() === user.id) {
-              <div class="ls-action-dropdown">
-                <button (click)="selectUser(user)">{{ 'EDIT' | translate }}</button>
-                <button class="danger" (click)="confirmDeleteUser(user)" [disabled]="isLastAdmin(user)">{{ 'DELETE' | translate }}</button>
-              </div>
-            }
+            <button class="ls-action-btn" (click)="openDropdown(user, $event)">⋮</button>
           </td>
         </tr>
       </ng-template>

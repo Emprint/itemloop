@@ -1,11 +1,13 @@
-import { Component, signal, computed, inject, HostListener } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { Component, signal, computed, inject } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { ProductService, Product } from '../product.service';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { APP_SETTINGS } from '../../app-settings';
+import { DropdownService, DropdownItem } from '../../shared/dropdown.service';
 
 @Component({
   selector: 'app-products-list',
@@ -17,13 +19,18 @@ import { APP_SETTINGS } from '../../app-settings';
 export class ProductsList {
   private auth = inject(AuthService);
   private service = inject(ProductService);
+  private dropdown = inject(DropdownService);
+  private translate = inject(TranslateService);
 
   products = signal<Product[]>([]);
   errorMessage: string | null = null;
   showForm = signal(false);
   selectedProduct: Product | null = null;
   isReadOnlyForm = false;
-  isEditorOrAdmin = false;
+  isEditorOrAdmin = computed(() => {
+    const user = this.auth.user();
+    return !!user && (user.role === UserRole.Admin || user.role === UserRole.Editor);
+  });
 
   searchQuery = signal('');
   selectedCondition = signal('');
@@ -32,7 +39,6 @@ export class ProductsList {
   viewMode = signal<'list' | 'grid'>('list');
   pageSize = signal(10);
   currentPage = signal(1);
-  openActionId = signal<number | null>(null);
 
   conditionOptions = computed(() =>
     [...new Set(this.products().map(p => p.condition?.name).filter(Boolean))].sort() as string[]
@@ -82,15 +88,6 @@ export class ProductsList {
 
   constructor() {
     this.loadProducts();
-    const user = this.auth.user();
-    this.isEditorOrAdmin = !!user && (user.role === UserRole.Admin || user.role === UserRole.Editor);
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(e: MouseEvent) {
-    if (!(e.target as HTMLElement).closest('.actions-menu')) {
-      this.openActionId.set(null);
-    }
   }
 
   loadProducts() {
@@ -105,7 +102,6 @@ export class ProductsList {
   viewProduct(product: Product) {
     this.selectedProduct = product;
     this.isReadOnlyForm = true;
-    this.openActionId.set(null);
     this.showForm.set(true);
   }
 
@@ -116,13 +112,11 @@ export class ProductsList {
   editProduct(product: Product) {
     this.selectedProduct = product;
     this.isReadOnlyForm = false;
-    this.openActionId.set(null);
     this.showForm.set(true);
   }
 
   deleteProduct(product: Product) {
     if (!confirm(`Delete "${product.title}"?`)) return;
-    this.openActionId.set(null);
     this.service.deleteProduct(product.id).subscribe({
       next: () => this.loadProducts(),
       error: () => { this.errorMessage = 'Failed to delete product'; },
@@ -135,7 +129,7 @@ export class ProductsList {
       : this.service.addProduct(product);
     save$.subscribe({
       next: () => this.completeProductSave(),
-      error: () => { this.errorMessage = 'Failed to save product'; },
+      error: (err: HttpErrorResponse) => { this.errorMessage = this.extractError(err, 'Failed to save product'); },
     });
   }
 
@@ -149,7 +143,7 @@ export class ProductsList {
         this.selectedProduct = saved;
         this.errorMessage = null;
       },
-      error: () => { this.errorMessage = 'Failed to save product'; },
+      error: (err: HttpErrorResponse) => { this.errorMessage = this.extractError(err, 'Failed to save product'); },
     });
   }
 
@@ -198,9 +192,17 @@ export class ProductsList {
     return { start, end };
   }
 
-  toggleAction(id: number, e: MouseEvent) {
-    e.stopPropagation();
-    this.openActionId.set(this.openActionId() === id ? null : id);
+  openDropdown(product: Product, e: MouseEvent) {
+    const items: DropdownItem[] = [
+      { label: this.translate.instant('VIEW'), action: () => this.viewProduct(product) },
+    ];
+    if (this.isEditorOrAdmin()) {
+      items.push(
+        { label: this.translate.instant('EDIT'), action: () => this.editProduct(product) },
+        { label: this.translate.instant('DELETE'), danger: true, action: () => this.deleteProduct(product) },
+      );
+    }
+    this.dropdown.open(items, e);
   }
 
   setPage(p: number | '...') {
@@ -211,6 +213,14 @@ export class ProductsList {
   onSearch(v: string) { this.searchQuery.set(v); this.currentPage.set(1); }
   onFilterChange() { this.currentPage.set(1); }
   onPageSizeChange(v: number) { this.pageSize.set(v); this.currentPage.set(1); }
+
+  private extractError(err: HttpErrorResponse, fallback: string): string {
+    const body = err.error;
+    if (body?.errors) {
+      return Object.values(body.errors).flat().join(' ');
+    }
+    return body?.message ?? body?.error ?? fallback;
+  }
 
   exportCsv() {
     const headers = ['Code', 'Title', 'Category', 'Condition', 'Location', 'Quantity', 'Est. Value', 'Barcode', 'Date Added'];

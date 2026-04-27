@@ -106,12 +106,15 @@ export class LocationService {
     if (words.length === 2 && /^\d+$/.test(words[1])) {
       code = words[0][0] + words[1].padStart(2, '0');
     } else if (words.length >= 3) {
-      code = words.map((w) => w[0]).join('');
+      code = words.slice(0, 3).map((w) => w[0]).join('');
     } else if (words.length === 2) {
       code = words[0].slice(0, 2) + words[1][0];
     } else {
       code = words[0].slice(0, 3);
     }
-    return code.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    code = code.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    // Always return exactly 3 chars: pad with last char if too short, slice if too long
+    if (code.length < 3) code = code.padEnd(3, code[code.length - 1] || 'X');
+    return code.slice(0, 3);
   }
 }
