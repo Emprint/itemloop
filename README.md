@@ -95,8 +95,10 @@ cp .env.example .env
 Import the database schema (first time only):
 
 ```sh
-mysql -u youruser -p yourdb < schema.sql
+mysql -u youruser -p yourdb < src/backend/sql/schema.sql
 ```
+
+> **Existing installs:** when a new version adds or changes database columns, apply only the relevant file from `src/backend/sql/migrations/` — do **not** re-import the full `schema.sql`. See [`sql/migrations/README.md`](src/backend/sql/migrations/README.md).
 
 Start the backend dev server:
 
@@ -234,9 +236,9 @@ These steps configure the server directory layout and only need to be done once:
    <?php require __DIR__ . '/../../backend/public/index.php';
    ```
 
-2. **Create `~/frontend/api/.htaccess`** — enables Slim routing and passes the `X-XSRF-TOKEN` and `X-Http-Method-Override` headers through to PHP. Use [`deploy/frontend-api.htaccess`](deploy/frontend-api.htaccess) as the content.
+2. **`~/frontend/api/`** — created and managed automatically by `deploy.sh` (no manual step needed).
 
-3. **Create `~/frontend/.htaccess`** — redirects HTTP → HTTPS and handles Angular HTML5 routing. Use [`deploy/frontend.htaccess`](deploy/frontend.htaccess) as the content.
+3. **Create `~/frontend/.htaccess`** — use [`deploy/frontend.htaccess`](deploy/frontend.htaccess) as the content. After this first-time setup, `deploy.sh` will keep it up to date automatically.
 
 4. **Create `~/backend/.env`** from `src/backend/.env.example` with your production DB credentials and `APP_URL`.
 

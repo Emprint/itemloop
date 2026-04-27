@@ -1,5 +1,10 @@
 # Itemloop – Copilot Instructions
 
+## Rules
+
+- **Never commit or push without explicit user approval.** Always show what you've changed and ask "Ready to commit?" before running any `git commit` or `git push` command.
+- **Database schema changes require two files:** when adding or modifying columns/tables, always (1) update `src/backend/sql/schema.sql` to reflect the full new state, AND (2) create the next numbered migration file in `src/backend/sql/migrations/NNN_description.sql` with only the incremental `ALTER TABLE` / `CREATE TABLE` SQL. See `src/backend/sql/migrations/README.md` for the template.
+
 Itemloop is a full-stack inventory management app for community reuse centers.  
 **Backend**: Slim Framework 4 (PHP 8.2+) in `src/backend/`  
 **Frontend**: Angular 20 (PWA) in `src/frontend/`  
@@ -14,7 +19,7 @@ Itemloop is a full-stack inventory management app for community reuse centers.
 php -S localhost:8000 -t public            # Start dev server on :8000
 composer install                           # Install dependencies (run locally before FTP deploy)
 ```
-No artisan, no migrations — schema is in `sql/schema.sql`, imported once via phpMyAdmin.
+No artisan. Schema: `sql/schema.sql` (fresh installs) + `sql/migrations/` (incremental changes for existing DBs).
 
 ### Frontend (`cd src/frontend`)
 ```sh

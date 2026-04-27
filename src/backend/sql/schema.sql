@@ -1,6 +1,9 @@
 -- Itemloop database schema
--- Import this file via phpMyAdmin or any MySQL client.
+-- Import this file via phpMyAdmin or any MySQL client for a FRESH install.
 -- No SSH or CLI required.
+--
+-- For EXISTING databases, apply only the incremental files in sql/migrations/
+-- instead of re-importing this file. See sql/migrations/README.md for instructions.
 
 SET FOREIGN_KEY_CHECKS = 0;
 
