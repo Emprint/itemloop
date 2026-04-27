@@ -6,13 +6,13 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class ProductColorService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl;
+  private apiUrl = `${environment.apiUrl}product-colors`;
 
   getColors(): Observable<{ id: number; name: string }[]> {
-    return this.http.get<{ id: number; name: string }[]>(`${this.apiUrl}/product-colors`);
+    return this.http.get<{ id: number; name: string }[]>(this.apiUrl);
   }
 
   addColor(name: string): Observable<{ id: number; name: string }> {
-    return this.http.post<{ id: number; name: string }>(`${this.apiUrl}/product-colors`, { name });
+    return this.http.post<{ id: number; name: string }>(this.apiUrl, { name });
   }
 }

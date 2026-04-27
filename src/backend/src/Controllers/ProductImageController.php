@@ -30,7 +30,7 @@ class ProductImageController
             return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['images' => ['No images provided.']]], 422);
         }
 
-        $storageDir = __DIR__ . '/../../public/storage/products';
+        $storageDir = $_ENV['STORAGE_PATH'] ?? __DIR__ . '/../../public/storage/products';
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0755, true);
         }
@@ -140,13 +140,16 @@ class ProductImageController
             return $this->json($response, ['error' => 'NOT_FOUND'], 404);
         }
 
-        $filePath = __DIR__ . '/../../public/' . $image['path'];
+        $storageBase = $_ENV['STORAGE_PATH'] ?? __DIR__ . '/../../public/storage/products';
+        $publicBase  = dirname($storageBase, 2); // parent of "storage/products"
+
+        $filePath = $publicBase . '/' . $image['path'];
         if (file_exists($filePath)) {
             unlink($filePath);
         }
 
         if (!empty($image['thumbnail_path'])) {
-            $thumbFilePath = __DIR__ . '/../../public/' . $image['thumbnail_path'];
+            $thumbFilePath = $publicBase . '/' . $image['thumbnail_path'];
             if (file_exists($thumbFilePath)) {
                 unlink($thumbFilePath);
             }

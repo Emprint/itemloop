@@ -1,8 +1,9 @@
 RewriteEngine On
+
+# Pass X-XSRF-TOKEN header through to PHP (Apache strips non-standard headers by default)
+RewriteCond %{HTTP:x-xsrf-token} .
+RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:x-xsrf-token}]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
-
-# Allow large image uploads (up to 20 MB)
-php_value upload_max_filesize 20M
-php_value post_max_size 25M

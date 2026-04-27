@@ -34,6 +34,9 @@ session_start();
 $app = AppFactory::create();
 $app->addBodyParsingMiddleware(); // parses application/json, form-urlencoded, multipart
 $app->addRoutingMiddleware();
+// MethodOverrideMiddleware must be outermost (added last) so it rewrites the
+// HTTP method *before* routing occurs (Slim middleware is LIFO).
+$app->add(new \Slim\Middleware\MethodOverrideMiddleware());
 $app->addErrorMiddleware(
     (bool) ($_ENV['APP_DEBUG'] ?? false),
     true,
@@ -55,7 +58,7 @@ $app->add(function ($request, $handler) {
         return $response
             ->withHeader('Access-Control-Allow-Origin', $cors)
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, X-XSRF-TOKEN')
+            ->withHeader('Access-Control-Allow-Headers', 'Content-Type, X-XSRF-TOKEN, X-Http-Method-Override')
             ->withHeader('Access-Control-Allow-Credentials', 'true')
             ->withStatus(204);
     }
@@ -64,7 +67,7 @@ $app->add(function ($request, $handler) {
     return $response
         ->withHeader('Access-Control-Allow-Origin', $cors)
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-        ->withHeader('Access-Control-Allow-Headers', 'Content-Type, X-XSRF-TOKEN')
+        ->withHeader('Access-Control-Allow-Headers', 'Content-Type, X-XSRF-TOKEN, X-Http-Method-Override')
         ->withHeader('Access-Control-Allow-Credentials', 'true');
 });
 

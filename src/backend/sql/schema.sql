@@ -129,14 +129,16 @@ CREATE TABLE IF NOT EXISTS `products` (
 -- Product images
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `images` (
-    `id`         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `product_id` BIGINT UNSIGNED NOT NULL,
-    `path`       VARCHAR(512)    NOT NULL,
-    `format`     VARCHAR(16)     NOT NULL DEFAULT 'webp',
-    `width`      INT UNSIGNED    NULL DEFAULT NULL,
-    `height`     INT UNSIGNED    NULL DEFAULT NULL,
-    `created_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id`             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `product_id`     BIGINT UNSIGNED NOT NULL,
+    `path`           VARCHAR(512)    NOT NULL,
+    `thumbnail_path` VARCHAR(512)    NULL DEFAULT NULL,
+    `format`         VARCHAR(16)     NOT NULL DEFAULT 'webp',
+    `width`          INT UNSIGNED    NULL DEFAULT NULL,
+    `height`         INT UNSIGNED    NULL DEFAULT NULL,
+    `sort_order`     INT UNSIGNED    NOT NULL DEFAULT 0,
+    `created_at`     TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`     TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_images_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

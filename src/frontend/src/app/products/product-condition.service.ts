@@ -6,14 +6,14 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class ProductConditionService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl;
+  private apiUrl = `${environment.apiUrl}product-conditions`;
 
   getConditions(): Observable<{ id: number; name: string }[]> {
-    return this.http.get<{ id: number; name: string }[]>(`${this.apiUrl}/product-conditions`);
+    return this.http.get<{ id: number; name: string }[]>(this.apiUrl);
   }
 
   addCondition(name: string): Observable<{ id: number; name: string }> {
-    return this.http.post<{ id: number; name: string }>(`${this.apiUrl}/product-conditions`, {
+    return this.http.post<{ id: number; name: string }>(this.apiUrl, {
       name,
     });
   }

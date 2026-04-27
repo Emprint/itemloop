@@ -10,13 +10,14 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { XsrfInterceptor } from './auth/xsrf.interceptor';
+import { MethodOverrideInterceptor } from './auth/method-override.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([XsrfInterceptor])),
+    provideHttpClient(withInterceptors([XsrfInterceptor, MethodOverrideInterceptor])),
     provideTranslateService({
       loader: provideTranslateHttpLoader({
         prefix: '/assets/i18n/',
