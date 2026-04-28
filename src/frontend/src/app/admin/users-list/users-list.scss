@@ -1,3 +1,10 @@
+// Hide email column on phones to prevent table overflow
+@media (max-width: 560px) {
+  .user-col-email {
+    display: none;
+  }
+}
+
 .hide-password-button {
   position: absolute;
   top: 0.45em;

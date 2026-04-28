@@ -263,8 +263,8 @@
   }
 }
 
-// Mobile responsive
-@media (max-width: 768px) {
+// Mobile + tablet portrait responsive
+@media (max-width: 1024px) {
   .sidebar-toggle {
     display: flex;
   }

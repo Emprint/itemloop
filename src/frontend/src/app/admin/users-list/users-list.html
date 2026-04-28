@@ -81,7 +81,7 @@
       <ng-template #headTpl>
         <tr>
           <th>{{ 'NAME' | translate }}</th>
-          <th>{{ 'EMAIL' | translate }}</th>
+          <th class="user-col-email">{{ 'EMAIL' | translate }}</th>
           <th>{{ 'ROLE' | translate }}</th>
           <th style="width: 48px"></th>
         </tr>
@@ -89,7 +89,7 @@
       <ng-template #rowTpl let-user>
         <tr>
           <td>{{ user.name }}</td>
-          <td>{{ user.email }}</td>
+          <td class="user-col-email">{{ user.email }}</td>
           <td>
             <span class="role-badge role-{{ user.role }}">{{ user.role | uppercase | translate }}</span>
           </td>
