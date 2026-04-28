@@ -40,7 +40,7 @@
                 </span>
                 #{{ order.id }}
               </td>
-              <td>
+              <td class="col-customer">
                 <div class="customer-name">{{ order.user.name }}</div>
                 <div class="customer-email">{{ order.user.email }}</div>
               </td>
@@ -56,17 +56,17 @@
                   @if (order.status === 'pending') {
                     <button class="action-btn complete-btn" (click)="setStatus(order, 'completed')" [title]="'ORDERS.MARK_COMPLETED' | translate">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
-                      {{ 'ORDERS.MARK_COMPLETED' | translate }}
+                      <span class="btn-text">{{ 'ORDERS.MARK_COMPLETED' | translate }}</span>
                     </button>
                     <button class="action-btn cancel-btn" (click)="setStatus(order, 'cancelled')" [title]="'ORDERS.MARK_CANCELLED' | translate">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                      {{ 'ORDERS.MARK_CANCELLED' | translate }}
+                      <span class="btn-text">{{ 'ORDERS.MARK_CANCELLED' | translate }}</span>
                     </button>
                   }
                   @if (order.status === 'completed' || order.status === 'cancelled') {
                     <button class="action-btn reopen-btn" (click)="setStatus(order, 'pending')" [title]="'ORDERS.MARK_PENDING' | translate">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
-                      {{ 'ORDERS.MARK_PENDING' | translate }}
+                      <span class="btn-text">{{ 'ORDERS.MARK_PENDING' | translate }}</span>
                     </button>
                   }
                 </div>

@@ -1,5 +1,6 @@
 .location-tabs {
   margin: 1rem -1rem;
+  overflow-x: clip;
 
   .tabs-nav {
     display: flex;
@@ -8,21 +9,31 @@
     border-bottom: 1px solid var(--primary-color);
 
     button {
+      flex: 1;
+      min-width: 0;
       background: #f8f8f8;
       color: #222;
       border: none;
-      padding: 0.7em 1.5em;
+      padding: 0.7em 1em;
       border-radius: 6px 6px 0 0;
       font-weight: 500;
       cursor: pointer;
       margin-bottom: 0;
+      text-align: center;
+      font-size: 0.875rem;
 
       &.active {
         background: var(--primary-color);
         color: #fff;
       }
     }
+
+    @media (max-width: 560px) {
+      gap: 0.5rem;
+      padding: 0 0.5rem;
+    }
   }
+
   .tab-content {
     padding: 1rem;
   }

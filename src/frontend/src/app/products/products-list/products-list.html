@@ -13,6 +13,7 @@
       (saveContinueEvent)="onSaveProductContinue($event)"
       (cancelEvent)="onCancelProduct()"
       (editModeEvent)="onSwitchToEdit()"
+      (deleteEvent)="onDeleteFromForm()"
     ></app-product-form>
   } @else {
 
@@ -82,12 +83,12 @@
           <thead>
             <tr>
               <th>{{ 'PRODUCT' | translate }}</th>
-              <th>{{ 'PRODUCT_FORM.CATEGORY' | translate }}</th>
+              <th class="col-hide-mobile">{{ 'PRODUCT_FORM.CATEGORY' | translate }}</th>
               <th>{{ 'CONDITION' | translate }}</th>
-              <th>{{ 'LOCATION' | translate }}</th>
+              <th class="col-hide-tablet">{{ 'LOCATION' | translate }}</th>
               <th>{{ 'QUANTITY' | translate }}</th>
-              <th>{{ 'EST_VALUE' | translate }}</th>
-              <th>{{ 'DATE_ADDED' | translate }}</th>
+              <th class="col-hide-mobile">{{ 'EST_VALUE' | translate }}</th>
+              <th class="col-hide-mobile">{{ 'DATE_ADDED' | translate }}</th>
               <th>{{ 'ACTIONS' | translate }}</th>
             </tr>
           </thead>
@@ -109,7 +110,7 @@
                     <div class="product-code">{{ productCode(product.id) }}</div>
                   </div>
                 </td>
-                <td>{{ capitalize(product.category?.name) || '—' }}</td>
+                <td class="col-hide-mobile">{{ capitalize(product.category?.name) || '—' }}</td>
                 <td>
                   @if (product.condition) {
                     <span class="badge {{ conditionClass(product.condition.name) }}">{{ capitalize(product.condition.name) }}</span>
@@ -117,13 +118,13 @@
                     <span class="text-muted">—</span>
                   }
                 </td>
-                <td class="location-cell">
+                <td class="location-cell col-hide-tablet">
                   <div class="loc-top">{{ locationDisplay(product).top }}</div>
                   <div class="loc-sub">{{ locationDisplay(product).bottom }}</div>
                 </td>
                 <td>{{ product.quantity }}</td>
-                <td>{{ formatValue(product.estimated_value) }}</td>
-                <td>{{ product.created_at | localeDate:'d MMM y' }}</td>
+                <td class="col-hide-mobile">{{ formatValue(product.estimated_value) }}</td>
+                <td class="col-hide-mobile">{{ product.created_at | localeDate:'d MMM y' }}</td>
                 <td class="actions-menu" (click)="$event.stopPropagation()">
                   <button class="action-btn" (click)="openDropdown(product, $event)">⋮</button>
                 </td>
@@ -137,19 +138,36 @@
       <!-- Grid view -->
       <div class="products-grid">
         @for (product of paginatedProducts(); track product.id) {
-          <div class="product-card">
+          <div class="product-card" (click)="viewProduct(product)" (keyup.enter)="viewProduct(product)" tabindex="0" role="button"
+               [attr.aria-label]="product.title">
             @if (product.images?.length) {
               <img [src]="product.images![0].thumbnail_url ?? product.images![0].url" alt="Thumbnail" class="thumbnail" />
             }
             <div class="product-info">
-              <h3>
-                {{ product.title }}
-                @if (isEditorOrAdmin()) {
-                  <button class="compact-button" (click)="editProduct(product)">{{ 'EDIT' | translate }}</button>
-                  <button class="compact-button danger" (click)="deleteProduct(product)">{{ 'DELETE' | translate }}</button>
+              <h3>{{ product.title }}</h3>
+              @if (product.description) {
+                <p class="card-description">{{ product.description }}</p>
+              }
+              <div class="card-meta">
+                @if (product.condition) {
+                  <span class="card-badge">{{ product.condition.name }}</span>
                 }
-              </h3>
-              <p>{{ product.description }}</p>
+                @if (product.category) {
+                  <span class="card-badge card-badge--category">{{ product.category.name }}</span>
+                }
+              </div>
+              <div class="card-footer-row">
+                @if (product.location) {
+                  <span class="card-location">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 10c0 6-8 13-8 13s-8-7-8-13a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    {{ product.location.code }}
+                  </span>
+                }
+                <span class="card-qty" [class.card-qty--low]="product.quantity <= 1">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  {{ product.quantity }}
+                </span>
+              </div>
             </div>
           </div>
         }

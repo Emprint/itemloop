@@ -6,6 +6,7 @@
 .app-main {
   margin-left: 240px;
   flex: 1;
+  min-width: 0; // prevents flex item from growing wider than its container
   padding: 2rem;
   background: #f9fafb;
   min-height: 100vh;

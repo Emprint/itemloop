@@ -66,6 +66,7 @@ export class ProductFormComponent implements OnChanges, OnInit {
   @Output() cancelEvent = new EventEmitter<void>();
   @Output() saveContinueEvent = new EventEmitter<Product>();
   @Output() editModeEvent = new EventEmitter<void>();
+  @Output() deleteEvent = new EventEmitter<void>();
 
   private fb = inject(FormBuilder);
   private locationService = inject(LocationService);

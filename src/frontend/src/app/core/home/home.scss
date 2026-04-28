@@ -10,6 +10,15 @@
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.625rem;
+
+    .kpi-card:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
 }
 
 .kpi-card {
@@ -37,6 +46,17 @@
     height: 22px;
   }
 
+  @media (max-width: 560px) {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
   &--green  { background: #dcfce7; color: #16a34a; }
   &--blue   { background: #dbeafe; color: #2563eb; }
   &--purple { background: #ede9fe; color: #7c3aed; }
@@ -60,6 +80,11 @@
     font-size: 0.8rem;
     color: #6b7280;
     margin-top: 2px;
+  }
+
+  @media (max-width: 560px) {
+    .kpi-value { font-size: 1.25rem; }
+    .kpi-label { font-size: 0.72rem; }
   }
 }
 

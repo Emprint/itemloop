@@ -160,6 +160,7 @@
     "UPLOAD_HINT_SUBTITLE": "Upload up to 10 photos. Max size per image: 10 MB.",
     "UPLOAD_FORMATS": "JPG, PNG, WebP — Max 10 photos",
     "SAVE_CONTINUE": "Save & continue",
+    "SAVE_CONTINUE_SHORT": "Continue",
     "SAVE_CHANGES": "Save changes",
     "SELECT_BUILDING": "Select building",
     "SELECT_ZONE": "Select zone",

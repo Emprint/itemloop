@@ -261,6 +261,12 @@
               <dt>{{ 'PRODUCT_FORM.STATUS' | translate }}</dt>
               <dd><span class="pf-status-badge">{{ 'PRODUCT_FORM.AVAILABLE' | translate }}</span></dd>
             </dl>
+            @if (!readOnly && canEdit) {
+              <button type="button" class="pf-btn-delete" (click)="deleteEvent.emit()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                {{ 'DELETE' | translate }}
+              </button>
+            }
           </div>
         }
       </div>
@@ -296,8 +302,14 @@
       } @else {
         <div class="pf-footer-actions">
           <button type="button" class="pf-btn-cancel" (click)="onCancel()">{{ 'CANCEL' | translate }}</button>
-          <button type="button" class="pf-btn-secondary" (click)="onSaveAndContinue()" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CONTINUE' | translate }}</button>
-          <button type="submit" class="pf-btn-primary" [disabled]="form.invalid">{{ 'PRODUCT_FORM.SAVE_CHANGES' | translate }}</button>
+          <button type="button" class="pf-btn-secondary" (click)="onSaveAndContinue()" [disabled]="form.invalid">
+            <span class="pf-btn-label-full">{{ 'PRODUCT_FORM.SAVE_CONTINUE' | translate }}</span>
+            <span class="pf-btn-label-short">{{ 'PRODUCT_FORM.SAVE_CONTINUE_SHORT' | translate }}</span>
+          </button>
+          <button type="submit" class="pf-btn-primary" [disabled]="form.invalid">
+            <span class="pf-btn-label-full">{{ 'PRODUCT_FORM.SAVE_CHANGES' | translate }}</span>
+            <span class="pf-btn-label-short">{{ 'SAVE' | translate }}</span>
+          </button>
         </div>
       }
     </div>

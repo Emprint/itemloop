@@ -125,3 +125,73 @@
 
   .col-qty, .col-price, .col-total { text-align: right; white-space: nowrap; }
 }
+
+// ── Responsive ────────────────────────────────────────────
+@media (max-width: 640px) {
+  // Switch table to 2-line card rows
+  .bo-table-wrapper { overflow-x: visible; }
+
+  .bo-table {
+    display: block;
+    width: 100%;
+
+    thead { display: none; }
+    tbody { display: block; }
+
+    // Reset explicit column widths so CSS grid can size tracks naturally
+    .col-id, .col-date, .col-total, .col-status, .col-actions { width: auto; }
+  }
+
+  .bo-row {
+    display: grid;
+    width: 100%;
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-rows: auto auto;
+    column-gap: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+    cursor: pointer;
+
+    &:hover { background: #f9fafb; }
+    &.expanded { background: #f9fafb; }
+
+    // Reset explicit table column widths so grid can size tracks naturally
+    td { display: block; width: auto; }
+
+    .col-id {
+      grid-column: 1; grid-row: 1;
+      display: flex; align-items: center; gap: 0.3rem;
+      font-weight: 600; white-space: nowrap; align-self: center;
+    }
+    .col-customer {
+      grid-column: 2; grid-row: 1;
+      min-width: 0; align-self: center;
+      .customer-email { display: none; }
+    }
+    .col-status {
+      grid-column: 3; grid-row: 1;
+      display: flex; align-items: center; align-self: center;
+    }
+    .col-actions {
+      grid-column: 4; grid-row: 1;
+      display: flex; align-items: center; align-self: center;
+    }
+    .col-date {
+      grid-column: 1 / 3; grid-row: 2;
+      font-size: 0.75rem; color: #6b7280; padding-top: 0.2rem;
+    }
+    .col-total {
+      grid-column: 3 / 5; grid-row: 2;
+      font-size: 0.75rem; font-weight: 600; color: #374151;
+      padding-top: 0.2rem; text-align: right;
+    }
+  }
+
+  .bo-detail-row {
+    display: block;
+    td { display: block; padding: 0 0.75rem 0.75rem; }
+  }
+
+  .btn-text { display: none; }
+  .action-btn { padding: 0.35em 0.5em; }
+}

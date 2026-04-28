@@ -37,7 +37,7 @@ export class ProductsList {
   selectedCondition = signal('');
   selectedLocation = signal('');
   selectedCategory = signal('');
-  viewMode = signal<'list' | 'grid'>('list');
+  viewMode = signal<'list' | 'grid'>(window.innerWidth <= 768 ? 'grid' : 'list');
   pageSize = signal(10);
   currentPage = signal(1);
 
@@ -120,6 +120,20 @@ export class ProductsList {
     if (!confirm(`Delete "${product.title}"?`)) return;
     this.service.deleteProduct(product.id).subscribe({
       next: () => this.loadProducts(),
+      error: () => { this.errorMessage = 'Failed to delete product'; },
+    });
+  }
+
+  onDeleteFromForm() {
+    if (!this.selectedProduct) return;
+    const product = this.selectedProduct;
+    if (!confirm(`Delete "${product.title}"?`)) return;
+    this.service.deleteProduct(product.id).subscribe({
+      next: () => {
+        this.showForm.set(false);
+        this.selectedProduct = null;
+        this.loadProducts();
+      },
       error: () => { this.errorMessage = 'Failed to delete product'; },
     });
   }

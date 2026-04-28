@@ -39,7 +39,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US5 | User | As a user, I want to view and filter the product list (by condition, location, keyword) to find items easily. | High | 🔴 Complex | ✅ |
 | US6 | User | As a user, I want to scan a barcode to quickly search or add an item. | Medium | 🔴 Complex | ⚪ |
 | US7 | Public visitor | As a visitor, I want to browse available items so I can prepare for an in-person visit. | Medium | 🟡 Medium | ✅ (public visibility filter) |
-| US8 | Public visitor | As a visitor, I want to reserve items online to pick them up later. | Low | 🔴 Complex | ⚪ |
+| US8 | Customer | As a customer, I want to reserve items online to pick them up later. | Low | 🔴 Complex | ✅ (cart → order flow; staff manages pickup via Orders page) |
 | US9 | User | As a user, I want to use the app from a smartphone or browser so I can manage inventory anywhere. | High | 🟡 Medium | 🔲 (responsive layout in progress) |
 | US10 | User | As a user, I want to use the app offline and sync data when reconnected so I can keep working without internet. | Medium | 🔴 Complex | ⚪ |
 | US11 | User | As a user, I want to be notified if data fails to sync so I don't lose updates. | Medium | 🟡 Medium | ⚪ |
@@ -69,6 +69,11 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US35 | Developer | As a developer, I want to control the following application parameters via a central config so the app can be adapted to different community contexts without code changes: **(1) Currency** — ISO 4217 code used throughout the UI; **(2) Open registration** — whether new users can self-register (if disabled, only admins can create accounts and the register route/link are hidden); **(3) Public mode** — whether the app is publicly accessible to non-logged-in users (if disabled, unauthenticated visitors are redirected to login, and the backend API enforces auth on all routes including product listing); **(4) Language mode** — whether the app supports multiple languages (current: en/fr) or is locked to a single language (if single, the language switcher is hidden and the fixed locale is configurable); **(5) Shop mode** — whether cart, order, and checkout features are enabled (if disabled, all shop-related UI elements are hidden and the relevant API routes are restricted on the backend). | Medium | 🔴 Complex | ⚪ |
 | US36 | Editor/Admin | As an editor or admin, I want a dedicated Orders page listing all orders from all customers, with the ability to view each order's items and mark an order as completed or cancelled (and reopen it to pending), so the team can manage in-person pickup and payment. | Medium | 🔴 Complex | ✅ |
 | US37 | Developer | As a developer, I want dates displayed throughout the app to respect the user's selected language (locale-aware formatting for month names, date order, etc.), so that French users see "28 avr. 2026" and English users see "28 Apr 2026". | Low | ⚪ Simple | ✅ (shared `LocaleDatePipe`; product list, product form, My Orders, and Orders all use it) |
+| US38 | Editor/Admin | As an editor or admin, I want to view the full history of each product — quantity changes, location moves, order events — with a timestamp and the responsible user, so the team has complete traceability over every item. | Medium | 🔴 Complex | ⚪ |
+| US39 | Admin | As an admin, I want to view reuse impact statistics (total kg recovered, number of items redistributed, estimated value) derived from existing product data and completed orders, so I can report on the center's environmental and social activity. | Low | 🟡 Medium | ⚪ |
+| US40 | Editor/Admin | As an editor or admin, I want to print or export shelf labels containing the location code (e.g. BG1-ZOA-001) as a barcode or QR code, so I can physically tag storage locations and scan them later. | Low | 🟡 Medium | ⚪ |
+| US41 | User/Admin | As a user or admin, I want to receive notifications (in-app or email) when an order is placed or its status changes, so the team and customers are always informed without having to check manually. | Medium | 🔴 Complex | ⚪ |
+| US42 | Admin | As an admin, I want to export inventory or order data as a formatted PDF report, so I can share or archive summaries without needing spreadsheet software. | Low | 🟡 Medium | ⚪ |
 
 ---
 
@@ -80,17 +85,15 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 
 ## 📌 Roadmap Ideas
 
-- **Order submission** ✅ — backend API receives cart orders; staff can mark as completed/cancelled (US32, US36)
-- **Order history** ✅ — customers can view past orders (US32 My Orders page)
-- **Locale-aware dates** ✅ — shared `LocaleDatePipe` used across product list, product form, and orders (US37)
 - Online payment integration
-- Barcode scanning for quick product lookup or creation
-- User notification system (email, browser alerts)
-- Item history & audit log
-- Export to PDF (admin reporting)
 - PWA offline sync with conflict resolution
-- Weight / volume tracking for reuse impact reporting
-- Barcode / QR code on location labels (using generated codes)
+
+---
+
+## 🛠️ Backlog / Next Session
+
+- **In-app confirmation modal**: Replace all native `window.confirm()` dialogs (delete product, and any other destructive actions) with a proper in-app modal/dialog component, consistent with the app's design system.
+- **Product creator & last editor**: Store the user who created a product and the user who last edited it in the database (`created_by`, `updated_by` columns). Display this information in the Quick Info box of the product form (edit and read-only views).
 
 ---
 

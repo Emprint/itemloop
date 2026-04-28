@@ -329,6 +329,8 @@ table {
 .page-wide {
   // No max-width — fills the available space from app-main padding.
   // Kept as a semantic marker; increase max-width here if needed on large screens.
+  max-width: 100%;
+  min-width: 0;
 }
 
 // Page title — strips default h2 bottom margin so sections control their own spacing

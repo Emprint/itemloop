@@ -1,0 +1,17 @@
+.loc-sub {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .loc-col-building,
+  .loc-col-zone {
+    display: none;
+  }
+
+  .loc-sub {
+    display: block;
+    font-size: 0.72rem;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+}

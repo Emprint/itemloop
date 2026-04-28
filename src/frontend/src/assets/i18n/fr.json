@@ -62,6 +62,7 @@
     "UPLOAD_HINT_SUBTITLE": "Importez jusqu'à 10 photos. Taille max par image : 10 Mo.",
     "UPLOAD_FORMATS": "JPG, PNG, WebP — Max 10 photos",
     "SAVE_CONTINUE": "Enregistrer & continuer",
+    "SAVE_CONTINUE_SHORT": "Continuer",
     "SAVE_CHANGES": "Enregistrer les modifications",
     "SELECT_BUILDING": "Sélectionner un bâtiment",
     "SELECT_ZONE": "Sélectionner une zone",

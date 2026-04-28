@@ -66,8 +66,8 @@
     >
       <ng-template #headTpl>
         <tr>
-          <th>{{ 'BUILDING' | translate }}</th>
-          <th>{{ 'ZONE' | translate }}</th>
+          <th class="loc-col-building">{{ 'BUILDING' | translate }}</th>
+          <th class="loc-col-zone">{{ 'ZONE' | translate }}</th>
           <th>{{ 'SHELF' | translate }}</th>
           <th>{{ 'CODE' | translate }}</th>
           <th style="width: 48px"></th>
@@ -75,9 +75,12 @@
       </ng-template>
       <ng-template #rowTpl let-location>
         <tr>
-          <td>{{ location.zone?.building?.name || '' }}</td>
-          <td>{{ location.zone?.name || '' }}</td>
-          <td>{{ location.shelf }}</td>
+          <td class="loc-col-building">{{ location.zone?.building?.name || '' }}</td>
+          <td class="loc-col-zone">{{ location.zone?.name || '' }}</td>
+          <td>
+            {{ location.shelf }}
+            <span class="loc-sub">{{ location.zone?.building?.name }}{{ location.zone?.name ? ' › ' + location.zone?.name : '' }}</span>
+          </td>
           <td>{{ getFinalCode(location) }}</td>
           <td class="ls-actions">
             <button class="ls-action-btn" (click)="openDropdown(location, $event)">⋮</button>

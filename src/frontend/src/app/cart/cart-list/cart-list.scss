@@ -99,6 +99,13 @@
   .cart-footer { left: 0; padding: 1rem; }
 }
 
+@media (max-width: 560px) {
+  .cart-col-max   { display: none; }
+  .cart-col-price { display: none; }
+  .cart-col-qty   { width: 120px; }
+  .cart-col-total { width: 90px; }
+}
+
 .cart-product-link {
   color: #111827;
   text-decoration: none;
