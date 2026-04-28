@@ -1,4 +1,4 @@
-<div class="products-page">
+<div class="page-wide products-page">
 
   @if (errorMessage) {
     <div class="error-banner">{{ errorMessage }}</div>
@@ -123,7 +123,7 @@
                 </td>
                 <td>{{ product.quantity }}</td>
                 <td>{{ formatValue(product.estimated_value) }}</td>
-                <td>{{ formatDate(product.created_at) }}</td>
+                <td>{{ product.created_at | localeDate:'d MMM y' }}</td>
                 <td class="actions-menu" (click)="$event.stopPropagation()">
                   <button class="action-btn" (click)="openDropdown(product, $event)">⋮</button>
                 </td>

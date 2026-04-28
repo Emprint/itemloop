@@ -203,5 +203,28 @@
   "LOADING": "Loading",
   "ERROR_LOADING_STATS": "Could not load dashboard data",
   "VIEW_PRODUCT": "View Product",
-  "VIEW": "View"
+  "VIEW": "View",
+  "ORDERS": {
+    "MY_ORDERS": "My Orders",
+    "ALL_ORDERS": "Orders",
+    "EMPTY": "No orders yet.",
+    "PRODUCT": "Product",
+    "QTY": "Qty",
+    "UNIT_PRICE": "Unit price",
+    "LINE_TOTAL": "Line total",
+    "TOTAL": "Total",
+    "ORDER_ID": "Order",
+    "CUSTOMER": "Customer",
+    "DATE": "Date",
+    "STATUS": "Status",
+    "TOGGLE_ITEMS": "Toggle items",
+    "STATUS_PENDING": "Pending",
+    "STATUS_COMPLETED": "Completed",
+    "STATUS_CANCELLED": "Cancelled",
+    "MARK_COMPLETED": "Mark as completed",
+    "MARK_CANCELLED": "Cancel order",
+    "MARK_PENDING": "Reopen",
+    "ERROR_LOADING": "Could not load orders.",
+    "ERROR_UPDATING": "Could not update order status."
+  }
 }

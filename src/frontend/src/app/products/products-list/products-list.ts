@@ -6,13 +6,14 @@ import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { ProductService, Product } from '../product.service';
 import { ProductFormComponent } from '../product-form/product-form.component';
+import { LocaleDatePipe } from '../../shared/locale-date.pipe';
 import { APP_SETTINGS } from '../../app-settings';
 import { DropdownService, DropdownItem } from '../../shared/dropdown.service';
 
 @Component({
   selector: 'app-products-list',
   standalone: true,
-  imports: [ProductFormComponent, TranslateModule, FormsModule],
+  imports: [ProductFormComponent, TranslateModule, FormsModule, LocaleDatePipe],
   templateUrl: './products-list.html',
   styleUrl: './products-list.scss',
 })

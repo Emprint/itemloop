@@ -1,10 +1,12 @@
 import { Component, inject, computed } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CartService, CartItem } from '../cart.service';
 import { ListShellComponent } from '../../shared/list-shell/list-shell.component';
 import { APP_SETTINGS } from '../../app-settings';
+import { OrderService } from '../../orders/order.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-cart-list',
@@ -15,6 +17,9 @@ import { APP_SETTINGS } from '../../app-settings';
 })
 export class CartList {
   readonly cartService = inject(CartService);
+  private orderService = inject(OrderService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   readonly currency = APP_SETTINGS.currency;
   readonly currencyDisplay = APP_SETTINGS.currencyDisplay;
@@ -23,6 +28,9 @@ export class CartList {
   readonly items = computed(() =>
     this.cartService.items().map(i => ({ ...i, id: i.productId }))
   );
+
+  readonly isLoggedIn = computed(() => !!this.authService.user());
+  readonly placing = false;
 
   decrement(item: CartItem) {
     if (item.quantity <= 1) return;
@@ -39,5 +47,28 @@ export class CartList {
 
   remove(productId: number) {
     this.cartService.removeFromCart(productId);
+  }
+
+  placeOrder() {
+    if (!this.isLoggedIn()) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+    const payload = {
+      items: this.cartService.items().map(i => ({
+        product_id: i.productId,
+        quantity: i.quantity,
+      })),
+    };
+    this.orderService.placeOrder(payload).subscribe({
+      next: () => {
+        this.cartService.clear();
+        this.router.navigate(['/orders/my']);
+      },
+      error: () => {
+        // surface error — kept minimal for now
+        alert('Failed to place order. Please try again.');
+      },
+    });
   }
 }

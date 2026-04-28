@@ -1,0 +1,68 @@
+import { Component, OnInit, signal, inject } from '@angular/core';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { OrderService, Order } from '../order.service';
+import { APP_SETTINGS } from '../../app-settings';
+import { LocaleDatePipe } from '../../shared/locale-date.pipe';
+
+@Component({
+  selector: 'app-orders-list',
+  standalone: true,
+  imports: [CommonModule, CurrencyPipe, LocaleDatePipe, TranslateModule],
+  templateUrl: './orders-list.html',
+  styleUrl: './orders-list.scss',
+})
+export class OrdersList implements OnInit {
+  private orderService = inject(OrderService);
+  private translate = inject(TranslateService);
+
+  readonly orders = signal<Order[]>([]);
+  readonly loading = signal(true);
+  readonly error = signal<string | null>(null);
+  readonly expandedId = signal<number | null>(null);
+
+  readonly currency = APP_SETTINGS.currency;
+  readonly currencyDisplay = APP_SETTINGS.currencyDisplay;
+  readonly currencyDigitsInfo = APP_SETTINGS.currencyDigitsInfo;
+
+  ngOnInit() {
+    this.loadOrders();
+  }
+
+  loadOrders() {
+    this.loading.set(true);
+    this.orderService.getAllOrders().subscribe({
+      next: (orders) => {
+        this.orders.set(orders);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set('ORDERS.ERROR_LOADING');
+        this.loading.set(false);
+      },
+    });
+  }
+
+  toggleExpand(id: number) {
+    this.expandedId.update(cur => (cur === id ? null : id));
+  }
+
+  isExpanded(id: number) {
+    return this.expandedId() === id;
+  }
+
+  setStatus(order: Order, status: Order['status']) {
+    this.orderService.updateStatus(order.id, status).subscribe({
+      next: (updated) => {
+        this.orders.update(list => list.map(o => (o.id === updated.id ? updated : o)));
+      },
+      error: () => {
+        this.error.set('ORDERS.ERROR_UPDATING');
+      },
+    });
+  }
+
+  statusKey(status: Order['status']): string {
+    return `ORDERS.STATUS_${status.toUpperCase()}`;
+  }
+}

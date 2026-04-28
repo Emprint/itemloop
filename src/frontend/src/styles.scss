@@ -316,6 +316,67 @@ table {
   margin-top: 0.5rem;
 }
 
+// ── Global page layout ──────────────────────────────────────────────────────
+
+// Constrained content column (forms, focused pages: cart, my orders, etc.)
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+// Wide content column — full width within app-main padding (tables, dashboards, etc.)
+// Add this class to page root elements that should use the full available width.
+.page-wide {
+  // No max-width — fills the available space from app-main padding.
+  // Kept as a semantic marker; increase max-width here if needed on large screens.
+}
+
+// Page title — strips default h2 bottom margin so sections control their own spacing
+.page-title {
+  margin-bottom: 1.5rem;
+}
+
+// Inline feedback states
+.page-loading {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem 0;
+}
+
+.page-error {
+  color: #dc2626;
+  padding: 2rem 0;
+  text-align: center;
+}
+
+// Empty state: icon centred above message
+.page-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem 0;
+  color: var(--text-muted);
+
+  p { margin: 0; }
+}
+
+// Order status badge (used in my-orders and orders-list)
+.order-status {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2em 0.65em;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  &.status-pending    { background: #fef3c7; color: #92400e; }
+  &.status-completed  { background: #d1fae5; color: #065f46; }
+  &.status-cancelled  { background: #fee2e2; color: #991b1b; }
+}
+
 // ── Global action dropdown (position: fixed, rendered in app root) ──
 .global-dropdown {
   position: fixed;

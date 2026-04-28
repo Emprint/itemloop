@@ -18,6 +18,7 @@ use App\Controllers\ProductCategoryController;
 use App\Controllers\ProductConditionController;
 use App\Controllers\ProductColorController;
 use App\Controllers\DashboardController;
+use App\Controllers\OrderController;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -147,6 +148,12 @@ $app->group('/api', function (RouteCollectorProxy $group) {
     $group->get('/users',           [UserController::class, 'index'])->add(new AdminMiddleware());
     $group->post('/users/save',     [UserController::class, 'save'])->add(new AdminMiddleware());
     $group->post('/users/delete',   [UserController::class, 'delete'])->add(new AdminMiddleware());
+
+    // Orders — place order (any auth user); manage (editor+)
+    $group->post('/orders',                    [OrderController::class, 'store']);
+    $group->get('/orders/mine',               [OrderController::class, 'mine']);
+    $group->get('/orders',                    [OrderController::class, 'index'])->add(new EditorMiddleware());
+    $group->patch('/orders/{id}/status',      [OrderController::class, 'updateStatus'])->add(new EditorMiddleware());
 })->add(new AuthMiddleware());
 
 $app->run();

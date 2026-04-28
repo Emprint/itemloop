@@ -109,6 +109,13 @@ Shared UI components in `shared/` (confirm modal, combobox).
 - **Database access**: use `Database::get()` (PDO singleton) — no ORM.
 - **Angular components** use `inject()` (not constructor DI) and standalone `imports: []` arrays.
 - **Prettier config** lives in `package.json` (`printWidth: 100`, `singleQuote: true`, Angular parser for HTML).
+- **Global styles first** — before adding CSS to a component, check `src/frontend/src/styles.scss` for existing utilities. Never reimplement layout, typography, feedback states, or empty states in component SCSS. Key globals to reuse:
+  - `.page` — 960px constrained content column (forms, focused pages)
+  - `.page-wide` — full-width content column (tables, dashboards, lists)
+  - `.page-empty` — centred icon + message empty state
+  - `.page-loading` / `.page-error` — inline feedback text
+  - `.card`, `.form-card`, `.form-field`, `.buttons-list`, `.error`, `.req`
+  - `h2`, `button`, `input`, `select`, `textarea` — globally styled; do not override in components unless strictly necessary
 
 ## Deployment (shared hosting — no SSH required)
 1. `cd src/backend && composer install` locally

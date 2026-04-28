@@ -40,11 +40,12 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { CartService } from '../../cart/cart.service';
 import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
+import { LocaleDatePipe } from '../../shared/locale-date.pipe';
 
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ComboboxComponent, DragDropModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ComboboxComponent, DragDropModule, LocaleDatePipe],
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css'],
 })
@@ -372,16 +373,6 @@ export class ProductFormComponent implements OnChanges, OnInit {
   capitalize(value?: string): string {
     if (!value || value.length === 0) return '';
     return value.charAt(0).toUpperCase() + value.slice(1);
-  }
-
-  formatDate(dateStr?: string): string {
-    if (!dateStr) return '—';
-    return dateStr.substring(0, 10);
-  }
-
-  formatDateTime(dateStr?: string): string {
-    if (!dateStr) return '—';
-    return dateStr.substring(0, 16).replace('T', ' ');
   }
 
   onCategoryChange(value: string) {

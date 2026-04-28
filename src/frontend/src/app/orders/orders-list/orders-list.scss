@@ -1,0 +1,127 @@
+.bo-table-wrapper {
+  overflow-x: auto;
+}
+
+.bo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+
+  th, td {
+    padding: 0.65rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+  }
+
+  th {
+    font-weight: 600;
+    color: var(--color-text-muted, #6b7280);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: var(--color-surface-raised, #f9fafb);
+  }
+
+  .col-id     { width: 90px; }
+  .col-date   { width: 170px; white-space: nowrap; }
+  .col-total  { width: 120px; text-align: right; }
+  .col-status { width: 130px; }
+  .col-actions { width: 300px; white-space: nowrap; }
+}
+
+.bo-row {
+  cursor: pointer;
+
+  &:hover td { background: #f9fafb; }
+  &.expanded td { background: var(--color-surface-raised, #f9fafb); }
+}
+
+.expand-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.4rem;
+  color: var(--text-muted, #9ca3af);
+  vertical-align: middle;
+
+  svg {
+    transition: transform 0.15s;
+    display: block;
+  }
+
+  &.is-expanded svg { transform: rotate(90deg); }
+}
+
+.customer-name  { font-weight: 500; }
+.customer-email { font-size: 0.8rem; color: var(--color-text-muted, #6b7280); }
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3em 0.7em;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &.complete-btn {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #6ee7b7;
+    &:hover { background: #a7f3d0; }
+  }
+
+  &.cancel-btn {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fca5a5;
+    &:hover { background: #fecaca; }
+  }
+
+  &.reopen-btn {
+    background: #f3f4f6;
+    color: #374151;
+    border-color: #d1d5db;
+    &:hover { background: #e5e7eb; }
+  }
+}
+
+.actions-cell {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.bo-detail-row td {
+  padding: 0 1rem 1rem;
+  background: var(--color-surface, #fff);
+}
+
+.detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 6px;
+  overflow: hidden;
+
+  th, td {
+    padding: 0.5rem 0.85rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+  }
+
+  th {
+    font-weight: 600;
+    color: var(--color-text-muted, #6b7280);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    background: var(--color-surface-raised, #f9fafb);
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  .col-qty, .col-price, .col-total { text-align: right; white-space: nowrap; }
+}

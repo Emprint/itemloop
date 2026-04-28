@@ -1,0 +1,106 @@
+<div class="page-wide">
+  <h2>{{ 'ORDERS.ALL_ORDERS' | translate }}</h2>
+
+  @if (error()) {
+    <p class="page-error">{{ error()! | translate }}</p>
+  }
+
+  @if (loading()) {
+    <p class="page-loading">{{ 'LOADING' | translate }}…</p>
+  } @else if (orders().length === 0) {
+    <div class="page-empty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+        <rect x="9" y="3" width="6" height="4" rx="1"/>
+        <path d="M9 12h6M9 16h4"/>
+      </svg>
+      <p>{{ 'ORDERS.EMPTY' | translate }}</p>
+    </div>
+  } @else {
+    <div class="bo-table-wrapper">
+      <table class="bo-table">
+        <thead>
+          <tr>
+            <th class="col-id">{{ 'ORDERS.ORDER_ID' | translate }}</th>
+            <th>{{ 'ORDERS.CUSTOMER' | translate }}</th>
+            <th class="col-date">{{ 'ORDERS.DATE' | translate }}</th>
+            <th class="col-total">{{ 'ORDERS.TOTAL' | translate }}</th>
+            <th class="col-status">{{ 'ORDERS.STATUS' | translate }}</th>
+            <th class="col-actions">{{ 'ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of orders(); track order.id) {
+            <tr class="bo-row" [class.expanded]="isExpanded(order.id)" (click)="toggleExpand(order.id)">
+              <td class="col-id">
+                <span class="expand-icon" [class.is-expanded]="isExpanded(order.id)" [title]="'ORDERS.TOGGLE_ITEMS' | translate">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </span>
+                #{{ order.id }}
+              </td>
+              <td>
+                <div class="customer-name">{{ order.user.name }}</div>
+                <div class="customer-email">{{ order.user.email }}</div>
+              </td>
+              <td class="col-date">{{ order.created_at | localeDate }}</td>
+              <td class="col-total">
+                {{ order.total != null ? (order.total | currency:currency:currencyDisplay:currencyDigitsInfo) : '—' }}
+              </td>
+              <td class="col-status">
+                <span class="order-status status-{{ order.status }}">{{ statusKey(order.status) | translate }}</span>
+              </td>
+              <td class="col-actions" (click)="$event.stopPropagation()">
+                <div class="actions-cell">
+                  @if (order.status === 'pending') {
+                    <button class="action-btn complete-btn" (click)="setStatus(order, 'completed')" [title]="'ORDERS.MARK_COMPLETED' | translate">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+                      {{ 'ORDERS.MARK_COMPLETED' | translate }}
+                    </button>
+                    <button class="action-btn cancel-btn" (click)="setStatus(order, 'cancelled')" [title]="'ORDERS.MARK_CANCELLED' | translate">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                      {{ 'ORDERS.MARK_CANCELLED' | translate }}
+                    </button>
+                  }
+                  @if (order.status === 'completed' || order.status === 'cancelled') {
+                    <button class="action-btn reopen-btn" (click)="setStatus(order, 'pending')" [title]="'ORDERS.MARK_PENDING' | translate">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+                      {{ 'ORDERS.MARK_PENDING' | translate }}
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+            @if (isExpanded(order.id)) {
+              <tr class="bo-detail-row">
+                <td colspan="6">
+                  <table class="detail-table">
+                    <thead>
+                      <tr>
+                        <th>{{ 'ORDERS.PRODUCT' | translate }}</th>
+                        <th class="col-qty">{{ 'ORDERS.QTY' | translate }}</th>
+                        <th class="col-price">{{ 'ORDERS.UNIT_PRICE' | translate }}</th>
+                        <th class="col-total">{{ 'ORDERS.LINE_TOTAL' | translate }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (item of order.items; track item.id) {
+                        <tr>
+                          <td>{{ item.product_title }}</td>
+                          <td class="col-qty">{{ item.quantity }}</td>
+                          <td class="col-price">{{ item.unit_price != null ? (item.unit_price | currency:currency:currencyDisplay:currencyDigitsInfo) : '—' }}</td>
+                          <td class="col-total">{{ item.unit_price != null ? (item.unit_price * item.quantity | currency:currency:currencyDisplay:currencyDigitsInfo) : '—' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

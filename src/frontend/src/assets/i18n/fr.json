@@ -203,5 +203,28 @@
   "LOADING": "Chargement",
   "ERROR_LOADING_STATS": "Impossible de charger les données",
   "VIEW_PRODUCT": "Voir le produit",
-  "VIEW": "Voir"
+  "VIEW": "Voir",
+  "ORDERS": {
+    "MY_ORDERS": "Mes commandes",
+    "ALL_ORDERS": "Commandes",
+    "EMPTY": "Aucune commande pour l'instant.",
+    "PRODUCT": "Produit",
+    "QTY": "Qté",
+    "UNIT_PRICE": "Prix unitaire",
+    "LINE_TOTAL": "Total ligne",
+    "TOTAL": "Total",
+    "ORDER_ID": "Commande",
+    "CUSTOMER": "Client",
+    "DATE": "Date",
+    "STATUS": "Statut",
+    "TOGGLE_ITEMS": "Afficher les articles",
+    "STATUS_PENDING": "En attente",
+    "STATUS_COMPLETED": "Terminée",
+    "STATUS_CANCELLED": "Annulée",
+    "MARK_COMPLETED": "Marquer comme terminée",
+    "MARK_CANCELLED": "Annuler la commande",
+    "MARK_PENDING": "Rouvrir",
+    "ERROR_LOADING": "Impossible de charger les commandes.",
+    "ERROR_UPDATING": "Impossible de mettre à jour le statut."
+  }
 }

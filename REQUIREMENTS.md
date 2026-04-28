@@ -63,9 +63,12 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US29 | User | As a user, I want to drag and drop images in the product form to control their order, with the first image automatically becoming the cover image shown in lists and previews. | Medium | 🟡 Medium | ✅ |
 | US30 | Customer | As a customer, I want to add items to a cart with a quantity picker (capped at available stock) on the product page, so I can prepare my pickup list. | Medium | 🟡 Medium | ✅ |
 | US31 | Customer | As a customer, I want to view my cart with a list of selected items, unit prices, line totals, and a grand total, so I can review my order before placing it. | Medium | 🟡 Medium | ✅ |
-| US32 | Customer | As a customer, I want to place an order from my cart so the reuse center knows what I intend to pick up. | Medium | 🔴 Complex | ⚪ (UI stub — backend order submission not yet implemented) |
+| US32 | Customer | As a customer, I want to place an order from my cart so the reuse center knows what I intend to pick up. | Medium | 🔴 Complex | ✅ (cart → backend order API; cart cleared on success; redirects to My Orders) |
 | US33 | Customer | As a customer, I want my cart to be saved between sessions (browser refresh) so I don't lose my selection. | Low | ⚪ Simple | ✅ (localStorage persistence) |
 | US34 | User | As a user, I want to click on a product photo to view it full-size in a lightbox, and navigate between photos with arrows or keyboard (←/→/Esc). | Low | ⚪ Simple | ✅ |
+| US35 | Developer | As a developer, I want to control the following application parameters via a central config so the app can be adapted to different community contexts without code changes: **(1) Currency** — ISO 4217 code used throughout the UI; **(2) Open registration** — whether new users can self-register (if disabled, only admins can create accounts and the register route/link are hidden); **(3) Public mode** — whether the app is publicly accessible to non-logged-in users (if disabled, unauthenticated visitors are redirected to login, and the backend API enforces auth on all routes including product listing); **(4) Language mode** — whether the app supports multiple languages (current: en/fr) or is locked to a single language (if single, the language switcher is hidden and the fixed locale is configurable); **(5) Shop mode** — whether cart, order, and checkout features are enabled (if disabled, all shop-related UI elements are hidden and the relevant API routes are restricted on the backend). | Medium | 🔴 Complex | ⚪ |
+| US36 | Editor/Admin | As an editor or admin, I want a dedicated Orders page listing all orders from all customers, with the ability to view each order's items and mark an order as completed or cancelled (and reopen it to pending), so the team can manage in-person pickup and payment. | Medium | 🔴 Complex | ✅ |
+| US37 | Developer | As a developer, I want dates displayed throughout the app to respect the user's selected language (locale-aware formatting for month names, date order, etc.), so that French users see "28 avr. 2026" and English users see "28 Apr 2026". | Low | ⚪ Simple | ✅ (shared `LocaleDatePipe`; product list, product form, My Orders, and Orders all use it) |
 
 ---
 
@@ -77,8 +80,10 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 
 ## 📌 Roadmap Ideas
 
-- **Order submission** — backend API to receive cart orders and notify staff (US32)
-- **Order history** — customers can view past orders
+- **Order submission** ✅ — backend API receives cart orders; staff can mark as completed/cancelled (US32, US36)
+- **Order history** ✅ — customers can view past orders (US32 My Orders page)
+- **Locale-aware dates** ✅ — shared `LocaleDatePipe` used across product list, product form, and orders (US37)
+- Online payment integration
 - Barcode scanning for quick product lookup or creation
 - User notification system (email, browser alerts)
 - Item history & audit log

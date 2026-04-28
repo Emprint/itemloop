@@ -35,6 +35,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./admin/admin-routing-module').then((m) => m.AdminRoutingModule),
       },
+      {
+        path: 'orders',
+        loadChildren: () =>
+          import('./orders/orders-routing-module').then((m) => m.OrdersRoutingModule),
+      },
     ],
   },
 ];

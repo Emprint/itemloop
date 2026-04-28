@@ -255,9 +255,9 @@
             <h3 class="pf-card-title">{{ 'PRODUCT_FORM.QUICK_INFO' | translate }}</h3>
             <dl class="pf-info-list">
               <dt>{{ 'PRODUCT_FORM.DATE_ADDED' | translate }}</dt>
-              <dd>{{ isEditorOrAdmin() ? formatDateTime(product.created_at) : formatDate(product.created_at) }}</dd>
+              <dd>{{ product.created_at | localeDate:(isEditorOrAdmin() ? 'd MMM y HH:mm' : 'd MMM y') }}</dd>
               <dt>{{ 'PRODUCT_FORM.LAST_UPDATED' | translate }}</dt>
-              <dd>{{ isEditorOrAdmin() ? formatDateTime(product.updated_at) : formatDate(product.updated_at) }}</dd>
+              <dd>{{ product.updated_at | localeDate:(isEditorOrAdmin() ? 'd MMM y HH:mm' : 'd MMM y') }}</dd>
               <dt>{{ 'PRODUCT_FORM.STATUS' | translate }}</dt>
               <dd><span class="pf-status-badge">{{ 'PRODUCT_FORM.AVAILABLE' | translate }}</span></dd>
             </dl>
