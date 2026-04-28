@@ -232,6 +232,8 @@
   .product-code  { font-size: 0.75rem; color: #9ca3af; margin-top: 2px; }
 }
 
+.pl-qty-sub { display: none; }
+
 // Condition badges
 .badge {
   display: inline-block;
@@ -478,4 +480,20 @@
 
 @media (max-width: 560px) {
   .col-hide-tablet { display: none; }
+
+  .pl-col-qty { display: none; }
+
+  .pl-qty-sub {
+    display: block;
+    font-size: 0.72rem;
+    color: #6b7280;
+    margin-top: 1px;
+
+    &::before { content: 'Qty: '; }
+  }
+
+  .products-table {
+    th { padding: 0.75rem 0.5rem; }
+    td { padding: 0.875rem 0.5rem; }
+  }
 }

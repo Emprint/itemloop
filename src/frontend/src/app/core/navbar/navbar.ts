@@ -1,4 +1,4 @@
-import { Component, computed, effect, signal, inject } from '@angular/core';
+import { Component, computed, effect, signal, inject, HostListener } from '@angular/core';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -54,6 +54,13 @@ export class Navbar {
 
   closeSidebar() {
     this.sidebarOpen.set(false);
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    if (this.sidebarOpen()) {
+      this.sidebarOpen.set(false);
+    }
   }
 
   logout() {
