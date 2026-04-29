@@ -106,7 +106,10 @@ export class LocationService {
     if (words.length === 2 && /^\d+$/.test(words[1])) {
       code = words[0][0] + words[1].padStart(2, '0');
     } else if (words.length >= 3) {
-      code = words.slice(0, 3).map((w) => w[0]).join('');
+      code = words
+        .slice(0, 3)
+        .map((w) => w[0])
+        .join('');
     } else if (words.length === 2) {
       code = words[0].slice(0, 2) + words[1][0];
     } else {

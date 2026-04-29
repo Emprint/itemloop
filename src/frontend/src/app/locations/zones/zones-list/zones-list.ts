@@ -54,9 +54,10 @@ export class ZonesList {
     const buildingId = this.form.value.building_id ? +this.form.value.building_id : null;
     if (!code || !buildingId) return false;
     return !this.zones().some(
-      (z) => z.code?.toUpperCase() === code &&
-             (z.building_id ?? z.building?.id) === buildingId &&
-             z.id !== this.selectedZone?.id
+      (z) =>
+        z.code?.toUpperCase() === code &&
+        (z.building_id ?? z.building?.id) === buildingId &&
+        z.id !== this.selectedZone?.id,
     );
   }
 
@@ -208,10 +209,17 @@ export class ZonesList {
   }
 
   openDropdown(zone: Zone, e: MouseEvent) {
-    this.dropdown.open([
-      { label: this.translate.instant('EDIT'), action: () => this.editZone(zone) },
-      { label: this.translate.instant('DELETE'), danger: true, action: () => this.confirmDeleteZone(zone) },
-    ], e);
+    this.dropdown.open(
+      [
+        { label: this.translate.instant('EDIT'), action: () => this.editZone(zone) },
+        {
+          label: this.translate.instant('DELETE'),
+          danger: true,
+          action: () => this.confirmDeleteZone(zone),
+        },
+      ],
+      e,
+    );
   }
 
   cancel() {

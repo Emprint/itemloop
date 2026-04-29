@@ -161,15 +161,18 @@ export class UsersList implements OnInit {
   }
 
   openDropdown(user: User, e: MouseEvent) {
-    this.dropdown.open([
-      { label: this.translate.instant('EDIT'), action: () => this.selectUser(user) },
-      {
-        label: this.translate.instant('DELETE'),
-        danger: true,
-        disabled: this.isLastAdmin(user),
-        action: () => this.confirmDeleteUser(user),
-      },
-    ], e);
+    this.dropdown.open(
+      [
+        { label: this.translate.instant('EDIT'), action: () => this.selectUser(user) },
+        {
+          label: this.translate.instant('DELETE'),
+          danger: true,
+          disabled: this.isLastAdmin(user),
+          action: () => this.confirmDeleteUser(user),
+        },
+      ],
+      e,
+    );
   }
 
   isLastAdmin(user: User): boolean {

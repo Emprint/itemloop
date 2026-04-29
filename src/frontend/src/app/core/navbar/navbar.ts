@@ -1,4 +1,4 @@
-import { Component, computed, effect, signal, inject, HostListener } from '@angular/core';
+import { Component, computed, signal, inject, HostListener } from '@angular/core';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -23,7 +23,12 @@ export class Navbar {
 
   readonly userInitials = computed(() => {
     const name = this.user()?.name ?? '';
-    return name.split(' ').map(w => w[0] ?? '').join('').toUpperCase().slice(0, 2);
+    return name
+      .split(' ')
+      .map((w) => w[0] ?? '')
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   });
 
   readonly roleLabel = computed(() => {
@@ -49,7 +54,7 @@ export class Navbar {
   }
 
   toggleSidebar() {
-    this.sidebarOpen.update(v => !v);
+    this.sidebarOpen.update((v) => !v);
   }
 
   closeSidebar() {

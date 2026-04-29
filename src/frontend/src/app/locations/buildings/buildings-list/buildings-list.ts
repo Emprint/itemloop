@@ -31,8 +31,7 @@ export class BuildingsList {
   private dropdown = inject(DropdownService);
 
   buildingSearchFn = (b: Building, q: string) =>
-    (b.name ?? '').toLowerCase().includes(q) ||
-    (b.code ?? '').toLowerCase().includes(q);
+    (b.name ?? '').toLowerCase().includes(q) || (b.code ?? '').toLowerCase().includes(q);
 
   constructor() {
     this.form = this.fb.group({
@@ -49,7 +48,7 @@ export class BuildingsList {
     const code = this.form.value.code?.trim().toUpperCase();
     if (!code) return false;
     return !this.buildings().some(
-      (b) => b.code?.toUpperCase() === code && b.id !== this.selectedBuilding?.id
+      (b) => b.code?.toUpperCase() === code && b.id !== this.selectedBuilding?.id,
     );
   }
 
@@ -170,10 +169,17 @@ export class BuildingsList {
   }
 
   openDropdown(building: Building, e: MouseEvent) {
-    this.dropdown.open([
-      { label: this.translate.instant('EDIT'), action: () => this.editBuilding(building) },
-      { label: this.translate.instant('DELETE'), danger: true, action: () => this.confirmDeleteBuilding(building) },
-    ], e);
+    this.dropdown.open(
+      [
+        { label: this.translate.instant('EDIT'), action: () => this.editBuilding(building) },
+        {
+          label: this.translate.instant('DELETE'),
+          danger: true,
+          action: () => this.confirmDeleteBuilding(building),
+        },
+      ],
+      e,
+    );
   }
 
   cancel() {

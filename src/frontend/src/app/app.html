@@ -1,14 +1,23 @@
 <router-outlet></router-outlet>
 
 @if (dropdown.pos()) {
-  <div class="global-dropdown"
-       [style.top.px]="dropdown.pos()!.top"
-       [style.left.px]="dropdown.pos()!.left"
-       (click)="$event.stopPropagation()">
+  <div
+    class="global-dropdown"
+    [style.top.px]="dropdown.pos()!.top"
+    [style.left.px]="dropdown.pos()!.left"
+    role="menu"
+    tabindex="-1"
+    (click)="$event.stopPropagation()"
+    (keydown)="$event.stopPropagation()"
+  >
     @for (item of dropdown.items(); track $index) {
-      <button [class.danger]="item.danger ?? false"
-              [disabled]="item.disabled ?? false"
-              (click)="dropdown.execute(item)">{{ item.label }}</button>
+      <button
+        [class.danger]="item.danger ?? false"
+        [disabled]="item.disabled ?? false"
+        (click)="dropdown.execute(item)"
+      >
+        {{ item.label }}
+      </button>
     }
   </div>
 }

@@ -1,4 +1,4 @@
-import { HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
 
 const OVERRIDE_METHODS = ['PUT', 'DELETE', 'PATCH'];
 

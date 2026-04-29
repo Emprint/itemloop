@@ -34,7 +34,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 |-----|------|-----------|----------|------------|--------|
 | US1 | User | As a user, I want to log in with a username and password so I can access the app. | High | 🟡 Medium | ✅ |
 | US2 | Admin | As an admin, I want to create, edit, and delete user accounts to manage access control. | High | 🟡 Medium | ✅ |
-| US3 | User | As a user, I want to add a product with a title, description, category, condition, color, quantity, estimated value, location, multiple photos, barcode, dimensions (L/W/H), weight, and destination so I can fully document inventory items. | High | 🔴 Complex | ✅ |
+| US3 | User | As a user, I want to add a product with a title, description, category, condition, color, quantity, estimated value, location (building → zone → shelf, all required), multiple photos, barcode, dimensions (L/W/H), weight, and destination so I can fully document inventory items. Location cascade is enforced: zone is disabled until a building is selected; shelf is disabled until a zone is selected. | High | 🔴 Complex | ✅ |
 | US4 | User | As a user, I want to edit or delete product entries to keep information up to date. | High | 🟡 Medium | ✅ |
 | US5 | User | As a user, I want to view and filter the product list (by condition, location, keyword) to find items easily. | High | 🔴 Complex | ✅ |
 | US6 | User | As a user, I want to scan a barcode to quickly search or add an item. | Medium | 🔴 Complex | ⚪ |
@@ -57,7 +57,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US23 | System | As the system, if there are no user accounts in the database, I want the app to prompt to create the first admin account. | High | 🟡 Medium | ✅ |
 | US24 | User/System | As a user or visitor, I want the frontend navigation to update contextually based on my role (guest / customer / editor / admin). | High | 🟡 Medium | ✅ |
 | US25 | User | As a user, I want to set a secure password requiring at least 8 characters, one letter, one digit, and one special character. | High | 🟡 Medium | ✅ |
-| US26 | User/System | As a user, I want a confirmation prompt before deleting any item (user, location, product, image, etc.) so I don't accidentally lose data. | High | ⚪ Simple | ✅ |
+| US26 | User/System | As a user, I want a confirmation prompt before deleting any item (user, location, product, image, etc.) or performing irreversible actions (clearing a cart item, accepting/cancelling/reopening an order) so I don't accidentally trigger unintended changes. | High | ⚪ Simple | ✅ |
 | US27 | Admin/User | As an admin or user, I want location codes to be generated automatically and be editable, so each shelf has a unique, human-readable, barcode-friendly code (e.g., BG1-ZOA-001). | Medium | 🟡 Medium | ✅ |
 | US28 | System | As the system, I want to automatically generate a small thumbnail (max 400×400 px) alongside the full image on upload, so the product list loads faster with compact card images. | High | ⚪ Simple | ✅ |
 | US29 | User | As a user, I want to drag and drop images in the product form to control their order, with the first image automatically becoming the cover image shown in lists and previews. | Medium | 🟡 Medium | ✅ |
@@ -74,6 +74,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US40 | Editor/Admin | As an editor or admin, I want to print or export shelf labels containing the location code (e.g. BG1-ZOA-001) as a barcode or QR code, so I can physically tag storage locations and scan them later. | Low | 🟡 Medium | ⚪ |
 | US41 | User/Admin | As a user or admin, I want to receive notifications (in-app or email) when an order is placed or its status changes, so the team and customers are always informed without having to check manually. | Medium | 🔴 Complex | ⚪ |
 | US42 | Admin | As an admin, I want to export inventory or order data as a formatted PDF report, so I can share or archive summaries without needing spreadsheet software. | Low | 🟡 Medium | ⚪ |
+| US43 | User/Editor/Admin | As a user or editor, I want to see who added and last edited a product in the product's Quick Info panel, so I have traceability over inventory changes. | Low | 🟢 Simple | ✅ |
 
 ---
 
@@ -92,8 +93,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 
 ## 🛠️ Backlog / Next Session
 
-- **In-app confirmation modal**: Replace all native `window.confirm()` dialogs (delete product, and any other destructive actions) with a proper in-app modal/dialog component, consistent with the app's design system.
-- **Product creator & last editor**: Store the user who created a product and the user who last edited it in the database (`created_by`, `updated_by` columns). Display this information in the Quick Info box of the product form (edit and read-only views).
+_Nothing pending at this time._
 
 ---
 

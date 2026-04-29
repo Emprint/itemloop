@@ -7,7 +7,9 @@
       <h3>{{ selectedZone ? ('EDIT_ZONE' | translate) : ('NEW_ZONE' | translate) }}</h3>
       <form [formGroup]="form" (ngSubmit)="saveZone()" autocomplete="off">
         <div class="form-field">
-          <label for="buildingSelect"><span>{{ 'BUILDING' | translate }} <span class="req">*</span></span></label>
+          <label for="buildingSelect"
+            ><span>{{ 'BUILDING' | translate }} <span class="req">*</span></span></label
+          >
           <select
             formControlName="building_id"
             id="buildingSelect"
@@ -21,11 +23,21 @@
           </select>
         </div>
         <div class="form-field">
-          <label for="zoneName"><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label>
-          <input formControlName="name" id="zoneName" type="text" required (input)="onNameInput()" />
+          <label for="zoneName"
+            ><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label
+          >
+          <input
+            formControlName="name"
+            id="zoneName"
+            type="text"
+            required
+            (input)="onNameInput()"
+          />
         </div>
         <div class="form-field">
-          <label for="zoneCode"><span>{{ 'CODE' | translate }} <span class="req">*</span></span></label>
+          <label for="zoneCode"
+            ><span>{{ 'CODE' | translate }} <span class="req">*</span></span></label
+          >
           <input
             formControlName="code"
             id="zoneCode"
@@ -43,7 +55,17 @@
 
         @if (isCodeUnique && form.value.code) {
           <div class="code-unique-badge">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#22c55e"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
             <span>{{ 'CODE_UNIQUE' | translate }}</span>
           </div>
         }

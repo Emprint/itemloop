@@ -67,9 +67,7 @@ export class Register {
         } else {
           this.serverErrors.set({});
           const msg = err?.error?.message || 'ERRORS.REGISTRATION_FAILED';
-          this.error.set(
-            msg === 'The email has already been taken.' ? 'ERRORS.EMAIL_TAKEN' : msg,
-          );
+          this.error.set(msg === 'The email has already been taken.' ? 'ERRORS.EMAIL_TAKEN' : msg);
         }
       },
     });

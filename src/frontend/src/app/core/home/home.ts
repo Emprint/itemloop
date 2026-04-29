@@ -1,4 +1,13 @@
-import { Component, OnInit, inject, signal, computed, effect, ElementRef, viewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+  effect,
+  ElementRef,
+  viewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -70,12 +79,16 @@ export class Home implements OnInit {
     this.chart = new Chart(canvas, {
       type: 'doughnut',
       data: {
-        labels: categories.map(c => c.name ? c.name.charAt(0).toUpperCase() + c.name.slice(1) : ''),
-        datasets: [{
-          data: categories.map(c => c.count),
-          backgroundColor: categories.map((_, i) => palette[i % palette.length]),
-          borderWidth: 0,
-        }],
+        labels: categories.map((c) =>
+          c.name ? c.name.charAt(0).toUpperCase() + c.name.slice(1) : '',
+        ),
+        datasets: [
+          {
+            data: categories.map((c) => c.count),
+            backgroundColor: categories.map((_, i) => palette[i % palette.length]),
+            borderWidth: 0,
+          },
+        ],
       },
       options: {
         cutout: '70%',

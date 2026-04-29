@@ -4,11 +4,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { OrderService, Order } from '../order.service';
 import { APP_SETTINGS } from '../../app-settings';
 import { LocaleDatePipe } from '../../shared/locale-date.pipe';
+import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
 
 @Component({
   selector: 'app-orders-list',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, LocaleDatePipe, TranslateModule],
+  imports: [CommonModule, CurrencyPipe, LocaleDatePipe, TranslateModule, ConfirmModal],
   templateUrl: './orders-list.html',
   styleUrl: './orders-list.scss',
 })
@@ -20,6 +21,10 @@ export class OrdersList implements OnInit {
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly expandedId = signal<number | null>(null);
+
+  pendingOrder: Order | null = null;
+  pendingStatus: Order['status'] | null = null;
+  showStatusModal = signal(false);
 
   readonly currency = APP_SETTINGS.currency;
   readonly currencyDisplay = APP_SETTINGS.currencyDisplay;
@@ -44,7 +49,7 @@ export class OrdersList implements OnInit {
   }
 
   toggleExpand(id: number) {
-    this.expandedId.update(cur => (cur === id ? null : id));
+    this.expandedId.update((cur) => (cur === id ? null : id));
   }
 
   isExpanded(id: number) {
@@ -54,12 +59,43 @@ export class OrdersList implements OnInit {
   setStatus(order: Order, status: Order['status']) {
     this.orderService.updateStatus(order.id, status).subscribe({
       next: (updated) => {
-        this.orders.update(list => list.map(o => (o.id === updated.id ? updated : o)));
+        this.orders.update((list) => list.map((o) => (o.id === updated.id ? updated : o)));
       },
       error: () => {
         this.error.set('ORDERS.ERROR_UPDATING');
       },
     });
+  }
+
+  requestSetStatus(order: Order, status: Order['status']) {
+    this.pendingOrder = order;
+    this.pendingStatus = status;
+    this.showStatusModal.set(true);
+  }
+
+  confirmSetStatus() {
+    if (this.pendingOrder && this.pendingStatus) {
+      this.setStatus(this.pendingOrder, this.pendingStatus);
+    }
+    this.pendingOrder = null;
+    this.pendingStatus = null;
+    this.showStatusModal.set(false);
+  }
+
+  cancelSetStatus() {
+    this.pendingOrder = null;
+    this.pendingStatus = null;
+    this.showStatusModal.set(false);
+  }
+
+  confirmStatusMessage(): string {
+    if (!this.pendingStatus) return '';
+    const map: Record<Order['status'], string> = {
+      completed: 'ORDERS.CONFIRM_COMPLETE',
+      cancelled: 'ORDERS.CONFIRM_CANCEL',
+      pending: 'ORDERS.CONFIRM_REOPEN',
+    };
+    return this.translate.instant(map[this.pendingStatus] ?? '');
   }
 
   statusKey(status: Order['status']): string {

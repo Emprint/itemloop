@@ -45,7 +45,14 @@ import { LocaleDatePipe } from '../../shared/locale-date.pipe';
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ComboboxComponent, DragDropModule, LocaleDatePipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    TranslateModule,
+    ComboboxComponent,
+    DragDropModule,
+    LocaleDatePipe,
+  ],
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css'],
 })
@@ -61,6 +68,7 @@ export class ProductFormComponent implements OnChanges, OnInit {
 
   @Input() product: Product | null = null;
   @Input() readOnly = false;
+  @Input() saveSuccess = false;
   @Input() canEdit = false;
   @Output() saveEvent = new EventEmitter<Product>();
   @Output() cancelEvent = new EventEmitter<void>();
@@ -86,9 +94,15 @@ export class ProductFormComponent implements OnChanges, OnInit {
   cartAdded = signal(false);
   maxCartQty = computed(() => this.product?.quantity ?? 1);
 
-  decrementCartQty() { this.cartQty.update(v => Math.max(1, v - 1)); }
-  incrementCartQty() { this.cartQty.update(v => Math.min(this.maxCartQty(), v + 1)); }
-  setCartQty(v: number) { this.cartQty.set(Math.min(Math.max(1, v), this.maxCartQty())); }
+  decrementCartQty() {
+    this.cartQty.update((v) => Math.max(1, v - 1));
+  }
+  incrementCartQty() {
+    this.cartQty.update((v) => Math.min(this.maxCartQty(), v + 1));
+  }
+  setCartQty(v: number) {
+    this.cartQty.set(Math.min(Math.max(1, v), this.maxCartQty()));
+  }
 
   addToCart() {
     if (!this.product || this.product.quantity < 1) return;
@@ -118,12 +132,12 @@ export class ProductFormComponent implements OnChanges, OnInit {
 
   prevLightbox() {
     const len = this.images().length;
-    this.lightboxIndex.update(i => (i - 1 + len) % len);
+    this.lightboxIndex.update((i) => (i - 1 + len) % len);
   }
 
   nextLightbox() {
     const len = this.images().length;
-    this.lightboxIndex.update(i => (i + 1) % len);
+    this.lightboxIndex.update((i) => (i + 1) % len);
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -142,14 +156,14 @@ export class ProductFormComponent implements OnChanges, OnInit {
   uniqueBuildings = computed(() => {
     const seen = new Set<number>();
     return this.locations()
-      .filter(l => l.zone?.building)
-      .filter(l => {
+      .filter((l) => l.zone?.building)
+      .filter((l) => {
         const bid = l.zone!.building!.id;
         if (seen.has(bid)) return false;
         seen.add(bid);
         return true;
       })
-      .map(l => l.zone!.building!);
+      .map((l) => l.zone!.building!);
   });
 
   filteredZones = computed(() => {
@@ -157,24 +171,24 @@ export class ProductFormComponent implements OnChanges, OnInit {
     if (!bid) return [];
     const seen = new Set<number>();
     return this.locations()
-      .filter(l => l.zone?.building?.id === bid && l.zone)
-      .filter(l => {
+      .filter((l) => l.zone?.building?.id === bid && l.zone)
+      .filter((l) => {
         if (seen.has(l.zone!.id)) return false;
         seen.add(l.zone!.id);
         return true;
       })
-      .map(l => l.zone!);
+      .map((l) => l.zone!);
   });
 
   filteredShelves = computed(() => {
     const bid = this.cascadeBuildingId();
     const zid = this.cascadeZoneId();
     if (!bid || !zid) return [];
-    return this.locations().filter(l => l.zone?.building?.id === bid && l.zone?.id === zid);
+    return this.locations().filter((l) => l.zone?.building?.id === bid && l.zone?.id === zid);
   });
 
   selectedLocation = computed(() =>
-    this.locations().find(l => l.id === this.selectedShelfLocationId())
+    this.locations().find((l) => l.id === this.selectedShelfLocationId()),
   );
 
   form: FormGroup;
@@ -198,7 +212,7 @@ export class ProductFormComponent implements OnChanges, OnInit {
       weight: [0, [Validators.min(0)]],
       destination: [''],
       visibility: ['private', Validators.required],
-      location_id: [0, Validators.required],
+      location_id: [0, Validators.min(1)],
       barcode: [''],
       images: [[]],
     });
@@ -211,6 +225,9 @@ export class ProductFormComponent implements OnChanges, OnInit {
         location_id: this.product.location?.id ?? this.product.location_id ?? 0,
       });
       this.images.set(this.product.images ?? []);
+    }
+    if (this.readOnly) {
+      this.form.disable();
     }
     this.loadLocations();
     this.categoryService.getCategories().subscribe({
@@ -228,6 +245,13 @@ export class ProductFormComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['readOnly']) {
+      if (this.readOnly) {
+        this.form.disable();
+      } else {
+        this.form.enable();
+      }
+    }
     if (changes['product'] && !this.product) {
       this.resetForm();
     }
@@ -339,7 +363,9 @@ export class ProductFormComponent implements OnChanges, OnInit {
     event.stopPropagation();
     this.isDragging.set(false);
     if (!this.product) return;
-    const files = Array.from(event.dataTransfer?.files ?? []).filter(f => f.type.startsWith('image/'));
+    const files = Array.from(event.dataTransfer?.files ?? []).filter((f) =>
+      f.type.startsWith('image/'),
+    );
     if (files.length) this.uploadFiles(files);
   }
 
@@ -347,7 +373,7 @@ export class ProductFormComponent implements OnChanges, OnInit {
     if (!this.product) return;
     this.imageError.set(null);
     this.productService.uploadImages(this.product.id, files).subscribe({
-      next: (res) => this.images.update(imgs => [...imgs, ...res.images]),
+      next: (res) => this.images.update((imgs) => [...imgs, ...res.images]),
       error: () => this.imageError.set('Image upload failed.'),
     });
   }
@@ -355,7 +381,7 @@ export class ProductFormComponent implements OnChanges, OnInit {
   deleteImage(imageId: number) {
     if (!this.product) return;
     this.productService.deleteImage(this.product.id, imageId).subscribe({
-      next: () => this.images.update(imgs => imgs.filter(i => i.id !== imageId)),
+      next: () => this.images.update((imgs) => imgs.filter((i) => i.id !== imageId)),
       error: () => this.imageError.set('Failed to delete image.'),
     });
   }
@@ -365,7 +391,7 @@ export class ProductFormComponent implements OnChanges, OnInit {
     const imgs = [...this.images()];
     moveItemInArray(imgs, event.previousIndex, event.currentIndex);
     this.images.set(imgs);
-    const ids = imgs.map(i => i.id);
+    const ids = imgs.map((i) => i.id);
     this.productService.reorderImages(this.product.id, ids).subscribe({
       error: () => this.imageError.set('Failed to save image order.'),
     });

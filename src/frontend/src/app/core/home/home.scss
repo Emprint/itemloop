@@ -29,7 +29,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .kpi-icon {
@@ -57,11 +57,26 @@
     }
   }
 
-  &--green  { background: #dcfce7; color: #16a34a; }
-  &--blue   { background: #dbeafe; color: #2563eb; }
-  &--purple { background: #ede9fe; color: #7c3aed; }
-  &--amber  { background: #fef3c7; color: #d97706; }
-  &--rose   { background: #ffe4e6; color: #e11d48; }
+  &--green {
+    background: #dcfce7;
+    color: #16a34a;
+  }
+  &--blue {
+    background: #dbeafe;
+    color: #2563eb;
+  }
+  &--purple {
+    background: #ede9fe;
+    color: #7c3aed;
+  }
+  &--amber {
+    background: #fef3c7;
+    color: #d97706;
+  }
+  &--rose {
+    background: #ffe4e6;
+    color: #e11d48;
+  }
 }
 
 .kpi-body {
@@ -83,8 +98,12 @@
   }
 
   @media (max-width: 560px) {
-    .kpi-value { font-size: 1.25rem; }
-    .kpi-label { font-size: 0.72rem; }
+    .kpi-value {
+      font-size: 1.25rem;
+    }
+    .kpi-label {
+      font-size: 0.72rem;
+    }
   }
 }
 
@@ -166,9 +185,18 @@
     height: 18px;
   }
 
-  &--green  { background: #dcfce7; color: #16a34a; }
-  &--purple { background: #ede9fe; color: #7c3aed; }
-  &--rose   { background: #ffe4e6; color: #e11d48; }
+  &--green {
+    background: #dcfce7;
+    color: #16a34a;
+  }
+  &--purple {
+    background: #ede9fe;
+    color: #7c3aed;
+  }
+  &--rose {
+    background: #ffe4e6;
+    color: #e11d48;
+  }
 }
 
 .loading {

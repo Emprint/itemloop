@@ -100,7 +100,9 @@ button {
 
     &.danger {
       background: #ef4444;
-      &:hover:not(:disabled) { background: #dc2626; }
+      &:hover:not(:disabled) {
+        background: #dc2626;
+      }
     }
   }
 
@@ -108,7 +110,9 @@ button {
     background: transparent;
     border: 1px solid var(--card-border);
     color: var(--text);
-    &:hover:not(:disabled) { background: #f3f4f6; }
+    &:hover:not(:disabled) {
+      background: #f3f4f6;
+    }
   }
 }
 
@@ -127,7 +131,9 @@ a.btn-outline {
   cursor: pointer;
   transition: background 0.15s;
   flex-grow: 1;
-  &:hover { background: #f3f4f6; }
+  &:hover {
+    background: #f3f4f6;
+  }
 }
 
 button:disabled {
@@ -181,7 +187,9 @@ button:disabled {
       text-decoration: none;
       font-weight: 500;
       margin-left: 0.25rem;
-      &:hover { text-decoration: underline; }
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }
@@ -360,7 +368,9 @@ table {
   padding: 3rem 0;
   color: var(--text-muted);
 
-  p { margin: 0; }
+  p {
+    margin: 0;
+  }
 }
 
 // Order status badge (used in my-orders and orders-list)
@@ -374,9 +384,18 @@ table {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 
-  &.status-pending    { background: #fef3c7; color: #92400e; }
-  &.status-completed  { background: #d1fae5; color: #065f46; }
-  &.status-cancelled  { background: #fee2e2; color: #991b1b; }
+  &.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  &.status-completed {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  &.status-cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+  }
 }
 
 // ── Global action dropdown (position: fixed, rendered in app root) ──
@@ -402,8 +421,14 @@ table {
     cursor: pointer;
     transition: background 0.15s;
 
-    &:hover { background: #f9fafb !important; }
-    &.danger { color: #ef4444 !important; }
-    &.danger:hover { background: #fef2f2 !important; }
+    &:hover {
+      background: #f9fafb !important;
+    }
+    &.danger {
+      color: #ef4444 !important;
+    }
+    &.danger:hover {
+      background: #fef2f2 !important;
+    }
   }
 }

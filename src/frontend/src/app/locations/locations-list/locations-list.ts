@@ -46,9 +46,10 @@ export class LocationsList {
     const zoneId = this.form.value.zone_id ? +this.form.value.zone_id : null;
     if (!code || !zoneId) return false;
     return !this.locations().some(
-      (l) => l.code?.toUpperCase() === code &&
-             (l.zone_id ?? l.zone?.id) === zoneId &&
-             l.id !== this.selectedLocation?.id
+      (l) =>
+        l.code?.toUpperCase() === code &&
+        (l.zone_id ?? l.zone?.id) === zoneId &&
+        l.id !== this.selectedLocation?.id,
     );
   }
 
@@ -246,10 +247,17 @@ export class LocationsList {
   }
 
   openDropdown(location: Location, e: MouseEvent) {
-    this.dropdown.open([
-      { label: this.translate.instant('EDIT'), action: () => this.editLocation(location) },
-      { label: this.translate.instant('DELETE'), danger: true, action: () => this.deleteLocation(location) },
-    ], e);
+    this.dropdown.open(
+      [
+        { label: this.translate.instant('EDIT'), action: () => this.editLocation(location) },
+        {
+          label: this.translate.instant('DELETE'),
+          danger: true,
+          action: () => this.deleteLocation(location),
+        },
+      ],
+      e,
+    );
   }
 
   cancel() {

@@ -9,10 +9,19 @@
     <p class="page-loading">{{ 'LOADING' | translate }}…</p>
   } @else if (orders().length === 0) {
     <div class="page-empty">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
-        <rect x="9" y="3" width="6" height="4" rx="1"/>
-        <path d="M9 12h6M9 16h4"/>
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#d1d5db"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+        <rect x="9" y="3" width="6" height="4" rx="1" />
+        <path d="M9 12h6M9 16h4" />
       </svg>
       <p>{{ 'ORDERS.EMPTY' | translate }}</p>
     </div>
@@ -31,11 +40,27 @@
         </thead>
         <tbody>
           @for (order of orders(); track order.id) {
-            <tr class="bo-row" [class.expanded]="isExpanded(order.id)" (click)="toggleExpand(order.id)">
+            <tr
+              class="bo-row"
+              [class.expanded]="isExpanded(order.id)"
+              (click)="toggleExpand(order.id)"
+            >
               <td class="col-id">
-                <span class="expand-icon" [class.is-expanded]="isExpanded(order.id)" [title]="'ORDERS.TOGGLE_ITEMS' | translate">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                    <polyline points="9 18 15 12 9 6"/>
+                <span
+                  class="expand-icon"
+                  [class.is-expanded]="isExpanded(order.id)"
+                  [title]="'ORDERS.TOGGLE_ITEMS' | translate"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                  >
+                    <polyline points="9 18 15 12 9 6" />
                   </svg>
                 </span>
                 #{{ order.id }}
@@ -46,26 +71,75 @@
               </td>
               <td class="col-date">{{ order.created_at | localeDate }}</td>
               <td class="col-total">
-                {{ order.total != null ? (order.total | currency:currency:currencyDisplay:currencyDigitsInfo) : '—' }}
+                {{
+                  order.total !== null
+                    ? (order.total | currency: currency : currencyDisplay : currencyDigitsInfo)
+                    : '—'
+                }}
               </td>
               <td class="col-status">
-                <span class="order-status status-{{ order.status }}">{{ statusKey(order.status) | translate }}</span>
+                <span class="order-status status-{{ order.status }}">{{
+                  statusKey(order.status) | translate
+                }}</span>
               </td>
               <td class="col-actions" (click)="$event.stopPropagation()">
                 <div class="actions-cell">
                   @if (order.status === 'pending') {
-                    <button class="action-btn complete-btn" (click)="setStatus(order, 'completed')" [title]="'ORDERS.MARK_COMPLETED' | translate">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    <button
+                      class="action-btn complete-btn"
+                      (click)="requestSetStatus(order, 'completed')"
+                      [title]="'ORDERS.MARK_COMPLETED' | translate"
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                      >
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
                       <span class="btn-text">{{ 'ORDERS.MARK_COMPLETED' | translate }}</span>
                     </button>
-                    <button class="action-btn cancel-btn" (click)="setStatus(order, 'cancelled')" [title]="'ORDERS.MARK_CANCELLED' | translate">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                    <button
+                      class="action-btn cancel-btn"
+                      (click)="requestSetStatus(order, 'cancelled')"
+                      [title]="'ORDERS.MARK_CANCELLED' | translate"
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                      >
+                        <path d="M18 6 6 18M6 6l12 12" />
+                      </svg>
                       <span class="btn-text">{{ 'ORDERS.MARK_CANCELLED' | translate }}</span>
                     </button>
                   }
                   @if (order.status === 'completed' || order.status === 'cancelled') {
-                    <button class="action-btn reopen-btn" (click)="setStatus(order, 'pending')" [title]="'ORDERS.MARK_PENDING' | translate">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+                    <button
+                      class="action-btn reopen-btn"
+                      (click)="requestSetStatus(order, 'pending')"
+                      [title]="'ORDERS.MARK_PENDING' | translate"
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                      >
+                        <path d="M1 4v6h6" />
+                        <path d="M3.51 15a9 9 0 102.13-9.36L1 10" />
+                      </svg>
                       <span class="btn-text">{{ 'ORDERS.MARK_PENDING' | translate }}</span>
                     </button>
                   }
@@ -89,8 +163,22 @@
                         <tr>
                           <td>{{ item.product_title }}</td>
                           <td class="col-qty">{{ item.quantity }}</td>
-                          <td class="col-price">{{ item.unit_price != null ? (item.unit_price | currency:currency:currencyDisplay:currencyDigitsInfo) : '—' }}</td>
-                          <td class="col-total">{{ item.unit_price != null ? (item.unit_price * item.quantity | currency:currency:currencyDisplay:currencyDigitsInfo) : '—' }}</td>
+                          <td class="col-price">
+                            {{
+                              item.unit_price !== null
+                                ? (item.unit_price
+                                  | currency: currency : currencyDisplay : currencyDigitsInfo)
+                                : '—'
+                            }}
+                          </td>
+                          <td class="col-total">
+                            {{
+                              item.unit_price !== null
+                                ? (item.unit_price * item.quantity
+                                  | currency: currency : currencyDisplay : currencyDigitsInfo)
+                                : '—'
+                            }}
+                          </td>
                         </tr>
                       }
                     </tbody>
@@ -104,3 +192,10 @@
     </div>
   }
 </div>
+
+<app-confirm-modal
+  [show]="showStatusModal()"
+  [message]="confirmStatusMessage()"
+  (confirmEvent)="confirmSetStatus()"
+  (cancelEvent)="cancelSetStatus()"
+></app-confirm-modal>

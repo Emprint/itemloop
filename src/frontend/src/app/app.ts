@@ -17,10 +17,14 @@ export class App {
   protected readonly title = signal('itemloop-frontend');
 
   @HostListener('document:click')
-  closeDropdown() { this.dropdown.close(); }
+  closeDropdown() {
+    this.dropdown.close();
+  }
 
   @HostListener('window:scroll')
-  onScroll() { this.dropdown.close(); }
+  onScroll() {
+    this.dropdown.close();
+  }
 
   constructor() {
     this.auth.restoreSession();

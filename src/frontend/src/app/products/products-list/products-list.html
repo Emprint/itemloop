@@ -1,5 +1,4 @@
 <div class="page-wide products-page">
-
   @if (errorMessage) {
     <div class="error-banner">{{ errorMessage }}</div>
   }
@@ -9,6 +8,7 @@
       [product]="selectedProduct"
       [readOnly]="isReadOnlyForm"
       [canEdit]="isEditorOrAdmin()"
+      [saveSuccess]="saveSuccess()"
       (saveEvent)="onSaveProduct($event)"
       (saveContinueEvent)="onSaveProductContinue($event)"
       (cancelEvent)="onCancelProduct()"
@@ -16,18 +16,43 @@
       (deleteEvent)="onDeleteFromForm()"
     ></app-product-form>
   } @else {
-
     <h2 class="page-title">{{ 'PRODUCTS' | translate }}</h2>
 
     <!-- Toolbar -->
     <div class="toolbar">
       <div class="search-box">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" [value]="searchQuery()" (input)="onSearch($any($event.target).value)" placeholder="{{ 'SEARCH_PRODUCTS' | translate }}" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+        <input
+          type="text"
+          [value]="searchQuery()"
+          (input)="onSearch($any($event.target).value)"
+          placeholder="{{ 'SEARCH_PRODUCTS' | translate }}"
+        />
       </div>
       @if (isEditorOrAdmin()) {
         <button class="btn-primary" (click)="showAddProductForm()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M12 5v14M5 12h14" />
+          </svg>
           {{ 'ADD_PRODUCT' | translate }}
         </button>
       }
@@ -35,19 +60,28 @@
 
     <!-- Filter chips -->
     <div class="filter-bar">
-      <select [value]="selectedCategory()" (change)="selectedCategory.set($any($event.target).value); onFilterChange()">
+      <select
+        [value]="selectedCategory()"
+        (change)="selectedCategory.set($any($event.target).value); onFilterChange()"
+      >
         <option value="">{{ 'ALL_CATEGORIES' | translate }}</option>
         @for (c of categoryOptions(); track c) {
           <option [value]="c">{{ capitalize(c) }}</option>
         }
       </select>
-      <select [value]="selectedCondition()" (change)="selectedCondition.set($any($event.target).value); onFilterChange()">
+      <select
+        [value]="selectedCondition()"
+        (change)="selectedCondition.set($any($event.target).value); onFilterChange()"
+      >
         <option value="">{{ 'ALL_CONDITIONS' | translate }}</option>
         @for (c of conditionOptions(); track c) {
           <option [value]="c">{{ capitalize(c) }}</option>
         }
       </select>
-      <select [value]="selectedLocation()" (change)="selectedLocation.set($any($event.target).value); onFilterChange()">
+      <select
+        [value]="selectedLocation()"
+        (change)="selectedLocation.set($any($event.target).value); onFilterChange()"
+      >
         <option value="">{{ 'ALL_LOCATIONS' | translate }}</option>
         @for (l of locationOptions(); track l) {
           <option [value]="l">{{ l }}</option>
@@ -60,17 +94,65 @@
       <span class="count">{{ totalProducts() }} {{ 'PRODUCTS_UNIT' | translate }}</span>
       <div class="controls-right">
         @if (isEditorOrAdmin()) {
-        <button class="btn-outline" (click)="exportCsv()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          {{ 'EXPORT_CSV' | translate }}
-        </button>
+          <button class="btn-outline" (click)="exportCsv()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            {{ 'EXPORT_CSV' | translate }}
+          </button>
         }
         <div class="view-toggle">
-          <button [class.active]="viewMode() === 'grid'" (click)="viewMode.set('grid')" title="Grid view">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <button
+            [class.active]="viewMode() === 'grid'"
+            (click)="viewMode.set('grid')"
+            title="Grid view"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
           </button>
-          <button [class.active]="viewMode() === 'list'" (click)="viewMode.set('list')" title="List view">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          <button
+            [class.active]="viewMode() === 'list'"
+            (click)="viewMode.set('list')"
+            title="List view"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" />
+              <line x1="3" y1="12" x2="3.01" y2="12" />
+              <line x1="3" y1="18" x2="3.01" y2="18" />
+            </svg>
           </button>
         </div>
       </div>
@@ -98,10 +180,25 @@
                 <td class="product-cell">
                   <div class="thumb-wrap">
                     @if (product.images?.length) {
-                      <img [src]="product.images![0].thumbnail_url ?? product.images![0].url" alt="Thumbnail" />
+                      <img
+                        [src]="product.images![0].thumbnail_url ?? product.images![0].url"
+                        alt="Thumbnail"
+                      />
                     } @else {
                       <div class="no-thumb">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <rect x="3" y="3" width="18" height="18" rx="2" />
+                          <circle cx="8.5" cy="8.5" r="1.5" />
+                          <polyline points="21 15 16 10 5 21" />
+                        </svg>
                       </div>
                     }
                   </div>
@@ -114,7 +211,9 @@
                 <td class="col-hide-mobile">{{ capitalize(product.category?.name) || '—' }}</td>
                 <td>
                   @if (product.condition) {
-                    <span class="badge {{ conditionClass(product.condition.name) }}">{{ capitalize(product.condition.name) }}</span>
+                    <span class="badge {{ conditionClass(product.condition.name) }}">{{
+                      capitalize(product.condition.name)
+                    }}</span>
                   } @else {
                     <span class="text-muted">—</span>
                   }
@@ -125,7 +224,7 @@
                 </td>
                 <td class="pl-col-qty">{{ product.quantity }}</td>
                 <td class="col-hide-mobile">{{ formatValue(product.estimated_value) }}</td>
-                <td class="col-hide-mobile">{{ product.created_at | localeDate:'d MMM y' }}</td>
+                <td class="col-hide-mobile">{{ product.created_at | localeDate: 'd MMM y' }}</td>
                 <td class="actions-menu" (click)="$event.stopPropagation()">
                   <button class="action-btn" (click)="openDropdown(product, $event)">⋮</button>
                 </td>
@@ -134,15 +233,24 @@
           </tbody>
         </table>
       </div>
-
     } @else {
       <!-- Grid view -->
       <div class="products-grid">
         @for (product of paginatedProducts(); track product.id) {
-          <div class="product-card" (click)="viewProduct(product)" (keyup.enter)="viewProduct(product)" tabindex="0" role="button"
-               [attr.aria-label]="product.title">
+          <div
+            class="product-card"
+            (click)="viewProduct(product)"
+            (keyup.enter)="viewProduct(product)"
+            tabindex="0"
+            role="button"
+            [attr.aria-label]="product.title"
+          >
             @if (product.images?.length) {
-              <img [src]="product.images![0].thumbnail_url ?? product.images![0].url" alt="Thumbnail" class="thumbnail" />
+              <img
+                [src]="product.images![0].thumbnail_url ?? product.images![0].url"
+                alt="Thumbnail"
+                class="thumbnail"
+              />
             }
             <div class="product-info">
               <h3>{{ product.title }}</h3>
@@ -160,12 +268,35 @@
               <div class="card-footer-row">
                 @if (product.location) {
                   <span class="card-location">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 10c0 6-8 13-8 13s-8-7-8-13a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <svg
+                      width="11"
+                      height="11"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                    >
+                      <path d="M20 10c0 6-8 13-8 13s-8-7-8-13a8 8 0 0 1 16 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
                     {{ product.location.code }}
                   </span>
                 }
                 <span class="card-qty" [class.card-qty--low]="product.quantity <= 1">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  <svg
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                  >
+                    <path
+                      d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                    />
+                  </svg>
                   {{ product.quantity }}
                 </span>
               </div>
@@ -186,20 +317,43 @@
             <option value="50">50</option>
           </select>
         </div>
-        <span class="page-info">{{ clampedPageRange().start }}–{{ clampedPageRange().end }} {{ 'OF' | translate }} {{ totalProducts() }}</span>
+        <span class="page-info"
+          >{{ clampedPageRange().start }}–{{ clampedPageRange().end }} {{ 'OF' | translate }}
+          {{ totalProducts() }}</span
+        >
         <div class="page-numbers">
-          <button class="page-btn" (click)="setPage(currentPage() - 1)" [disabled]="currentPage() === 1">‹</button>
+          <button
+            class="page-btn"
+            (click)="setPage(currentPage() - 1)"
+            [disabled]="currentPage() === 1"
+          >
+            ‹
+          </button>
           @for (p of pageNumbers(); track $index) {
             @if (p === '...') {
               <span class="page-ellipsis">…</span>
             } @else {
-              <button class="page-btn" [class.active]="p === currentPage()" (click)="setPage(p)">{{ p }}</button>
+              <button class="page-btn" [class.active]="p === currentPage()" (click)="setPage(p)">
+                {{ p }}
+              </button>
             }
           }
-          <button class="page-btn" (click)="setPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">›</button>
+          <button
+            class="page-btn"
+            (click)="setPage(currentPage() + 1)"
+            [disabled]="currentPage() === totalPages()"
+          >
+            ›
+          </button>
         </div>
       </div>
     }
-
   }
 </div>
+
+<app-confirm-modal
+  [show]="showDeleteModal()"
+  [message]="('CONFIRM_DELETE_PRODUCT_MSG' | translate) + ' ' + (productToDelete?.title || '')"
+  (confirmEvent)="confirmDeleteProduct()"
+  (cancelEvent)="cancelDeleteProduct()"
+></app-confirm-modal>

@@ -28,7 +28,10 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
 
   &:hover {
     background: #fef2f2;
@@ -46,14 +49,34 @@
   color: #9ca3af;
   font-size: 0.9375rem;
 
-  p { margin: 0; }
+  p {
+    margin: 0;
+  }
 }
 
-.cart-col-qty { width: 160px; }
-.cart-col-max { width: 110px; color: #6b7280; font-size: 0.875rem; }
-.cart-col-price { width: 110px; color: #374151; font-size: 0.875rem; }
-.cart-col-total { width: 120px; font-weight: 600; color: #111827; font-size: 0.875rem; }
-.cart-col-actions { width: 48px; text-align: center; }
+.cart-col-qty {
+  width: 160px;
+}
+.cart-col-max {
+  width: 110px;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+.cart-col-price {
+  width: 110px;
+  color: #374151;
+  font-size: 0.875rem;
+}
+.cart-col-total {
+  width: 120px;
+  font-weight: 600;
+  color: #111827;
+  font-size: 0.875rem;
+}
+.cart-col-actions {
+  width: 48px;
+  text-align: center;
+}
 
 .cart-summary {
   display: flex;
@@ -65,38 +88,68 @@
   margin-top: -1px;
 }
 
-.cart-summary-label { font-size: 0.9375rem; font-weight: 600; color: #374151; }
-.cart-summary-value { font-size: 1.125rem; font-weight: 700; color: #111827; }
+.cart-summary-label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #374151;
+}
+.cart-summary-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+}
 
 /* Fixed footer */
 .cart-footer {
-  position: fixed; bottom: 0; left: 240px; right: 0;
-  background: #fff; border-top: 1px solid #e5e7eb;
+  position: fixed;
+  bottom: 0;
+  left: 240px;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
   padding: 1rem 2rem;
-  display: flex; align-items: center; justify-content: flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   z-index: 10;
 }
 
 .cart-footer-right {
-  display: flex; align-items: center; gap: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .cart-footer-total {
-  font-size: 1rem; font-weight: 700; color: #111827;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
 }
 
 .cart-order-btn {
-  background: #16a34a; color: #fff; border: none;
-  border-radius: 8px; padding: 0.5rem 1.5rem;
-  font-size: 0.875rem; font-weight: 600; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   transition: background 0.15s;
 
-  &:hover { background: #15803d; }
+  &:hover {
+    background: #15803d;
+  }
 }
 
 @media (max-width: 1024px) {
-  .cart-footer { left: 0; padding: 1rem; }
+  .cart-footer {
+    left: 0;
+    padding: 1rem;
+  }
 }
 
 @media (max-width: 560px) {
@@ -106,16 +159,29 @@
   // ngcontent attr and never matches. Use class selectors on projected elements instead.
 
   // Hide column headers (tr has ngcontent attr since it comes from cart-list's headTpl)
-  .cart-head-row { display: none; }
+  .cart-head-row {
+    display: none;
+  }
 
   // Clear column widths and hide unused columns
-  .cart-col-qty, .cart-col-total, .cart-col-actions { width: auto; }
-  .cart-col-max, .cart-col-price { display: none; }
+  .cart-col-qty,
+  .cart-col-total,
+  .cart-col-actions {
+    width: auto;
+  }
+  .cart-col-max,
+  .cart-col-price {
+    display: none;
+  }
 
   // Collapse default td padding/border — row handles its own padding and separation
   // !important: .ls-table td (list-shell, ViewEncapsulation.None) has equal specificity (0,1,1)
   // and appears later in source order, so !important is required to win
-  td, th { padding: 0 !important; border-bottom: none !important; }
+  td,
+  th {
+    padding: 0 !important;
+    border-bottom: none !important;
+  }
 
   // Each row becomes a 2-row grid card
   .cart-row {
@@ -127,7 +193,9 @@
     border-bottom: 1px solid #e5e7eb;
   }
 
-  .cart-row:last-child { border-bottom: none; }
+  .cart-row:last-child {
+    border-bottom: none;
+  }
 
   // Product name — spans all columns, top row (explicit grid-row: 1 required:
   // css grid places explicit-column items first, pushing auto-placed items to row 2)
@@ -170,7 +238,10 @@
   text-decoration: none;
   font-weight: 500;
 
-  &:hover { color: #16a34a; text-decoration: underline; }
+  &:hover {
+    color: #16a34a;
+    text-decoration: underline;
+  }
 }
 
 .cart-qty-picker {
@@ -190,8 +261,13 @@
   color: #374151;
   transition: background 0.15s;
 
-  &:hover:not(:disabled) { background: #e5e7eb; }
-  &:disabled { opacity: 0.4; cursor: default; }
+  &:hover:not(:disabled) {
+    background: #e5e7eb;
+  }
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
 }
 
 .cart-qty-input {
@@ -208,7 +284,9 @@
   -moz-appearance: textfield;
 
   &::-webkit-inner-spin-button,
-  &::-webkit-outer-spin-button { -webkit-appearance: none; }
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
 }
 
 .cart-remove-btn {
@@ -221,7 +299,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
 
-  &:hover { color: #ef4444; background: #fef2f2; }
+  &:hover {
+    color: #ef4444;
+    background: #fef2f2;
+  }
 }

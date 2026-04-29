@@ -72,6 +72,7 @@ class ProductController
 
     public function store(Request $request, Response $response): Response
     {
+        $user = $request->getAttribute('user');
         $db   = Database::get();
         $body = (array) $request->getParsedBody();
 
@@ -96,16 +97,18 @@ class ProductController
             'condition_id'    => null,
             'color_id'        => null,
             'category_id'     => null,
+            'created_by'      => $user['id'],
+            'updated_by'      => null,
         ], $data);
 
         $sql = 'INSERT INTO products
                     (title, description, quantity, estimated_value, location_id, barcode,
                      length, width, height, weight, destination, visibility,
-                     condition_id, color_id, category_id, created_at, updated_at)
+                     condition_id, color_id, category_id, created_by, updated_by, created_at, updated_at)
                 VALUES
                     (:title, :description, :quantity, :estimated_value, :location_id, :barcode,
                      :length, :width, :height, :weight, :destination, :visibility,
-                     :condition_id, :color_id, :category_id, NOW(), NOW())';
+                     :condition_id, :color_id, :category_id, :created_by, :updated_by, NOW(), NOW())';
         $stmt = $db->prepare($sql);
         $stmt->execute($data);
         $id = (int) $db->lastInsertId();
@@ -115,6 +118,7 @@ class ProductController
 
     public function update(Request $request, Response $response, array $args): Response
     {
+        $user = $request->getAttribute('user');
         $db   = Database::get();
         $id   = (int) $args['id'];
         $body = (array) $request->getParsedBody();
@@ -132,9 +136,7 @@ class ProductController
 
         $this->resolveRelations($db, $body, $data);
 
-        if (empty($data)) {
-            return $this->json($response, $this->findProduct($db, $id));
-        }
+        $data['updated_by'] = $user['id'];
 
         $sets = implode(', ', array_map(fn($k) => "`{$k}` = :{$k}", array_keys($data)));
         $data['id'] = $id;
@@ -265,7 +267,9 @@ class ProductController
                     cat.id AS category_id, cat.name AS category_name,
                     l.id AS location_id, l.shelf AS location_shelf, l.code AS location_code,
                     z.id AS zone_id, z.name AS zone_name,
-                    b.id AS building_id, b.name AS building_name
+                    b.id AS building_id, b.name AS building_name,
+                    cu.name AS created_by_name,
+                    uu.name AS updated_by_name
                 FROM products p
                 LEFT JOIN product_conditions pc  ON pc.id  = p.condition_id
                 LEFT JOIN product_colors     col ON col.id = p.color_id
@@ -273,6 +277,8 @@ class ProductController
                 LEFT JOIN locations          l   ON l.id   = p.location_id
                 LEFT JOIN zones              z   ON z.id   = l.zone_id
                 LEFT JOIN buildings          b   ON b.id   = z.building_id
+                LEFT JOIN users              cu  ON cu.id  = p.created_by
+                LEFT JOIN users              uu  ON uu.id  = p.updated_by
                 {$whereClause}";
     }
 
@@ -329,6 +335,8 @@ class ProductController
             'visibility'      => $row['visibility'],
             'created_at'      => $row['created_at'],
             'updated_at'      => $row['updated_at'],
+            'created_by_name' => $row['created_by_name'] ?? null,
+            'updated_by_name' => $row['updated_by_name'] ?? null,
             'condition'       => $row['condition_id'] ? ['id' => (int) $row['condition_id'], 'name' => $row['condition_name']] : null,
             'color'           => $row['color_id']     ? ['id' => (int) $row['color_id'],     'name' => $row['color_name']]     : null,
             'category'        => $row['category_id']  ? ['id' => (int) $row['category_id'],  'name' => $row['category_name']]  : null,

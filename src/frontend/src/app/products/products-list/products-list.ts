@@ -9,11 +9,12 @@ import { ProductFormComponent } from '../product-form/product-form.component';
 import { LocaleDatePipe } from '../../shared/locale-date.pipe';
 import { APP_SETTINGS } from '../../app-settings';
 import { DropdownService, DropdownItem } from '../../shared/dropdown.service';
+import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
 
 @Component({
   selector: 'app-products-list',
   standalone: true,
-  imports: [ProductFormComponent, TranslateModule, FormsModule, LocaleDatePipe],
+  imports: [ProductFormComponent, TranslateModule, FormsModule, LocaleDatePipe, ConfirmModal],
   templateUrl: './products-list.html',
   styleUrl: './products-list.scss',
 })
@@ -28,6 +29,9 @@ export class ProductsList {
   showForm = signal(false);
   selectedProduct: Product | null = null;
   isReadOnlyForm = false;
+  showDeleteModal = signal(false);
+  productToDelete: Product | null = null;
+  saveSuccess = signal(false);
   isEditorOrAdmin = computed(() => {
     const user = this.auth.user();
     return !!user && (user.role === UserRole.Admin || user.role === UserRole.Editor);
@@ -41,14 +45,35 @@ export class ProductsList {
   pageSize = signal(10);
   currentPage = signal(1);
 
-  conditionOptions = computed(() =>
-    [...new Set(this.products().map(p => p.condition?.name).filter(Boolean))].sort() as string[]
+  conditionOptions = computed(
+    () =>
+      [
+        ...new Set(
+          this.products()
+            .map((p) => p.condition?.name)
+            .filter(Boolean),
+        ),
+      ].sort() as string[],
   );
-  locationOptions = computed(() =>
-    [...new Set(this.products().map(p => p.location?.building?.name).filter(Boolean))].sort() as string[]
+  locationOptions = computed(
+    () =>
+      [
+        ...new Set(
+          this.products()
+            .map((p) => p.location?.building?.name)
+            .filter(Boolean),
+        ),
+      ].sort() as string[],
   );
-  categoryOptions = computed(() =>
-    [...new Set(this.products().map(p => p.category?.name).filter(Boolean))].sort() as string[]
+  categoryOptions = computed(
+    () =>
+      [
+        ...new Set(
+          this.products()
+            .map((p) => p.category?.name)
+            .filter(Boolean),
+        ),
+      ].sort() as string[],
   );
 
   filteredProducts = computed(() => {
@@ -56,10 +81,14 @@ export class ProductsList {
     const cond = this.selectedCondition();
     const loc = this.selectedLocation();
     const cat = this.selectedCategory();
-    return this.products().filter(p => {
-      if (q && !p.title.toLowerCase().includes(q) &&
-          !(p.description ?? '').toLowerCase().includes(q) &&
-          !this.productCode(p.id).toLowerCase().includes(q)) return false;
+    return this.products().filter((p) => {
+      if (
+        q &&
+        !p.title.toLowerCase().includes(q) &&
+        !(p.description ?? '').toLowerCase().includes(q) &&
+        !this.productCode(p.id).toLowerCase().includes(q)
+      )
+        return false;
       if (cond && p.condition?.name !== cond) return false;
       if (loc && p.location?.building?.name !== loc) return false;
       if (cat && p.category?.name !== cat) return false;
@@ -93,12 +122,21 @@ export class ProductsList {
 
   loadProducts() {
     this.service.getProducts().subscribe({
-      next: (products) => { this.products.set(products); this.errorMessage = null; },
-      error: () => { this.errorMessage = 'Failed to load products'; },
+      next: (products) => {
+        this.products.set(products);
+        this.errorMessage = null;
+      },
+      error: () => {
+        this.errorMessage = 'Failed to load products';
+      },
     });
   }
 
-  showAddProductForm() { this.selectedProduct = null; this.isReadOnlyForm = false; this.showForm.set(true); }
+  showAddProductForm() {
+    this.selectedProduct = null;
+    this.isReadOnlyForm = false;
+    this.showForm.set(true);
+  }
 
   viewProduct(product: Product) {
     this.selectedProduct = product;
@@ -117,25 +155,36 @@ export class ProductsList {
   }
 
   deleteProduct(product: Product) {
-    if (!confirm(`Delete "${product.title}"?`)) return;
-    this.service.deleteProduct(product.id).subscribe({
-      next: () => this.loadProducts(),
-      error: () => { this.errorMessage = 'Failed to delete product'; },
-    });
+    this.productToDelete = product;
+    this.showDeleteModal.set(true);
   }
 
   onDeleteFromForm() {
     if (!this.selectedProduct) return;
-    const product = this.selectedProduct;
-    if (!confirm(`Delete "${product.title}"?`)) return;
+    this.productToDelete = this.selectedProduct;
+    this.showDeleteModal.set(true);
+  }
+
+  confirmDeleteProduct() {
+    if (!this.productToDelete) return;
+    const product = this.productToDelete;
+    this.showDeleteModal.set(false);
+    this.productToDelete = null;
     this.service.deleteProduct(product.id).subscribe({
       next: () => {
         this.showForm.set(false);
         this.selectedProduct = null;
         this.loadProducts();
       },
-      error: () => { this.errorMessage = 'Failed to delete product'; },
+      error: () => {
+        this.errorMessage = this.translate.instant('ERRORS.FAILED_DELETE_PRODUCT');
+      },
     });
+  }
+
+  cancelDeleteProduct() {
+    this.productToDelete = null;
+    this.showDeleteModal.set(false);
   }
 
   onSaveProduct(product: Product) {
@@ -144,7 +193,9 @@ export class ProductsList {
       : this.service.addProduct(product);
     save$.subscribe({
       next: () => this.completeProductSave(),
-      error: (err: HttpErrorResponse) => { this.errorMessage = this.extractError(err, 'Failed to save product'); },
+      error: (err: HttpErrorResponse) => {
+        this.errorMessage = this.extractError(err, 'Failed to save product');
+      },
     });
   }
 
@@ -157,12 +208,19 @@ export class ProductsList {
         this.loadProducts();
         this.selectedProduct = saved;
         this.errorMessage = null;
+        this.saveSuccess.set(true);
+        setTimeout(() => this.saveSuccess.set(false), 2500);
       },
-      error: (err: HttpErrorResponse) => { this.errorMessage = this.extractError(err, 'Failed to save product'); },
+      error: (err: HttpErrorResponse) => {
+        this.errorMessage = this.extractError(err, 'Failed to save product');
+      },
     });
   }
 
-  onCancelProduct() { this.showForm.set(false); this.selectedProduct = null; }
+  onCancelProduct() {
+    this.showForm.set(false);
+    this.selectedProduct = null;
+  }
 
   private completeProductSave() {
     this.loadProducts();
@@ -171,9 +229,13 @@ export class ProductsList {
     this.errorMessage = null;
   }
 
-  productCode(id: number) { return `PRD-${String(id).padStart(6, '0')}`; }
+  productCode(id: number) {
+    return `PRD-${String(id).padStart(6, '0')}`;
+  }
 
-  capitalize(s?: string) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+  capitalize(s?: string) {
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+  }
 
   locationDisplay(p: Product) {
     const b = p.location?.building?.name ?? '';
@@ -184,20 +246,27 @@ export class ProductsList {
 
   conditionClass(name?: string) {
     const n = name?.toLowerCase() ?? '';
-    if (['excellent', 'parfait', 'neuf', 'mint'].some(k => n.includes(k))) return 'badge-excellent';
-    if (['good', 'bon', 'gut', 'bueno'].some(k => n.includes(k))) return 'badge-good';
-    if (['fair', 'abi', 'use', 'usé', 'average', 'moyen'].some(k => n.includes(k))) return 'badge-fair';
-    if (['poor', 'mauvais', 'bad', 'broken', 'cassé'].some(k => n.includes(k))) return 'badge-poor';
+    if (['excellent', 'parfait', 'neuf', 'mint'].some((k) => n.includes(k)))
+      return 'badge-excellent';
+    if (['good', 'bon', 'gut', 'bueno'].some((k) => n.includes(k))) return 'badge-good';
+    if (['fair', 'abi', 'use', 'usé', 'average', 'moyen'].some((k) => n.includes(k)))
+      return 'badge-fair';
+    if (['poor', 'mauvais', 'bad', 'broken', 'cassé'].some((k) => n.includes(k)))
+      return 'badge-poor';
     return 'badge-default';
   }
 
-  formatDate(d?: string) { return d ? d.substring(0, 10) : '—'; }
+  formatDate(d?: string) {
+    return d ? d.substring(0, 10) : '—';
+  }
 
   formatValue(v?: number | null) {
     if (v == null) return '—';
     return new Intl.NumberFormat(undefined, {
-      style: 'currency', currency: APP_SETTINGS.currency,
-      minimumFractionDigits: 2, maximumFractionDigits: 2,
+      style: 'currency',
+      currency: APP_SETTINGS.currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(v);
   }
 
@@ -214,7 +283,11 @@ export class ProductsList {
     if (this.isEditorOrAdmin()) {
       items.push(
         { label: this.translate.instant('EDIT'), action: () => this.editProduct(product) },
-        { label: this.translate.instant('DELETE'), danger: true, action: () => this.deleteProduct(product) },
+        {
+          label: this.translate.instant('DELETE'),
+          danger: true,
+          action: () => this.deleteProduct(product),
+        },
       );
     }
     this.dropdown.open(items, e);
@@ -225,9 +298,17 @@ export class ProductsList {
     this.currentPage.set(p);
   }
 
-  onSearch(v: string) { this.searchQuery.set(v); this.currentPage.set(1); }
-  onFilterChange() { this.currentPage.set(1); }
-  onPageSizeChange(v: number) { this.pageSize.set(v); this.currentPage.set(1); }
+  onSearch(v: string) {
+    this.searchQuery.set(v);
+    this.currentPage.set(1);
+  }
+  onFilterChange() {
+    this.currentPage.set(1);
+  }
+  onPageSizeChange(v: number) {
+    this.pageSize.set(v);
+    this.currentPage.set(1);
+  }
 
   private extractError(err: HttpErrorResponse, fallback: string): string {
     const body = err.error;
@@ -238,21 +319,36 @@ export class ProductsList {
   }
 
   exportCsv() {
-    const headers = ['Code', 'Title', 'Category', 'Condition', 'Location', 'Quantity', 'Est. Value', 'Barcode', 'Date Added'];
-    const lines = this.filteredProducts().map(p => [
-      this.productCode(p.id),
-      `"${p.title.replace(/"/g, '""')}"`,
-      this.capitalize(p.category?.name),
-      this.capitalize(p.condition?.name),
-      p.location ? `${p.location.building?.name ?? ''} / ${p.location.shelf ?? ''}` : '',
-      p.quantity,
-      p.estimated_value ?? '',
-      p.barcode ?? '',
-      this.formatDate(p.created_at),
-    ].join(','));
+    const headers = [
+      'Code',
+      'Title',
+      'Category',
+      'Condition',
+      'Location',
+      'Quantity',
+      'Est. Value',
+      'Barcode',
+      'Date Added',
+    ];
+    const lines = this.filteredProducts().map((p) =>
+      [
+        this.productCode(p.id),
+        `"${p.title.replace(/"/g, '""')}"`,
+        this.capitalize(p.category?.name),
+        this.capitalize(p.condition?.name),
+        p.location ? `${p.location.building?.name ?? ''} / ${p.location.shelf ?? ''}` : '',
+        p.quantity,
+        p.estimated_value ?? '',
+        p.barcode ?? '',
+        this.formatDate(p.created_at),
+      ].join(','),
+    );
     const csv = [headers.join(','), ...lines].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
-    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'products.csv' });
+    const a = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(blob),
+      download: 'products.csv',
+    });
     a.click();
     URL.revokeObjectURL(a.href);
   }

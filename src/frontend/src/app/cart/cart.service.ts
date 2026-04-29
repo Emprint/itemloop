@@ -18,9 +18,9 @@ export class CartService {
   readonly items = this._items.asReadonly();
   readonly totalCount = computed(() => this._items().reduce((s, i) => s + i.quantity, 0));
   readonly grandTotal = computed(() =>
-    this._items().reduce((s, i) => s + (i.price != null ? i.price * i.quantity : 0), 0)
+    this._items().reduce((s, i) => s + (i.price != null ? i.price * i.quantity : 0), 0),
   );
-  readonly hasPrice = computed(() => this._items().some(i => i.price != null));
+  readonly hasPrice = computed(() => this._items().some((i) => i.price != null));
 
   private _load(): CartItem[] {
     try {
@@ -37,17 +37,24 @@ export class CartService {
   addToCart(product: Product, qty: number): void {
     const max = product.quantity;
     const safeQty = Math.min(Math.max(1, qty), max);
-    this._items.update(items => {
-      const existing = items.find(i => i.productId === product.id);
+    this._items.update((items) => {
+      const existing = items.find((i) => i.productId === product.id);
       let updated: CartItem[];
       if (existing) {
-        updated = items.map(i =>
-          i.productId === product.id
-            ? { ...i, quantity: Math.min(i.quantity + safeQty, max) }
-            : i
+        updated = items.map((i) =>
+          i.productId === product.id ? { ...i, quantity: Math.min(i.quantity + safeQty, max) } : i,
         );
       } else {
-        updated = [...items, { productId: product.id, title: product.title, quantity: safeQty, maxQuantity: max, price: product.estimated_value }];
+        updated = [
+          ...items,
+          {
+            productId: product.id,
+            title: product.title,
+            quantity: safeQty,
+            maxQuantity: max,
+            price: product.estimated_value,
+          },
+        ];
       }
       this._save(updated);
       return updated;
@@ -55,11 +62,11 @@ export class CartService {
   }
 
   updateQuantity(productId: number, qty: number): void {
-    this._items.update(items => {
-      const updated = items.map(i =>
+    this._items.update((items) => {
+      const updated = items.map((i) =>
         i.productId === productId
           ? { ...i, quantity: Math.min(Math.max(1, qty), i.maxQuantity) }
-          : i
+          : i,
       );
       this._save(updated);
       return updated;
@@ -67,15 +74,15 @@ export class CartService {
   }
 
   removeFromCart(productId: number): void {
-    this._items.update(items => {
-      const updated = items.filter(i => i.productId !== productId);
+    this._items.update((items) => {
+      const updated = items.filter((i) => i.productId !== productId);
       this._save(updated);
       return updated;
     });
   }
 
   getQuantityFor(productId: number): number {
-    return this._items().find(i => i.productId === productId)?.quantity ?? 0;
+    return this._items().find((i) => i.productId === productId)?.quantity ?? 0;
   }
 
   clear(): void {

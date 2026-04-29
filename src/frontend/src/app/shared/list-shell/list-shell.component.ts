@@ -1,8 +1,15 @@
 import {
-  Component, Input, Output, EventEmitter,
-  ContentChild, TemplateRef,
-  computed, signal, OnChanges, SimpleChanges,
-  ViewEncapsulation, HostListener,
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ContentChild,
+  TemplateRef,
+  computed,
+  signal,
+  OnChanges,
+  SimpleChanges,
+  ViewEncapsulation,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,14 +29,18 @@ export class ListShellComponent implements OnChanges {
   @Input() searchable = true;
   @Input() searchPlaceholder = 'Search…';
   @Input() countLabel = '';
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input() items: any[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input() searchFn?: (item: any, query: string) => boolean;
 
   @Output() addClicked = new EventEmitter<void>();
 
   @ContentChild('headTpl', { read: TemplateRef }) headTpl?: TemplateRef<void>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @ContentChild('rowTpl', { read: TemplateRef }) rowTpl?: TemplateRef<{ $implicit: any }>;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private itemsSig = signal<any[]>([]);
   searchQuery = signal('');
   currentPage = signal(1);
@@ -39,9 +50,9 @@ export class ListShellComponent implements OnChanges {
     const q = this.searchQuery().toLowerCase().trim();
     const items = this.itemsSig();
     if (!q) return items;
-    if (this.searchFn) return items.filter(item => this.searchFn!(item, q));
-    return items.filter(item =>
-      Object.values(item).some(v => typeof v === 'string' && v.toLowerCase().includes(q))
+    if (this.searchFn) return items.filter((item) => this.searchFn!(item, q));
+    return items.filter((item) =>
+      Object.values(item).some((v) => typeof v === 'string' && v.toLowerCase().includes(q)),
     );
   });
 
@@ -51,7 +62,7 @@ export class ListShellComponent implements OnChanges {
   });
 
   totalPages = computed(() =>
-    Math.max(1, Math.ceil(this.filteredItems().length / this.pageSize()))
+    Math.max(1, Math.ceil(this.filteredItems().length / this.pageSize())),
   );
 
   pageNumbers = computed(() => {

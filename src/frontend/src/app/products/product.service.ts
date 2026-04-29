@@ -33,10 +33,18 @@ export interface Product {
   category_id?: number;
   visibility: 'private' | 'public';
   location_id: number;
-  location?: { id: number; shelf?: string; code?: string; zone?: { id: number; name: string }; building?: { id: number; name: string } };
+  location?: {
+    id: number;
+    shelf?: string;
+    code?: string;
+    zone?: { id: number; name: string };
+    building?: { id: number; name: string };
+  };
   barcode?: string;
   created_at?: string;
   updated_at?: string;
+  created_by_name?: string;
+  updated_by_name?: string;
   images?: Image[];
 }
 
@@ -63,7 +71,7 @@ export class ProductService {
 
   uploadImages(productId: number, files: File[]): Observable<{ images: Image[] }> {
     const form = new FormData();
-    files.forEach(f => form.append('images[]', f));
+    files.forEach((f) => form.append('images[]', f));
     return this.http.post<{ images: Image[] }>(`${this.apiUrl}/${productId}/images`, form);
   }
 
@@ -72,6 +80,8 @@ export class ProductService {
   }
 
   reorderImages(productId: number, ids: number[]): Observable<{ success: boolean }> {
-    return this.http.patch<{ success: boolean }>(`${this.apiUrl}/${productId}/images/reorder`, { ids });
+    return this.http.patch<{ success: boolean }>(`${this.apiUrl}/${productId}/images/reorder`, {
+      ids,
+    });
   }
 }

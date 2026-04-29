@@ -1,21 +1,27 @@
 <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
   <h2>{{ 'REGISTER' | translate }}</h2>
   <div class="form-field">
-    <label for="name"><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label>
+    <label for="name"
+      ><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label
+    >
     <input type="text" formControlName="name" id="name" required />
     @if (serverErrors()['name']) {
       <small class="field-error">{{ serverErrors()['name'][0] }}</small>
     }
   </div>
   <div class="form-field">
-    <label for="email"><span>{{ 'EMAIL' | translate }} <span class="req">*</span></span></label>
+    <label for="email"
+      ><span>{{ 'EMAIL' | translate }} <span class="req">*</span></span></label
+    >
     <input type="email" formControlName="email" id="email" required />
     @if (serverErrors()['email']) {
       <small class="field-error">{{ serverErrors()['email'][0] }}</small>
     }
   </div>
   <div class="form-field">
-    <label for="password"><span>{{ 'PASSWORD' | translate }} <span class="req">*</span></span></label>
+    <label for="password"
+      ><span>{{ 'PASSWORD' | translate }} <span class="req">*</span></span></label
+    >
     <input type="password" formControlName="password" id="password" required />
     @if (serverErrors()['password']) {
       <small class="field-error">{{ serverErrors()['password'][0] }}</small>
@@ -30,7 +36,9 @@
     </small>
   </div>
   <div class="form-field">
-    <label for="confirmPassword"><span>{{ 'CONFIRM_PASSWORD' | translate }} <span class="req">*</span></span></label>
+    <label for="confirmPassword"
+      ><span>{{ 'CONFIRM_PASSWORD' | translate }} <span class="req">*</span></span></label
+    >
     <input type="password" formControlName="confirmPassword" id="confirmPassword" required />
   </div>
   <div class="buttons-list">

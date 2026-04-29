@@ -16,6 +16,8 @@ export class HomeService {
   private http = inject(HttpClient);
 
   getStats() {
-    return this.http.get<DashboardStats>(`${environment.apiUrl}dashboard`, { withCredentials: true });
+    return this.http.get<DashboardStats>(`${environment.apiUrl}dashboard`, {
+      withCredentials: true,
+    });
   }
 }

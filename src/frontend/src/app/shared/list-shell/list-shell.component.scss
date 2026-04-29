@@ -38,7 +38,9 @@
     font-size: 0.875rem;
     color: #111827;
     background: transparent;
-    &::placeholder { color: #9ca3af; }
+    &::placeholder {
+      color: #9ca3af;
+    }
   }
 }
 
@@ -58,7 +60,9 @@
   white-space: nowrap;
   transition: background 0.15s;
 
-  &:hover { background: #16a34a; }
+  &:hover {
+    background: #16a34a;
+  }
 }
 
 // ── Count row ─────────────────────────────────────────────
@@ -86,7 +90,9 @@
   border-collapse: collapse;
   font-size: 0.875rem;
 
-  thead tr { border-bottom: 1px solid #e5e7eb; }
+  thead tr {
+    border-bottom: 1px solid #e5e7eb;
+  }
 
   th {
     padding: 0.75rem 1rem;
@@ -106,8 +112,12 @@
     border-bottom: 1px solid #f3f4f6;
   }
 
-  tbody tr:last-child td { border-bottom: none; }
-  tbody tr:hover { background: #f9fafb; }
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+  tbody tr:hover {
+    background: #f9fafb;
+  }
 }
 
 .ls-empty {
@@ -123,7 +133,8 @@
   width: 48px;
 }
 
-.ls-action-btn {  display: inline-flex !important;
+.ls-action-btn {
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
   background: none !important;
@@ -138,7 +149,10 @@
   line-height: 1;
   transition: background 0.15s;
 
-  &:hover { background: #f3f4f6 !important; color: #111827 !important; }
+  &:hover {
+    background: #f3f4f6 !important;
+    color: #111827 !important;
+  }
 }
 
 // ── Role badge ────────────────────────────────────────────
@@ -149,10 +163,22 @@
   font-size: 0.75rem;
   font-weight: 600;
 
-  &.role-admin    { background: #fce7f3; color: #9d174d; }
-  &.role-editor   { background: #dbeafe; color: #1d4ed8; }
-  &.role-member   { background: #dcfce7; color: #15803d; }
-  &.role-customer { background: #f3f4f6; color: #6b7280; }
+  &.role-admin {
+    background: #fce7f3;
+    color: #9d174d;
+  }
+  &.role-editor {
+    background: #dbeafe;
+    color: #1d4ed8;
+  }
+  &.role-member {
+    background: #dcfce7;
+    color: #15803d;
+  }
+  &.role-customer {
+    background: #f3f4f6;
+    color: #6b7280;
+  }
 }
 
 // ── Pagination ────────────────────────────────────────────
@@ -181,11 +207,16 @@
     font-size: 0.875rem;
     color: #374151;
     cursor: pointer;
-    &:focus { outline: none; border-color: #22c55e; }
+    &:focus {
+      outline: none;
+      border-color: #22c55e;
+    }
   }
 }
 
-.ls-page-info { color: #6b7280; }
+.ls-page-info {
+  color: #6b7280;
+}
 
 .ls-page-numbers {
   display: flex;
@@ -208,9 +239,20 @@
   cursor: pointer;
   transition: all 0.15s;
 
-  &:hover:not(:disabled) { border-color: #22c55e; color: #22c55e !important; }
-  &.active { background: #22c55e !important; border-color: #22c55e; color: #fff !important; font-weight: 600; }
-  &:disabled { opacity: 0.4; cursor: default; }
+  &:hover:not(:disabled) {
+    border-color: #22c55e;
+    color: #22c55e !important;
+  }
+  &.active {
+    background: #22c55e !important;
+    border-color: #22c55e;
+    color: #fff !important;
+    font-weight: 600;
+  }
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
 }
 
 .ls-page-ellipsis {

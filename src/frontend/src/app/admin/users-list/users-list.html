@@ -16,7 +16,9 @@
       <h3>{{ selectedUser ? ('EDIT_USER' | translate) : ('NEW_USER' | translate) }}</h3>
       <form [formGroup]="form" (ngSubmit)="saveUser()" autocomplete="off">
         <div class="form-field">
-          <label for="name"><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label>
+          <label for="name"
+            ><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label
+          >
           <input formControlName="name" id="name" type="text" required autocomplete="off" />
           @if (serverErrors()['name']) {
             <small class="field-error">{{ serverErrors()['name'][0] }}</small>
@@ -24,7 +26,9 @@
         </div>
 
         <div class="form-field">
-          <label for="email"><span>{{ 'EMAIL' | translate }} <span class="req">*</span></span></label>
+          <label for="email"
+            ><span>{{ 'EMAIL' | translate }} <span class="req">*</span></span></label
+          >
           <input formControlName="email" id="email" type="email" required autocomplete="off" />
           @if (serverErrors()['email']) {
             <small class="field-error">{{ serverErrors()['email'][0] }}</small>
@@ -91,7 +95,9 @@
           <td>{{ user.name }}</td>
           <td class="user-col-email">{{ user.email }}</td>
           <td>
-            <span class="role-badge role-{{ user.role }}">{{ user.role | uppercase | translate }}</span>
+            <span class="role-badge role-{{ user.role }}">{{
+              user.role | uppercase | translate
+            }}</span>
           </td>
           <td class="ls-actions">
             <button class="ls-action-btn" (click)="openDropdown(user, $event)">⋮</button>

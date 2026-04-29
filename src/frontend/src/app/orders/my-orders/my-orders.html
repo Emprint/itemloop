@@ -7,8 +7,19 @@
     <p class="page-error">{{ error()! | translate }}</p>
   } @else if (orders().length === 0) {
     <div class="page-empty">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#d1d5db"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+        <line x1="3" y1="6" x2="21" y2="6" />
+        <path d="M16 10a4 4 0 01-8 0" />
       </svg>
       <p>{{ 'ORDERS.EMPTY' | translate }}</p>
     </div>
@@ -19,7 +30,9 @@
           <div class="order-card-header">
             <span class="order-id">#{{ order.id }}</span>
             <span class="order-date">{{ order.created_at | localeDate }}</span>
-            <span class="order-status status-{{ order.status }}">{{ statusKey(order.status) | translate }}</span>
+            <span class="order-status status-{{ order.status }}">{{
+              statusKey(order.status) | translate
+            }}</span>
           </div>
           <table class="order-items-table">
             <thead>
@@ -35,16 +48,30 @@
                 <tr>
                   <td>{{ item.product_title }}</td>
                   <td class="col-qty">{{ item.quantity }}</td>
-                  <td class="col-price">{{ item.unit_price != null ? (item.unit_price | currency:currency:currencyDisplay:currencyDigitsInfo) : '—' }}</td>
-                  <td class="col-total">{{ item.unit_price != null ? (item.unit_price * item.quantity | currency:currency:currencyDisplay:currencyDigitsInfo) : '—' }}</td>
+                  <td class="col-price">
+                    {{
+                      item.unit_price !== null
+                        ? (item.unit_price
+                          | currency: currency : currencyDisplay : currencyDigitsInfo)
+                        : '—'
+                    }}
+                  </td>
+                  <td class="col-total">
+                    {{
+                      item.unit_price !== null
+                        ? (item.unit_price * item.quantity
+                          | currency: currency : currencyDisplay : currencyDigitsInfo)
+                        : '—'
+                    }}
+                  </td>
                 </tr>
               }
             </tbody>
           </table>
-          @if (order.total != null) {
+          @if (order.total !== null) {
             <div class="order-card-footer">
               <strong>{{ 'ORDERS.TOTAL' | translate }}:</strong>
-              {{ order.total | currency:currency:currencyDisplay:currencyDigitsInfo }}
+              {{ order.total | currency: currency : currencyDisplay : currencyDigitsInfo }}
             </div>
           }
         </div>

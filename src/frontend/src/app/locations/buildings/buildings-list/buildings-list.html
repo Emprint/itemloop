@@ -7,7 +7,9 @@
       <h3>{{ selectedBuilding ? ('EDIT_BUILDING' | translate) : ('NEW_BUILDING' | translate) }}</h3>
       <form [formGroup]="form" (ngSubmit)="saveBuilding()" autocomplete="off">
         <div class="form-field">
-          <label for="buildingName"><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label>
+          <label for="buildingName"
+            ><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label
+          >
           <input
             formControlName="name"
             id="buildingName"
@@ -17,7 +19,9 @@
           />
         </div>
         <div class="form-field">
-          <label for="buildingCode"><span>{{ 'CODE' | translate }} <span class="req">*</span></span></label>
+          <label for="buildingCode"
+            ><span>{{ 'CODE' | translate }} <span class="req">*</span></span></label
+          >
           <input
             formControlName="code"
             id="buildingCode"
@@ -31,7 +35,17 @@
 
         @if (isCodeUnique && form.value.code) {
           <div class="code-unique-badge">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#22c55e"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
             <span>{{ 'CODE_UNIQUE' | translate }}</span>
           </div>
         }

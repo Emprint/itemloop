@@ -2,7 +2,6 @@ import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
-  LOCALE_ID,
 } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';

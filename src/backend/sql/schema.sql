@@ -119,13 +119,17 @@ CREATE TABLE IF NOT EXISTS `products` (
     `condition_id`    BIGINT UNSIGNED  NULL DEFAULT NULL,
     `color_id`        BIGINT UNSIGNED  NULL DEFAULT NULL,
     `category_id`     BIGINT UNSIGNED  NULL DEFAULT NULL,
+    `created_by`      BIGINT UNSIGNED  NULL DEFAULT NULL,
+    `updated_by`      BIGINT UNSIGNED  NULL DEFAULT NULL,
     `created_at`      TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`      TIMESTAMP        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_products_location`  FOREIGN KEY (`location_id`)  REFERENCES `locations`          (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_products_condition` FOREIGN KEY (`condition_id`) REFERENCES `product_conditions` (`id`) ON DELETE SET NULL,
     CONSTRAINT `fk_products_color`     FOREIGN KEY (`color_id`)     REFERENCES `product_colors`     (`id`) ON DELETE SET NULL,
-    CONSTRAINT `fk_products_category`  FOREIGN KEY (`category_id`)  REFERENCES `product_categories` (`id`) ON DELETE SET NULL
+    CONSTRAINT `fk_products_category`  FOREIGN KEY (`category_id`)  REFERENCES `product_categories` (`id`) ON DELETE SET NULL,
+    CONSTRAINT `fk_products_created_by` FOREIGN KEY (`created_by`)  REFERENCES `users`              (`id`) ON DELETE SET NULL,
+    CONSTRAINT `fk_products_updated_by` FOREIGN KEY (`updated_by`)  REFERENCES `users`              (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------
