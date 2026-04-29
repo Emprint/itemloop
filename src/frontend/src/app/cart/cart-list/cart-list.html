@@ -19,7 +19,7 @@
       [countLabel]="'CART.ITEMS_UNIT' | translate"
     >
       <ng-template #headTpl>
-        <tr>
+        <tr class="cart-head-row">
           <th>{{ 'CART.PRODUCT' | translate }}</th>
           <th class="cart-col-qty">{{ 'CART.QUANTITY' | translate }}</th>
           <th class="cart-col-max">{{ 'CART.AVAILABLE' | translate }}</th>
@@ -30,8 +30,8 @@
       </ng-template>
 
       <ng-template #rowTpl let-item>
-        <tr>
-          <td>
+        <tr class="cart-row">
+          <td class="cart-col-product">
             <a [routerLink]="['/products', item.productId]" class="cart-product-link">{{ item.title }}</a>
           </td>
           <td class="cart-col-qty">

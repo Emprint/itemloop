@@ -100,18 +100,69 @@
 }
 
 @media (max-width: 560px) {
-  .cart-col-max   { display: none; }
-  .cart-col-price { display: none; }
-  .cart-col-qty   { width: 110px; }
-  .cart-col-total { width: 80px; }
+  // 2-line card layout: product title on row 1, qty+total+remove on row 2
+  // Note: Angular adds [_ngcontent] to every element in descendant selectors,
+  // so "tbody tr" → "tbody[_ngcontent] tr[_ngcontent]" — tbody (from list-shell) has no
+  // ngcontent attr and never matches. Use class selectors on projected elements instead.
 
-  // Reduce horizontal cell padding to eliminate table overflow on phones
-  // !important needed: .ls-table td (specificity 0,1,1) from list-shell overrides td[_ngcontent-xxx] at same specificity via source order
-  td, th { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+  // Hide column headers (tr has ngcontent attr since it comes from cart-list's headTpl)
+  .cart-head-row { display: none; }
 
-  // Slightly tighten the qty picker
-  .cart-qty-btn   { padding: 0.25rem 0.45rem; }
-  .cart-qty-input { width: 2rem; }
+  // Clear column widths and hide unused columns
+  .cart-col-qty, .cart-col-total, .cart-col-actions { width: auto; }
+  .cart-col-max, .cart-col-price { display: none; }
+
+  // Collapse default td padding — row handles its own padding
+  // !important: .ls-table td (list-shell, ViewEncapsulation.None) has equal specificity (0,1,1)
+  // and appears later in source order, so !important is required to win
+  td, th { padding: 0 !important; }
+
+  // Each row becomes a 2-row grid card
+  .cart-row {
+    display: grid !important;
+    grid-template-columns: 1fr auto auto;
+    column-gap: 0.625rem;
+    row-gap: 0.375rem;
+    padding: 0.625rem 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .cart-row:last-child { border-bottom: none; }
+
+  // Product name — spans all columns, top row (explicit grid-row: 1 required:
+  // css grid places explicit-column items first, pushing auto-placed items to row 2)
+  .cart-col-product {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex !important;
+    align-items: flex-start;
+  }
+
+  // Qty picker — bottom left (1fr column)
+  .cart-col-qty {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex !important;
+    align-items: center;
+  }
+
+  // Line total — bottom center
+  .cart-col-total {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex !important;
+    align-items: center;
+    font-size: 0.9375rem;
+  }
+
+  // Remove button — bottom right
+  .cart-col-actions {
+    grid-column: 3;
+    grid-row: 2;
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+  }
 }
 
 .cart-product-link {
