@@ -102,8 +102,16 @@
 @media (max-width: 560px) {
   .cart-col-max   { display: none; }
   .cart-col-price { display: none; }
-  .cart-col-qty   { width: 120px; }
-  .cart-col-total { width: 90px; }
+  .cart-col-qty   { width: 110px; }
+  .cart-col-total { width: 80px; }
+
+  // Reduce horizontal cell padding to eliminate table overflow on phones
+  // !important needed: .ls-table td (specificity 0,1,1) from list-shell overrides td[_ngcontent-xxx] at same specificity via source order
+  td, th { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+
+  // Slightly tighten the qty picker
+  .cart-qty-btn   { padding: 0.25rem 0.45rem; }
+  .cart-qty-input { width: 2rem; }
 }
 
 .cart-product-link {

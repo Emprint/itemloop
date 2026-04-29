@@ -1,5 +1,9 @@
 .bo-table-wrapper {
   overflow-x: auto;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  margin-bottom: 1rem;
 }
 
 .bo-table {
@@ -95,7 +99,7 @@
 }
 
 .bo-detail-row td {
-  padding: 0 1rem 1rem;
+  padding: 0 0 0.75rem;
   background: var(--color-surface, #fff);
 }
 
@@ -189,7 +193,17 @@
 
   .bo-detail-row {
     display: block;
-    td { display: block; padding: 0 0.75rem 0.75rem; }
+    td { display: block; padding: 0 0 0.75rem; }
+
+    // Reset detail-table display: .bo-table mobile rules (tbody { display: block }) cascade into inner tables
+    .detail-table         { display: table; width: 100%; }
+    .detail-table thead   { display: table-header-group; }
+    .detail-table tbody   { display: table-row-group; }
+    .detail-table tr      { display: table-row; }
+    .detail-table td      { display: table-cell; }
+
+    // Hide unit price in detail table on small screens — keeps product/qty/total readable
+    .detail-table .col-price { display: none; }
   }
 
   .btn-text { display: none; }
