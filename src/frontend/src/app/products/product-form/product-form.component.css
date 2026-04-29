@@ -220,9 +220,10 @@ button:disabled { opacity: 0.5; cursor: not-allowed !important; }
 @media (max-width: 1024px) {
   .pf-layout { grid-template-columns: 1fr; padding: 1rem; }
   .pf-row { flex-direction: column; }
+  .pf-footer { left: 0; }
 }
 @media (max-width: 768px) {
-  .pf-footer { left: 0; padding: 1rem; }
+  .pf-footer { padding: 1rem; }
   .pf-header { padding: 0.5rem 0 0; }
   .pf-layout { padding: 0.75rem 0; }
 }
