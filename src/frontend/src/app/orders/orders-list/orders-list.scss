@@ -36,8 +36,9 @@
 .bo-row {
   cursor: pointer;
 
-  &:hover td { background: #f9fafb; }
-  &.expanded td { background: var(--color-surface-raised, #f9fafb); }
+  td { background: var(--color-surface-raised, #f9fafb); }
+  &:hover td { background: #eff1f4; }
+  &.expanded td { background: #e8ecf0; }
 }
 
 .expand-icon {
@@ -101,6 +102,7 @@
 .bo-detail-row td {
   padding: 0 0 0.75rem;
   background: var(--color-surface, #fff);
+  border-bottom: 2px solid #c9cdd5;
 }
 
 .detail-table {
@@ -193,7 +195,7 @@
 
   .bo-detail-row {
     display: block;
-    td { display: block; padding: 0 0 0.75rem; }
+    td { display: block; padding: 0.5rem 0.75rem 0.75rem; }
 
     // Reset detail-table display: .bo-table mobile rules (tbody { display: block }) cascade into inner tables
     .detail-table         { display: table; width: 100%; }
