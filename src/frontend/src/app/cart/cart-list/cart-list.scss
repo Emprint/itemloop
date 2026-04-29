@@ -95,7 +95,7 @@
   &:hover { background: #15803d; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .cart-footer { left: 0; padding: 1rem; }
 }
 
@@ -112,10 +112,10 @@
   .cart-col-qty, .cart-col-total, .cart-col-actions { width: auto; }
   .cart-col-max, .cart-col-price { display: none; }
 
-  // Collapse default td padding — row handles its own padding
+  // Collapse default td padding/border — row handles its own padding and separation
   // !important: .ls-table td (list-shell, ViewEncapsulation.None) has equal specificity (0,1,1)
   // and appears later in source order, so !important is required to win
-  td, th { padding: 0 !important; }
+  td, th { padding: 0 !important; border-bottom: none !important; }
 
   // Each row becomes a 2-row grid card
   .cart-row {

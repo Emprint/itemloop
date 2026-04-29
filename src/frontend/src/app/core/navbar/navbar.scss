@@ -291,4 +291,9 @@
       box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
     }
   }
+
+  // Leave room for the hamburger button (40px wide, 14px from left → ~60px clearance)
+  .sidebar-logo {
+    padding-left: 3.75rem;
+  }
 }

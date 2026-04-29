@@ -36,9 +36,9 @@
 .bo-row {
   cursor: pointer;
 
-  td { background: var(--color-surface-raised, #f9fafb); }
-  &:hover td { background: #eff1f4; }
-  &.expanded td { background: #e8ecf0; }
+  background: var(--color-surface-raised, #f9fafb);
+  &:hover { background: #eff1f4; }
+  &.expanded { background: #e8ecf0; }
 }
 
 .expand-icon {
@@ -158,8 +158,8 @@
     border-bottom: 1px solid #e5e7eb;
     cursor: pointer;
 
-    &:hover { background: #f9fafb; }
-    &.expanded { background: #f9fafb; }
+    &:hover { background: #eff1f4; }
+    &.expanded { background: #e8ecf0; }
 
     // Reset explicit table column widths so grid can size tracks naturally
     td { display: block; width: auto; }
