@@ -41,6 +41,12 @@
   &.expanded { background: #e8ecf0; }
 }
 
+// Override global `table tr:hover td { background: #fafafa }` from styles.scss.
+// Without this, clicking a row (which triggers :hover) paints each td #fafafa
+// while the tr has the correct expanded/hover colour — visible as cell-gap artifacts
+// when the row uses display:grid on mobile.
+.bo-table .bo-row td { background: transparent; }
+
 .expand-icon {
   display: inline-flex;
   align-items: center;
