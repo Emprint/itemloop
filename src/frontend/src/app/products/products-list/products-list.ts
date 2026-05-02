@@ -7,9 +7,10 @@ import { UserRole } from '../../auth/auth-response';
 import { ProductService, Product } from '../product.service';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { LocaleDatePipe } from '../../shared/locale-date.pipe';
-import { APP_SETTINGS } from '../../app-settings';
+import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
 import { DropdownService, DropdownItem } from '../../shared/dropdown.service';
 import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-products-list',
@@ -23,6 +24,10 @@ export class ProductsList {
   private service = inject(ProductService);
   private dropdown = inject(DropdownService);
   private translate = inject(TranslateService);
+  private appSettingsService = inject(AppSettingsService);
+
+  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly currency = computed(() => this.settings()['currency'] || 'EUR');
 
   products = signal<Product[]>([]);
   errorMessage: string | null = null;
@@ -264,7 +269,7 @@ export class ProductsList {
     if (v == null) return '—';
     return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: APP_SETTINGS.currency,
+      currency: this.currency(),
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(v);

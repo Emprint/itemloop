@@ -52,7 +52,7 @@
                     {{
                       item.unit_price !== null
                         ? (item.unit_price
-                          | currency: currency : currencyDisplay : currencyDigitsInfo)
+                          | currency: currency() : currencyDisplay() : currencyDigitsInfo())
                         : '—'
                     }}
                   </td>
@@ -60,7 +60,7 @@
                     {{
                       item.unit_price !== null
                         ? (item.unit_price * item.quantity
-                          | currency: currency : currencyDisplay : currencyDigitsInfo)
+                          | currency: currency() : currencyDisplay() : currencyDigitsInfo())
                         : '—'
                     }}
                   </td>
@@ -71,7 +71,7 @@
           @if (order.total !== null) {
             <div class="order-card-footer">
               <strong>{{ 'ORDERS.TOTAL' | translate }}:</strong>
-              {{ order.total | currency: currency : currencyDisplay : currencyDigitsInfo }}
+              {{ order.total | currency: currency() : currencyDisplay() : currencyDigitsInfo() }}
             </div>
           }
         </div>

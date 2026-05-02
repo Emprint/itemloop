@@ -41,6 +41,8 @@ import { CartService } from '../../cart/cart.service';
 import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { LocaleDatePipe } from '../../shared/locale-date.pipe';
+import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-product-form',
@@ -83,11 +85,16 @@ export class ProductFormComponent implements OnChanges, OnInit {
   private productService = inject(ProductService);
   readonly cartService = inject(CartService);
   private auth = inject(AuthService);
+  private appSettingsService = inject(AppSettingsService);
 
   isEditorOrAdmin = computed(() => {
     const user = this.auth.user();
     return !!user && (user.role === UserRole.Admin || user.role === UserRole.Editor);
   });
+
+  // Shop mode check
+  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly shopModeEnabled = computed(() => this.settings()['shop_mode'] === '1');
 
   // Cart qty picker (view mode)
   cartQty = signal(1);

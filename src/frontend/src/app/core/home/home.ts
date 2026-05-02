@@ -12,10 +12,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { HomeService, DashboardStats } from './home.service';
-import { APP_SETTINGS } from '../../app-settings';
+import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
 import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
@@ -31,9 +33,12 @@ export class Home implements OnInit {
 
   private homeService = inject(HomeService);
   private authService = inject(AuthService);
+  private appSettingsService = inject(AppSettingsService);
+  private router = inject(Router);
 
   readonly user = this.authService.user;
-  readonly currency = APP_SETTINGS.currency;
+  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly currency = computed(() => this.settings()['currency'] || 'EUR');
   readonly stats = signal<DashboardStats | null>(null);
   readonly loading = signal(true);
   readonly error = signal(false);
@@ -63,9 +68,13 @@ export class Home implements OnInit {
         this.stats.set(data);
         this.loading.set(false);
       },
-      error: () => {
-        this.error.set(true);
-        this.loading.set(false);
+      error: (err) => {
+        if (err?.status === 403) {
+          this.router.navigate(['/auth/login']);
+        } else {
+          this.error.set(true);
+          this.loading.set(false);
+        }
       },
     });
   }

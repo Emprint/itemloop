@@ -20,7 +20,7 @@
 
         <!-- Title -->
         <label class="pf-label">
-          <span>{{ 'PRODUCT_FORM.TITLE' | translate }} <span class="req">*</span></span>
+          <span>{{ 'PRODUCT_FORM.TITLE' | translate }} @if (!readOnly) { <span class="req">*</span> }</span>
           <input type="text" formControlName="title" class="pf-input" />
           @if (form.get('title')?.invalid && form.get('title')?.touched) {
             <span class="pf-error">Title is required.</span>
@@ -37,7 +37,7 @@
         <div class="pf-field">
           <span class="pf-label-text"
             ><span
-              >{{ 'PRODUCT_FORM.CATEGORY' | translate }} <span class="req">*</span></span
+              >{{ 'PRODUCT_FORM.CATEGORY' | translate }} @if (!readOnly) { <span class="req">*</span> }</span
             ></span
           >
           <app-combobox
@@ -53,7 +53,7 @@
         <!-- Quantity + Estimated value side by side -->
         <div class="pf-row">
           <label class="pf-label pf-flex-1">
-            <span>{{ 'PRODUCT_FORM.QUANTITY' | translate }} <span class="req">*</span></span>
+            <span>{{ 'PRODUCT_FORM.QUANTITY' | translate }} @if (!readOnly) { <span class="req">*</span> }</span>
             <input type="number" formControlName="quantity" class="pf-input" min="0" />
           </label>
           <label class="pf-label pf-flex-1">
@@ -125,7 +125,7 @@
           <div class="pf-field">
             <span class="pf-label-text"
               ><span
-                >{{ 'PRODUCT_FORM.CONDITION' | translate }} <span class="req">*</span></span
+                >{{ 'PRODUCT_FORM.CONDITION' | translate }} @if (!readOnly) { <span class="req">*</span> }</span
               ></span
             >
             <app-combobox
@@ -197,7 +197,7 @@
 
           <!-- Building -->
           <label class="pf-label">
-            <span>{{ 'PRODUCT_FORM.BUILDING' | translate }} <span class="req">*</span></span>
+            <span>{{ 'PRODUCT_FORM.BUILDING' | translate }} @if (!readOnly) { <span class="req">*</span> }</span>
             <select class="pf-input" (change)="onBuildingChange(+$any($event.target).value)">
               <option value="0">
                 {{ readOnly ? '' : ('PRODUCT_FORM.SELECT_BUILDING' | translate) }}
@@ -212,7 +212,7 @@
 
           <!-- Zone -->
           <label class="pf-label">
-            <span>{{ 'PRODUCT_FORM.ZONE' | translate }} <span class="req">*</span></span>
+            <span>{{ 'PRODUCT_FORM.ZONE' | translate }} @if (!readOnly) { <span class="req">*</span> }</span>
             <select
               class="pf-input"
               (change)="onZoneChange(+$any($event.target).value)"
@@ -229,7 +229,7 @@
 
           <!-- Shelf -->
           <label class="pf-label">
-            <span>{{ 'PRODUCT_FORM.SHELF' | translate }} <span class="req">*</span></span>
+            <span>{{ 'PRODUCT_FORM.SHELF' | translate }} @if (!readOnly) { <span class="req">*</span> }</span>
             <select
               class="pf-input"
               (change)="onShelfChange(+$any($event.target).value)"
@@ -446,7 +446,7 @@
 
     <!-- Sticky footer -->
     <div class="pf-footer">
-      @if (readOnly) {
+      @if (readOnly && shopModeEnabled()) {
         @if (product && product.quantity > 0) {
           <div class="pf-cart-controls">
             <div class="pf-qty-picker">

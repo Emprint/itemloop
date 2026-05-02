@@ -10,6 +10,11 @@ class AuthController
 {
     public function register(Request $request, Response $response): Response
     {
+        // Check if open registration is enabled
+        if (!AppSettingsController::isEnabled('open_registration', true)) {
+            return $this->json($response, ['error' => 'REGISTRATION_DISABLED'], 403);
+        }
+
         $body = (array) $request->getParsedBody();
         $name     = trim($body['name']     ?? '');
         $email    = trim($body['email']    ?? '');

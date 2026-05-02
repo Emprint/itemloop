@@ -1,0 +1,97 @@
+<div class="page app-settings">
+  <h2>{{ 'APP_SETTINGS.TITLE' | translate }}</h2>
+
+  @if (loading) {
+    <div class="page-loading">{{ 'APP_SETTINGS.LOADING' | translate }}</div>
+  }
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="success">{{ successMessage }}</div>
+  }
+
+  @if (!loading && !error) {
+    <div class="form-card">
+      <form (ngSubmit)="saveSettings()">
+        <!-- Currency -->
+        <div class="form-field">
+          <label for="currency">{{ 'APP_SETTINGS.CURRENCY_LABEL' | translate }}</label>
+          <select id="currency" [(ngModel)]="settings()['currency']" name="currency">
+            @for (currency of supportedCurrencies; track currency.code) {
+              <option [value]="currency.code">{{ currency.name }}</option>
+            }
+          </select>
+          <small class="form-hint">{{ 'APP_SETTINGS.CURRENCY_HINT' | translate }}</small>
+        </div>
+
+        <!-- Open Registration -->
+        <div class="form-field">
+          <label>
+            <input type="checkbox"
+                   [checked]="openRegistrationEnabled()"
+                   (change)="onOpenRegistrationChange($any($event.target).checked)"
+                   name="open_registration" />
+            {{ 'APP_SETTINGS.OPEN_REGISTRATION_LABEL' | translate }}
+          </label>
+          <small class="form-hint">{{ 'APP_SETTINGS.OPEN_REGISTRATION_HINT' | translate }}</small>
+        </div>
+
+        <!-- Public Mode -->
+        <div class="form-field">
+          <label>
+            <input type="checkbox"
+                   [checked]="publicModeEnabled()"
+                   (change)="onPublicModeChange($any($event.target).checked)"
+                   name="public_mode" />
+            {{ 'APP_SETTINGS.PUBLIC_MODE_LABEL' | translate }}
+          </label>
+          <small class="form-hint">{{ 'APP_SETTINGS.PUBLIC_MODE_HINT' | translate }}</small>
+        </div>
+
+        <!-- Language Mode -->
+        <div class="form-field">
+          <label for="language_mode">{{ 'APP_SETTINGS.LANGUAGE_MODE_LABEL' | translate }}</label>
+          <select id="language_mode" [(ngModel)]="settings()['language_mode']" name="language_mode">
+            <option value="multi">{{ 'APP_SETTINGS.LANGUAGE_MODE_MULTI' | translate }}</option>
+            <option value="single">{{ 'APP_SETTINGS.LANGUAGE_MODE_SINGLE' | translate }}</option>
+          </select>
+          <small class="form-hint">{{ 'APP_SETTINGS.LANGUAGE_MODE_HINT' | translate }}</small>
+        </div>
+
+        <!-- Fixed Locale -->
+        @if (settings()['language_mode'] === 'single') {
+          <div class="form-field">
+            <label for="fixed_locale">{{ 'APP_SETTINGS.FIXED_LOCALE_LABEL' | translate }}</label>
+            <select id="fixed_locale" [(ngModel)]="settings()['fixed_locale']" name="fixed_locale">
+              @for (locale of supportedLocales; track locale.code) {
+                <option [value]="locale.code">{{ locale.name }}</option>
+              }
+            </select>
+            <small class="form-hint">{{ 'APP_SETTINGS.FIXED_LOCALE_HINT' | translate }}</small>
+          </div>
+        }
+
+        <!-- Shop Mode -->
+        <div class="form-field">
+          <label>
+            <input type="checkbox"
+                   [checked]="shopModeEnabled()"
+                   (change)="onShopModeChange($any($event.target).checked)"
+                   name="shop_mode" />
+            {{ 'APP_SETTINGS.SHOP_MODE_LABEL' | translate }}
+          </label>
+          <small class="form-hint">{{ 'APP_SETTINGS.SHOP_MODE_HINT' | translate }}</small>
+        </div>
+
+        <div class="buttons-list">
+          <button type="submit" [disabled]="saving">
+            {{ saving ? ('APP_SETTINGS.SAVING' | translate) : ('APP_SETTINGS.SAVE' | translate) }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

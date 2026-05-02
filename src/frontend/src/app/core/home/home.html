@@ -88,7 +88,7 @@
           </div>
           <div class="kpi-body">
             <span class="kpi-value">{{
-              stats()!.estimated_value | currency: currency : 'symbol' : '1.0-0'
+              stats()!.estimated_value | currency: currency() : 'symbol' : '1.0-0'
             }}</span>
             <span class="kpi-label">{{ 'DASHBOARD_ESTIMATED_VALUE' | translate }}</span>
           </div>

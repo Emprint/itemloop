@@ -9,6 +9,7 @@ use App\Middleware\OptionalAuthMiddleware;
 use App\Middleware\CsrfMiddleware;
 use App\Middleware\EditorMiddleware;
 use App\Middleware\AdminMiddleware;
+use App\Middleware\PublicModeMiddleware;
 use App\Controllers\AuthController;
 use App\Controllers\ProductController;
 use App\Controllers\ProductImageController;
@@ -19,6 +20,7 @@ use App\Controllers\ProductConditionController;
 use App\Controllers\ProductColorController;
 use App\Controllers\DashboardController;
 use App\Controllers\OrderController;
+use App\Controllers\AppSettingsController;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -94,6 +96,10 @@ $app->get('/api/csrf-cookie', function ($request, $response) {
     return $response->withStatus(204);
 });
 
+// App settings — GET is public; PUT is admin-only
+$app->get('/api/settings', [AppSettingsController::class, 'getAll']);
+$app->put('/api/settings', [AppSettingsController::class, 'update'])->add(new AdminMiddleware())->add(new AuthMiddleware());
+
 // Auth
 $app->group('/api/auth', function (RouteCollectorProxy $group) {
     $group->post('/register', [AuthController::class, 'register']);
@@ -105,12 +111,12 @@ $app->group('/api/auth', function (RouteCollectorProxy $group) {
 $app->get('/api/me', [AuthController::class, 'me'])->add(new AuthMiddleware());
 
 // ---------------------------------------------------------------------------
-// Products — public reads, auth writes
+// Products — public reads (when public_mode enabled), auth writes
 // ---------------------------------------------------------------------------
-$app->get('/api/products',         [ProductController::class, 'index'])->add(new OptionalAuthMiddleware());
-$app->get('/api/products/{id}',    [ProductController::class, 'show'])->add(new OptionalAuthMiddleware());
+$app->get('/api/products',         [ProductController::class, 'index'])->add(new PublicModeMiddleware())->add(new OptionalAuthMiddleware());
+$app->get('/api/products/{id}',    [ProductController::class, 'show'])->add(new PublicModeMiddleware())->add(new OptionalAuthMiddleware());
 $app->get('/api/product-categories', [ProductCategoryController::class, 'index']);
-$app->get('/api/dashboard', [DashboardController::class, 'getStats'])->add(new OptionalAuthMiddleware());
+$app->get('/api/dashboard', [DashboardController::class, 'getStats'])->add(new PublicModeMiddleware())->add(new OptionalAuthMiddleware());
 
 $app->group('/api', function (RouteCollectorProxy $group) {
     $group->post('/products',               [ProductController::class, 'store'])->add(new EditorMiddleware());

@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { CartService } from '../../cart/cart.service';
+import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-navbar',
@@ -17,9 +19,11 @@ export class Navbar {
   private authService = inject(AuthService);
   private translateService = inject(TranslateService);
   readonly cartService = inject(CartService);
+  private appSettingsService = inject(AppSettingsService);
 
   readonly user = this.authService.user;
   readonly sidebarOpen = signal(false);
+  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
 
   readonly userInitials = computed(() => {
     const name = this.user()?.name ?? '';
@@ -44,6 +48,10 @@ export class Navbar {
   });
 
   readonly isAdmin = computed(() => this.user()?.role === UserRole.Admin);
+
+  readonly shopModeEnabled = computed(() => this.settings()['shop_mode'] === '1');
+  readonly languageMode = computed(() => this.settings()['language_mode'] || 'multi');
+  readonly openRegistrationEnabled = computed(() => this.settings()['open_registration'] === '1');
 
   get currentLang() {
     return this.translateService.currentLang;

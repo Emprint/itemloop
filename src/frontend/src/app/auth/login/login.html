@@ -25,8 +25,10 @@
   @if (error()) {
     <div class="error">{{ error() }}</div>
   }
-  <div class="link">
-    <span>{{ 'NO_ACCOUNT' | translate }}</span>
-    <a routerLink="/auth/register">{{ 'REGISTER' | translate }}</a>
-  </div>
+  @if (openRegistrationEnabled()) {
+    <div class="link">
+      <span>{{ 'NO_ACCOUNT' | translate }}</span>
+      <a routerLink="/auth/register">{{ 'REGISTER' | translate }}</a>
+    </div>
+  }
 </form>

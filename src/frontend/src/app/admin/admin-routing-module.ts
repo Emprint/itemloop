@@ -16,6 +16,10 @@ const routes: Routes = [
         path: 'users',
         loadComponent: () => import('./users-list/users-list').then((m) => m.UsersList),
       },
+      {
+        path: 'settings',
+        loadComponent: () => import('./app-settings/app-settings.component').then((m) => m.AppSettingsComponent),
+      },
     ],
   },
 ];

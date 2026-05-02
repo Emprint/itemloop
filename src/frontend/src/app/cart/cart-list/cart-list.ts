@@ -4,10 +4,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Router, RouterModule } from '@angular/router';
 import { CartService, CartItem } from '../cart.service';
 import { ListShellComponent } from '../../shared/list-shell/list-shell.component';
-import { APP_SETTINGS } from '../../app-settings';
+import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
 import { OrderService } from '../../orders/order.service';
 import { AuthService } from '../../auth/auth.service';
 import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-cart-list',
@@ -28,10 +29,12 @@ export class CartList {
   private orderService = inject(OrderService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private appSettingsService = inject(AppSettingsService);
 
-  readonly currency = APP_SETTINGS.currency;
-  readonly currencyDisplay = APP_SETTINGS.currencyDisplay;
-  readonly currencyDigitsInfo = APP_SETTINGS.currencyDigitsInfo;
+  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly currency = computed(() => this.settings()['currency'] || 'EUR');
+  readonly currencyDisplay = computed(() => this.settings()['currency_display'] || 'symbol');
+  readonly currencyDigitsInfo = computed(() => this.settings()['currency_digits_info'] || '1.2-2');
 
   readonly items = computed(() => this.cartService.items().map((i) => ({ ...i, id: i.productId })));
 

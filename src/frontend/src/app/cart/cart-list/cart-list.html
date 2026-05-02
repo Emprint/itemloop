@@ -78,7 +78,7 @@
           <td class="cart-col-price">
             {{
               item.price !== null
-                ? (item.price | currency: currency : currencyDisplay : currencyDigitsInfo)
+                ? (item.price | currency: currency() : currencyDisplay() : currencyDigitsInfo())
                 : '—'
             }}
           </td>
@@ -86,7 +86,7 @@
             {{
               item.price !== null
                 ? (item.price * item.quantity
-                  | currency: currency : currencyDisplay : currencyDigitsInfo)
+                  | currency: currency() : currencyDisplay() : currencyDigitsInfo())
                 : '—'
             }}
           </td>
@@ -121,7 +121,7 @@
       @if (cartService.hasPrice()) {
         <span class="cart-footer-total">
           <strong>{{ 'CART.TOTAL' | translate }}:</strong>
-          {{ cartService.grandTotal() | currency: currency : currencyDisplay : currencyDigitsInfo }}
+          {{ cartService.grandTotal() | currency: currency() : currencyDisplay() : currencyDigitsInfo() }}
         </span>
       }
       <button type="button" class="cart-clear-btn" (click)="requestClear()">

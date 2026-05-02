@@ -13,6 +13,10 @@ class OrderController
     // -----------------------------------------------------------------------
     public function store(Request $request, Response $response): Response
     {
+        if (!AppSettingsController::isEnabled('shop_mode', true)) {
+            return $this->json($response, ['error' => 'SHOP_DISABLED'], 403);
+        }
+
         $user  = $request->getAttribute('user');
         $body  = (array) $request->getParsedBody();
         $items = $body['items'] ?? [];

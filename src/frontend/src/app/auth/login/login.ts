@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -6,6 +6,8 @@ import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
@@ -19,9 +21,12 @@ export class Login {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private translate = inject(TranslateService);
+  private appSettingsService = inject(AppSettingsService);
 
   form: FormGroup;
   error = signal('');
+  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly openRegistrationEnabled = computed(() => this.settings()['open_registration'] === '1');
 
   constructor() {
     this.form = this.fb.group({

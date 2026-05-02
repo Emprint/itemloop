@@ -1,10 +1,11 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { OrderService, Order } from '../order.service';
-import { APP_SETTINGS } from '../../app-settings';
+import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
 import { LocaleDatePipe } from '../../shared/locale-date.pipe';
 import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-orders-list',
@@ -16,6 +17,7 @@ import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
 export class OrdersList implements OnInit {
   private orderService = inject(OrderService);
   private translate = inject(TranslateService);
+  private appSettingsService = inject(AppSettingsService);
 
   readonly orders = signal<Order[]>([]);
   readonly loading = signal(true);
@@ -26,9 +28,10 @@ export class OrdersList implements OnInit {
   pendingStatus: Order['status'] | null = null;
   showStatusModal = signal(false);
 
-  readonly currency = APP_SETTINGS.currency;
-  readonly currencyDisplay = APP_SETTINGS.currencyDisplay;
-  readonly currencyDigitsInfo = APP_SETTINGS.currencyDigitsInfo;
+  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly currency = computed(() => this.settings()['currency'] || 'EUR');
+  readonly currencyDisplay = computed(() => this.settings()['currency_display'] || 'symbol');
+  readonly currencyDigitsInfo = computed(() => this.settings()['currency_digits_info'] || '1.2-2');
 
   ngOnInit() {
     this.loadOrders();
