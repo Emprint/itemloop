@@ -90,8 +90,9 @@ Three-level hierarchy: **Building → Zone → Location (shelf)**
 ### Image Handling
 - Uploaded via `POST /api/products/{id}/images` (field: `images[]`, multipart)
 - Backend (Intervention Image 3 + GD driver): scaled to max 1920×1920, converted to WebP (quality 90)
-- Stored at `public/storage/products/` (no symlink needed — directly web-accessible)
+- Stored at `frontend/storage/products/` (web-accessible path, configured via STORAGE_PATH in .env)
 - Path stored in DB as `storage/products/filename.webp`
+- Storage folder is secured with `.htaccess` containing "Options -Indexes" to disable directory listing
 
 ### Frontend
 - **Angular signals** are used throughout for reactive state (auth user, nav links, UI toggles)
@@ -127,22 +128,52 @@ Before adding CSS to a component, check `src/frontend/src/styles.scss` for exist
 
 See `src/backend/sql/migrations/README.md` for the template and migration process.
 
-## Deployment (Shared Hosting — No SSH Required)
+## Deployment (Shared Hosting)
 
-1. `cd src/backend && composer install` locally
-2. FTP upload the entire `src/backend/` folder
-3. Import `src/backend/sql/schema.sql` via phpMyAdmin (one-time)
-4. Copy `.env.example` → `.env` on server and fill in DB credentials
-5. Done — no artisan, no migrations, no storage:link
+The project includes a `deploy.sh` script that automates deployment to OVH shared hosting:
+
+### One-time Setup (already done — do not repeat unless re-provisioning):
+1. Create `~/frontend/api/index.php`:
+   ```php
+   <?php require __DIR__ . '/../../backend/public/index.php';
+   ```
+2. Create `~/frontend/api/.htaccess` (Slim routing + XSRF header passthrough)
+3. Create `~/frontend/.htaccess` (HTTPS redirect + Angular HTML5 routing)
+4. Create `~/backend/.env` from `.env.example` with production DB credentials
+   - **IMPORTANT**: Set `APP_DEBUG=false` in `.env` to hide error stacktraces in production
+5. Create `~/frontend/storage/products/` for image uploads (web-accessible path)
+   - Then set `STORAGE_PATH` in `~/backend/.env` to the REAL filesystem path, e.g.:
+     ```
+     STORAGE_PATH=/real/path/to/frontend/storage/products
+     ```
+   - On OVH: PHP-FPM open_basedir uses the real path, NOT the `/home/username` alias
+   - Run `echo $HOME` via SSH to find your real path
+6. Create `~/.user.ini` and `~/backend/public/.user.ini` for PHP-FPM upload limits
+7. Import `src/backend/sql/schema.sql` via phpMyAdmin (one-time DB setup)
+
+### Regular Deployment:
+1. Copy `deploy.env.example` to `deploy.env` and fill in your values (gitignored)
+2. Run: `SSH_PASS=<password> ./deploy.sh`
+
+The deploy script:
+- Builds Angular frontend with `ng build --configuration production`
+- Cleans old chunks with `rsync --delete`
+- Installs backend dependencies with `composer install --optimize-autoloader --no-dev`
+- Deploys frontend to `~/frontend/` (excluding storage folder)
+- Deploys backend to `~/backend/` (excluding .env and public folder)
+- Copies only `backend/public/index.php` (required by frontend API)
+- Secures storage folders with `.htaccess` files (only creates if they don't exist)
 
 ## Important Gotchas
 
 - **Never commit or push without explicit user approval** — always show changes and ask "Ready to commit?" first
 - Backend has no ORM — use raw PDO with prepared statements
 - All routes are in one file (`index.php`) — don't look for a separate routes file
-- Images are stored in `public/storage/products/` and served directly — no storage:link needed
+- Images are stored in `frontend/storage/products/` and served directly — no storage:link needed
 - First user on empty DB becomes admin automatically
 - Zoneless change detection is enabled — don't rely on Zone.js for automatic change detection
+- `backend/public/` folder is not web-accessible — only `index.php` is copied during deployment
+- `backend/public/storage/` folder is unused — images are stored in `frontend/storage/products/`
 
 ### User Status & Pending Validation (US44)
 When `public_mode=OFF` and `open_registration=ON`:

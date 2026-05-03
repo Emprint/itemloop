@@ -43,11 +43,7 @@
                   "maximumError": "16kB"
                 }
               ],
-              "outputHashing": "all",
-              "outputPath": {
-                "base": "../../deploy_package/frontend",
-                "browser": ""
-              }
+              "outputHashing": "all"
             },
             "development": {
               "optimization": false,

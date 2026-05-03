@@ -12,6 +12,7 @@
 #   2. Create ~/frontend/api/.htaccess (Slim routing + XSRF header passthrough)
 #   3. Create ~/frontend/.htaccess (HTTPS redirect + Angular HTML5 routing)
 #   4. Create ~/backend/.env from .env.example with production DB credentials
+#      IMPORTANT: Set APP_DEBUG=false in .env to hide error stacktraces in production
 #   5. Create ~/frontend/storage/products/ for image uploads (web-accessible path)
 #      Then set STORAGE_PATH in ~/backend/.env to the REAL filesystem path, e.g.:
 #        STORAGE_PATH=/real/path/to/frontend/storage/products
@@ -56,9 +57,13 @@ cd src/frontend
 ng build --configuration production
 cd ../..
 
-echo "📋 Copying server config files into build package..."
-cp deploy/frontend.htaccess deploy_package/frontend/.htaccess
+echo "🧹 Cleaning local deploy package..."
+rm -rf deploy_package/frontend
+
+echo "📋 Copying Angular build and server config files into build package..."
 mkdir -p deploy_package/frontend/api
+cp -r src/frontend/dist/itemloop-frontend/browser/* deploy_package/frontend/
+cp deploy/frontend.htaccess deploy_package/frontend/.htaccess
 cp deploy/frontend-api.htaccess deploy_package/frontend/api/.htaccess
 cp deploy/frontend-api-index.php deploy_package/frontend/api/index.php
 
@@ -67,20 +72,47 @@ cd src/backend
 composer install --optimize-autoloader --no-dev
 cd ../..
 
-echo "🚀 Deploying frontend..."
-sshpass -p "$SSH_PASS" rsync -az --no-perms \
+echo "🚀 Deploying frontend (with cleanup of old files)..."
+sshpass -p "$SSH_PASS" rsync -az --no-perms --delete \
+  --exclude='storage' \
   -e "ssh -o StrictHostKeyChecking=no -p $SSH_PORT" \
   deploy_package/frontend/ \
   "$SSH_USER@$SSH_HOST:~/frontend/"
 
-echo "🚀 Deploying backend (excluding .env — managed on server)..."
+echo "🔒 Securing storage folder (disable directory listing)..."
+sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p $SSH_PORT "$SSH_USER@$SSH_HOST" << 'ENDSSH'
+cd ~/frontend
+mkdir -p storage/products
+# Only create .htaccess if it doesn't exist
+if [ ! -f storage/.htaccess ]; then
+  echo "Options -Indexes" > storage/.htaccess
+fi
+if [ ! -f storage/products/.htaccess ]; then
+  echo "Options -Indexes" > storage/products/.htaccess
+fi
+ENDSSH
+
+echo "🚀 Deploying backend (excluding .env and public folder — only index.php needed)..."
 sshpass -p "$SSH_PASS" rsync -az --no-perms \
   --exclude='.env' \
+  --exclude='public' \
   -e "ssh -o StrictHostKeyChecking=no -p $SSH_PORT" \
   src/backend/ \
   "$SSH_USER@$SSH_HOST:~/backend/"
 
+echo "📄 Copying backend/public/index.php (required by frontend API)..."
+sshpass -p "$SSH_PASS" rsync -az --no-perms \
+  -e "ssh -o StrictHostKeyChecking=no -p $SSH_PORT" \
+  src/backend/public/index.php \
+  "$SSH_USER@$SSH_HOST:~/backend/public/"
+
+echo "🧹 Removing unnecessary .htaccess from backend/public (not web-accessible)..."
+sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no -p $SSH_PORT "$SSH_USER@$SSH_HOST" "rm -f ~/backend/public/.htaccess"
+
 echo ""
 echo "✅ Deploy complete!${SITE_URL:+ Site: $SITE_URL}"
 echo ""
-echo "⚠️  Note: OVH caches .htaccess changes for ~35-60s. Wait before testing."
+echo "⚠️  Notes:"
+echo "   • OVH caches .htaccess changes for ~35-60s. Wait before testing."
+echo "   • Ensure APP_DEBUG=false in ~/backend/.env to hide error stacktraces."
+echo "   • Ensure STORAGE_PATH points to ~/frontend/storage/products in .env."
