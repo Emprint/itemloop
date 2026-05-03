@@ -26,7 +26,9 @@ export class ProductsList {
   private translate = inject(TranslateService);
   private appSettingsService = inject(AppSettingsService);
 
-  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly settings = toSignal(this.appSettingsService.getAll(), {
+    initialValue: {} as AppSettings,
+  });
   readonly currency = computed(() => this.settings()['currency'] || 'EUR');
 
   products = signal<Product[]>([]);

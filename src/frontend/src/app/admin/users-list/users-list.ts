@@ -14,7 +14,14 @@ import { LocaleDatePipe } from '../../shared/locale-date.pipe';
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ConfirmModal, TranslateModule, ListShellComponent, LocaleDatePipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ConfirmModal,
+    TranslateModule,
+    ListShellComponent,
+    LocaleDatePipe,
+  ],
   templateUrl: './users-list.html',
   styleUrl: './users-list.scss',
 })
@@ -25,7 +32,7 @@ export class UsersList implements OnInit {
   private authService = inject(AuthService);
   private dropdown = inject(DropdownService);
 
-showReLoginNotice = false;
+  showReLoginNotice = false;
   allUsers = signal<User[]>([]);
   showForm = false;
   form: FormGroup;
@@ -95,26 +102,26 @@ showReLoginNotice = false;
 
     const q = this.searchQuery().toLowerCase().trim();
     if (q) {
-      result = result.filter(u =>
-        u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+      result = result.filter(
+        (u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q),
       );
     }
 
     const role = this.selectedRole();
     if (role) {
-      result = result.filter(u => u.role === role);
+      result = result.filter((u) => u.role === role);
     }
 
     const status = this.selectedStatus();
     if (status) {
-      result = result.filter(u => (u.status ?? 'active') === status);
+      result = result.filter((u) => (u.status ?? 'active') === status);
     }
 
     this.filteredUsers.set(result);
   }
 
   pendingCount() {
-    return this.allUsers().filter(u => (u.status ?? 'active') === 'pending').length;
+    return this.allUsers().filter((u) => (u.status ?? 'active') === 'pending').length;
   }
 
   selectUser(user: User) {
@@ -250,13 +257,24 @@ showReLoginNotice = false;
   openDropdown(user: User, e: MouseEvent) {
     const items = [];
     if (user.status === 'pending') {
-      items.push({ label: this.translate.instant('ACTIVATE'), action: () => this.validateUser(user) });
+      items.push({
+        label: this.translate.instant('ACTIVATE'),
+        action: () => this.validateUser(user),
+      });
     } else if (user.status === 'active' && user.role !== UserRole.Admin) {
-      items.push({ label: this.translate.instant('DEACTIVATE'), danger: true, action: () => this.deactivateUser(user) });
+      items.push({
+        label: this.translate.instant('DEACTIVATE'),
+        danger: true,
+        action: () => this.deactivateUser(user),
+      });
     }
     items.push({ label: this.translate.instant('EDIT'), action: () => this.selectUser(user) });
     if (!this.isLastAdmin(user)) {
-      items.push({ label: this.translate.instant('DELETE'), danger: true, action: () => this.confirmDeleteUser(user) });
+      items.push({
+        label: this.translate.instant('DELETE'),
+        danger: true,
+        action: () => this.confirmDeleteUser(user),
+      });
     }
     this.dropdown.open(items, e);
   }

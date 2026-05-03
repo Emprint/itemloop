@@ -40,7 +40,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US6 | User | As a user, I want to scan a barcode to quickly search or add an item. | Medium | 🔴 Complex | ⚪ |
 | US7 | Public visitor | As a visitor, I want to browse available items so I can prepare for an in-person visit. | Medium | 🟡 Medium | ✅ (public visibility filter) |
 | US8 | Customer | As a customer, I want to reserve items online to pick them up later. | Low | 🔴 Complex | ✅ (cart → order flow; staff manages pickup via Orders page) |
-| US9 | User | As a user, I want to use the app from a smartphone or browser so I can manage inventory anywhere. | High | 🟡 Medium | 🔲 (responsive layout in progress) |
+| US9 | User | As a user, I want to use the app from a smartphone or browser so I can manage inventory anywhere. | High | 🟡 Medium | ✅ |
 | US10 | User | As a user, I want to use the app offline and sync data when reconnected so I can keep working without internet. | Medium | 🔴 Complex | ⚪ |
 | US11 | User | As a user, I want to be notified if data fails to sync so I don't lose updates. | Medium | 🟡 Medium | ⚪ |
 | US12 | Admin | As an admin, I want to export inventory data to CSV for backup or reporting. | Low | 🟡 Medium | ✅ (CSV export on products page) |

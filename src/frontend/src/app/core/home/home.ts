@@ -37,7 +37,9 @@ export class Home implements OnInit {
   private router = inject(Router);
 
   readonly user = this.authService.user;
-  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly settings = toSignal(this.appSettingsService.getAll(), {
+    initialValue: {} as AppSettings,
+  });
   readonly currency = computed(() => this.settings()['currency'] || 'EUR');
   readonly stats = signal<DashboardStats | null>(null);
   readonly loading = signal(true);

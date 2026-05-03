@@ -20,7 +20,12 @@
 
         <!-- Title -->
         <label class="pf-label">
-          <span>{{ 'PRODUCT_FORM.TITLE' | translate }} @if (!readOnly) { <span class="req">*</span> }</span>
+          <span
+            >{{ 'PRODUCT_FORM.TITLE' | translate }}
+            @if (!readOnly) {
+              <span class="req">*</span>
+            }
+          </span>
           <input type="text" formControlName="title" class="pf-input" />
           @if (form.get('title')?.invalid && form.get('title')?.touched) {
             <span class="pf-error">Title is required.</span>
@@ -37,8 +42,11 @@
         <div class="pf-field">
           <span class="pf-label-text"
             ><span
-              >{{ 'PRODUCT_FORM.CATEGORY' | translate }} @if (!readOnly) { <span class="req">*</span> }</span
-            ></span
+              >{{ 'PRODUCT_FORM.CATEGORY' | translate }}
+              @if (!readOnly) {
+                <span class="req">*</span>
+              }
+            </span></span
           >
           <app-combobox
             [options]="categoryNames()"
@@ -53,7 +61,12 @@
         <!-- Quantity + Estimated value side by side -->
         <div class="pf-row">
           <label class="pf-label pf-flex-1">
-            <span>{{ 'PRODUCT_FORM.QUANTITY' | translate }} @if (!readOnly) { <span class="req">*</span> }</span>
+            <span
+              >{{ 'PRODUCT_FORM.QUANTITY' | translate }}
+              @if (!readOnly) {
+                <span class="req">*</span>
+              }
+            </span>
             <input type="number" formControlName="quantity" class="pf-input" min="0" />
           </label>
           <label class="pf-label pf-flex-1">
@@ -125,8 +138,11 @@
           <div class="pf-field">
             <span class="pf-label-text"
               ><span
-                >{{ 'PRODUCT_FORM.CONDITION' | translate }} @if (!readOnly) { <span class="req">*</span> }</span
-              ></span
+                >{{ 'PRODUCT_FORM.CONDITION' | translate }}
+                @if (!readOnly) {
+                  <span class="req">*</span>
+                }
+              </span></span
             >
             <app-combobox
               [options]="conditionNames()"
@@ -197,7 +213,12 @@
 
           <!-- Building -->
           <label class="pf-label">
-            <span>{{ 'PRODUCT_FORM.BUILDING' | translate }} @if (!readOnly) { <span class="req">*</span> }</span>
+            <span
+              >{{ 'PRODUCT_FORM.BUILDING' | translate }}
+              @if (!readOnly) {
+                <span class="req">*</span>
+              }
+            </span>
             <select class="pf-input" (change)="onBuildingChange(+$any($event.target).value)">
               <option value="0">
                 {{ readOnly ? '' : ('PRODUCT_FORM.SELECT_BUILDING' | translate) }}
@@ -212,7 +233,12 @@
 
           <!-- Zone -->
           <label class="pf-label">
-            <span>{{ 'PRODUCT_FORM.ZONE' | translate }} @if (!readOnly) { <span class="req">*</span> }</span>
+            <span
+              >{{ 'PRODUCT_FORM.ZONE' | translate }}
+              @if (!readOnly) {
+                <span class="req">*</span>
+              }
+            </span>
             <select
               class="pf-input"
               (change)="onZoneChange(+$any($event.target).value)"
@@ -229,7 +255,12 @@
 
           <!-- Shelf -->
           <label class="pf-label">
-            <span>{{ 'PRODUCT_FORM.SHELF' | translate }} @if (!readOnly) { <span class="req">*</span> }</span>
+            <span
+              >{{ 'PRODUCT_FORM.SHELF' | translate }}
+              @if (!readOnly) {
+                <span class="req">*</span>
+              }
+            </span>
             <select
               class="pf-input"
               (change)="onShelfChange(+$any($event.target).value)"
@@ -540,7 +571,12 @@
 
   <!-- Lightbox -->
   @if (lightboxOpen()) {
-    <div class="pf-lightbox" role="presentation" (click)="closeLightbox()" (keydown.escape)="closeLightbox()">
+    <div
+      class="pf-lightbox"
+      role="presentation"
+      (click)="closeLightbox()"
+      (keydown.escape)="closeLightbox()"
+    >
       <button type="button" class="pf-lb-close" (click)="closeLightbox()">✕</button>
       @if (images().length > 1) {
         <button
@@ -580,7 +616,12 @@
           </svg>
         </button>
       }
-      <div class="pf-lb-img-wrap" role="presentation" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
+      <div
+        class="pf-lb-img-wrap"
+        role="presentation"
+        (click)="$event.stopPropagation()"
+        (keydown)="$event.stopPropagation()"
+      >
         <img [src]="images()[lightboxIndex()].url" [alt]="images()[lightboxIndex()].path" />
       </div>
       @if (images().length > 1) {

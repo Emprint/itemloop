@@ -25,7 +25,9 @@ export class Login implements OnInit {
   form: FormGroup;
   error = signal('');
   pendingMessage = signal('');
-  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly settings = toSignal(this.appSettingsService.getAll(), {
+    initialValue: {} as AppSettings,
+  });
   readonly openRegistrationEnabled = computed(() => this.settings()['open_registration'] === '1');
 
   constructor() {

@@ -18,7 +18,8 @@ const routes: Routes = [
       },
       {
         path: 'settings',
-        loadComponent: () => import('./app-settings/app-settings.component').then((m) => m.AppSettingsComponent),
+        loadComponent: () =>
+          import('./app-settings/app-settings.component').then((m) => m.AppSettingsComponent),
       },
     ],
   },

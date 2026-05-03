@@ -11,5 +11,5 @@ export const SUPPORTED_CURRENCIES = [
   { code: 'CHF', name: 'Swiss Franc (CHF)' },
 ] as const;
 
-export type LocaleCode = typeof SUPPORTED_LOCALES[number]['code'];
-export type CurrencyCode = typeof SUPPORTED_CURRENCIES[number]['code'];
+export type LocaleCode = (typeof SUPPORTED_LOCALES)[number]['code'];
+export type CurrencyCode = (typeof SUPPORTED_CURRENCIES)[number]['code'];

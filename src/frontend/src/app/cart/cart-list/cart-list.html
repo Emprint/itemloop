@@ -121,7 +121,10 @@
       @if (cartService.hasPrice()) {
         <span class="cart-footer-total">
           <strong>{{ 'CART.TOTAL' | translate }}:</strong>
-          {{ cartService.grandTotal() | currency: currency() : currencyDisplay() : currencyDigitsInfo() }}
+          {{
+            cartService.grandTotal()
+              | currency: currency() : currencyDisplay() : currencyDigitsInfo()
+          }}
         </span>
       }
       <button type="button" class="cart-clear-btn" (click)="requestClear()">

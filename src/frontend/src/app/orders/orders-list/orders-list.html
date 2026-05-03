@@ -73,7 +73,8 @@
               <td class="col-total">
                 {{
                   order.total !== null
-                    ? (order.total | currency: currency() : currencyDisplay() : currencyDigitsInfo())
+                    ? (order.total
+                      | currency: currency() : currencyDisplay() : currencyDigitsInfo())
                     : '—'
                 }}
               </td>

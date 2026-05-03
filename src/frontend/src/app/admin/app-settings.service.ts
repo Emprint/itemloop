@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 export type AppSettings = Record<string, string>;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AppSettingsService {
   private http = inject(HttpClient);
@@ -15,7 +15,7 @@ export class AppSettingsService {
     return this.http.get<AppSettings>(this.apiUrl);
   }
 
-  update(settings: Partial<AppSettings>): Observable<{success: boolean, updated: string[]}> {
-    return this.http.put<{success: boolean, updated: string[]}>(this.apiUrl, settings);
+  update(settings: Partial<AppSettings>): Observable<{ success: boolean; updated: string[] }> {
+    return this.http.put<{ success: boolean; updated: string[] }>(this.apiUrl, settings);
   }
 }

@@ -83,7 +83,10 @@ export class AuthService {
   private registerApi(data: { name: string; email: string; password: string }) {
     return this.getCsrfCookie().pipe(
       switchMap(() => {
-        return this.http.post<AuthResponse | RegisterPendingResponse>(`${environment.apiUrl}auth/register`, data);
+        return this.http.post<AuthResponse | RegisterPendingResponse>(
+          `${environment.apiUrl}auth/register`,
+          data,
+        );
       }),
     );
   }

@@ -30,10 +30,12 @@
         <!-- Open Registration -->
         <div class="form-field">
           <label>
-            <input type="checkbox"
-                   [checked]="openRegistrationEnabled()"
-                   (change)="onOpenRegistrationChange($any($event.target).checked)"
-                   name="open_registration" />
+            <input
+              type="checkbox"
+              [checked]="openRegistrationEnabled()"
+              (change)="onOpenRegistrationChange($any($event.target).checked)"
+              name="open_registration"
+            />
             {{ 'APP_SETTINGS.OPEN_REGISTRATION_LABEL' | translate }}
           </label>
           <small class="form-hint">{{ 'APP_SETTINGS.OPEN_REGISTRATION_HINT' | translate }}</small>
@@ -42,10 +44,12 @@
         <!-- Public Mode -->
         <div class="form-field">
           <label>
-            <input type="checkbox"
-                   [checked]="publicModeEnabled()"
-                   (change)="onPublicModeChange($any($event.target).checked)"
-                   name="public_mode" />
+            <input
+              type="checkbox"
+              [checked]="publicModeEnabled()"
+              (change)="onPublicModeChange($any($event.target).checked)"
+              name="public_mode"
+            />
             {{ 'APP_SETTINGS.PUBLIC_MODE_LABEL' | translate }}
           </label>
           <small class="form-hint">{{ 'APP_SETTINGS.PUBLIC_MODE_HINT' | translate }}</small>
@@ -77,10 +81,12 @@
         <!-- Shop Mode -->
         <div class="form-field">
           <label>
-            <input type="checkbox"
-                   [checked]="shopModeEnabled()"
-                   (change)="onShopModeChange($any($event.target).checked)"
-                   name="shop_mode" />
+            <input
+              type="checkbox"
+              [checked]="shopModeEnabled()"
+              (change)="onShopModeChange($any($event.target).checked)"
+              name="shop_mode"
+            />
             {{ 'APP_SETTINGS.SHOP_MODE_LABEL' | translate }}
           </label>
           <small class="form-hint">{{ 'APP_SETTINGS.SHOP_MODE_HINT' | translate }}</small>

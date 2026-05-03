@@ -12,7 +12,7 @@ import { SUPPORTED_LOCALES, SUPPORTED_CURRENCIES } from './locales';
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './app-settings.component.html',
-  styleUrls: ['./app-settings.component.scss']
+  styleUrls: ['./app-settings.component.scss'],
 })
 export class AppSettingsComponent implements OnInit {
   private settingsService = inject(AppSettingsService);
@@ -43,11 +43,14 @@ export class AppSettingsComponent implements OnInit {
 
   private loadSettings(): void {
     this.loading = true;
-    this.settingsService.getAll()
-      .pipe(finalize(() => {
-        this.loading = false;
-        this.cdr.markForCheck();
-      }))
+    this.settingsService
+      .getAll()
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          this.cdr.markForCheck();
+        }),
+      )
       .subscribe({
         next: (data) => {
           this._settings.set(data);
@@ -56,20 +59,20 @@ export class AppSettingsComponent implements OnInit {
         error: () => {
           this.error = 'Failed to load settings.';
           this.cdr.markForCheck();
-        }
+        },
       });
   }
 
   onOpenRegistrationChange(checked: boolean): void {
-    this._settings.update(s => ({...s, open_registration: checked ? '1' : '0'}));
+    this._settings.update((s) => ({ ...s, open_registration: checked ? '1' : '0' }));
   }
 
   onPublicModeChange(checked: boolean): void {
-    this._settings.update(s => ({...s, public_mode: checked ? '1' : '0'}));
+    this._settings.update((s) => ({ ...s, public_mode: checked ? '1' : '0' }));
   }
 
   onShopModeChange(checked: boolean): void {
-    this._settings.update(s => ({...s, shop_mode: checked ? '1' : '0'}));
+    this._settings.update((s) => ({ ...s, shop_mode: checked ? '1' : '0' }));
   }
 
   saveSettings(): void {
@@ -77,13 +80,16 @@ export class AppSettingsComponent implements OnInit {
     this.error = null;
     this.successMessage = null;
 
-    // The backend expects a payload with the keys to update. 
+    // The backend expects a payload with the keys to update.
     // We'll send all current settings for simplicity in this implementation.
-    this.settingsService.update(this.settings())
-      .pipe(finalize(() => {
-        this.saving = false;
-        this.cdr.markForCheck();
-      }))
+    this.settingsService
+      .update(this.settings())
+      .pipe(
+        finalize(() => {
+          this.saving = false;
+          this.cdr.markForCheck();
+        }),
+      )
       .subscribe({
         next: (res) => {
           if (res.success) {
@@ -104,7 +110,7 @@ export class AppSettingsComponent implements OnInit {
         error: () => {
           this.error = 'An error occurred while saving.';
           this.cdr.markForCheck();
-        }
+        },
       });
   }
 }

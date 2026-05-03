@@ -93,7 +93,9 @@ export class ProductFormComponent implements OnChanges, OnInit {
   });
 
   // Shop mode check
-  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly settings = toSignal(this.appSettingsService.getAll(), {
+    initialValue: {} as AppSettings,
+  });
   readonly shopModeEnabled = computed(() => this.settings()['shop_mode'] === '1');
 
   // Cart qty picker (view mode)

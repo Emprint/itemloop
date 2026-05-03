@@ -28,7 +28,9 @@ export class OrdersList implements OnInit {
   pendingStatus: Order['status'] | null = null;
   showStatusModal = signal(false);
 
-  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly settings = toSignal(this.appSettingsService.getAll(), {
+    initialValue: {} as AppSettings,
+  });
   readonly currency = computed(() => this.settings()['currency'] || 'EUR');
   readonly currencyDisplay = computed(() => this.settings()['currency_display'] || 'symbol');
   readonly currencyDigitsInfo = computed(() => this.settings()['currency_digits_info'] || '1.2-2');

@@ -3,14 +3,14 @@ export interface AuthResponse {
 }
 
 export enum UserStatus {
-  Active  = 'active',
+  Active = 'active',
   Pending = 'pending',
 }
 
 export enum UserRole {
   Customer = 'customer',
-  Editor   = 'editor',
-  Admin    = 'admin',
+  Editor = 'editor',
+  Admin = 'admin',
 }
 
 export interface User {

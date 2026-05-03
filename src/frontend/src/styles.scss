@@ -27,16 +27,34 @@ h2 {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text);
+
+  @media (max-width: 768px) {
+    font-size: 1.375rem;
+    margin-bottom: 1.25rem;
+  }
+
+  @media (max-width: 560px) {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
 }
 
 h3 {
   margin-top: 0;
   font-weight: 600;
+
+  @media (max-width: 560px) {
+    font-size: 0.95rem;
+  }
 }
 
 h4 {
   margin-top: 0;
   font-weight: 600;
+
+  @media (max-width: 560px) {
+    font-size: 0.9rem;
+  }
 }
 
 input[readonly] {
@@ -63,6 +81,11 @@ select {
   color: var(--text);
   transition: border-color 0.15s;
 
+  @media (max-width: 560px) {
+    padding: 0.5rem 0.65rem;
+    font-size: 0.9rem;
+  }
+
   &:focus {
     outline: none;
     border-color: var(--primary-color);
@@ -84,8 +107,17 @@ button {
   transition: background 0.15s;
   margin-bottom: 0;
 
+  @media (max-width: 560px) {
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+  }
+
   &.add-btn {
     margin-bottom: 1.25rem;
+
+    @media (max-width: 560px) {
+      margin-bottom: 1rem;
+    }
   }
 
   &:hover:not(:disabled) {
@@ -97,6 +129,11 @@ button {
     font-size: 0.82em;
     margin-right: 0.3em;
     margin-bottom: 0;
+
+    @media (max-width: 560px) {
+      padding: 0.2em 0.6em;
+      font-size: 0.8em;
+    }
 
     &.danger {
       background: #ef4444;
@@ -151,6 +188,16 @@ button:disabled {
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+  @media (max-width: 768px) {
+    padding: 1.25rem;
+    border-radius: 10px;
+  }
+
+  @media (max-width: 560px) {
+    padding: 1rem;
+    border-radius: 8px;
+  }
 }
 
 // Auth form card (centered)
@@ -163,9 +210,19 @@ button:disabled {
   max-width: 420px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
 
+  @media (max-width: 560px) {
+    padding: 1.5rem;
+    max-width: 100%;
+    border-radius: 10px;
+  }
+
   h2 {
     margin-bottom: 1.5rem;
     text-align: center;
+
+    @media (max-width: 560px) {
+      margin-bottom: 1.25rem;
+    }
   }
 
   label {
@@ -174,6 +231,10 @@ button:disabled {
     font-size: 0.875rem;
     color: var(--text);
     margin-bottom: 0.375rem;
+
+    @media (max-width: 560px) {
+      font-size: 0.85rem;
+    }
   }
 
   .link {
@@ -181,6 +242,11 @@ button:disabled {
     font-size: 0.875rem;
     color: var(--text-muted);
     margin-top: 1rem;
+
+    @media (max-width: 560px) {
+      font-size: 0.85rem;
+      margin-top: 0.875rem;
+    }
 
     a {
       color: var(--primary-color);
@@ -197,6 +263,10 @@ button:disabled {
 // Field wrapper — label + input with consistent spacing
 .form-field {
   margin-bottom: 1rem;
+
+  @media (max-width: 560px) {
+    margin-bottom: 0.875rem;
+  }
 }
 
 // Error
@@ -233,6 +303,11 @@ button:disabled {
   gap: 0.75rem;
   margin-top: 1rem;
 
+  @media (max-width: 560px) {
+    gap: 0.625rem;
+    margin-top: 0.875rem;
+  }
+
   button {
     flex-grow: 1;
     margin: 0;
@@ -244,6 +319,16 @@ button:disabled {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.875rem;
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75rem;
+  }
 }
 
 .product-card {
@@ -254,12 +339,24 @@ button:disabled {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   transition: box-shadow 0.15s;
 
+  @media (max-width: 560px) {
+    border-radius: 10px;
+  }
+
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .product-info {
     padding: 1rem;
+
+    @media (max-width: 768px) {
+      padding: 0.875rem;
+    }
+
+    @media (max-width: 560px) {
+      padding: 0.75rem;
+    }
 
     h3 {
       font-size: 0.95rem;
@@ -268,12 +365,20 @@ button:disabled {
       align-items: center;
       flex-wrap: wrap;
       gap: 0.4rem;
+
+      @media (max-width: 560px) {
+        font-size: 0.875rem;
+      }
     }
 
     p {
       font-size: 0.85rem;
       color: var(--text-muted);
       margin: 0;
+
+      @media (max-width: 560px) {
+        font-size: 0.8rem;
+      }
     }
   }
 }
@@ -283,6 +388,14 @@ button:disabled {
   height: 160px;
   object-fit: cover;
   display: block;
+
+  @media (max-width: 768px) {
+    height: 140px;
+  }
+
+  @media (max-width: 560px) {
+    height: 120px;
+  }
 }
 
 // Help text
@@ -308,12 +421,32 @@ table {
     letter-spacing: 0.04em;
     background: #f9fafb;
     border-bottom: 1px solid var(--card-border);
+
+    @media (max-width: 768px) {
+      padding: 0.625rem 0.875rem;
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 560px) {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+    }
   }
 
   td {
     padding: 0.875rem 1rem;
     border-bottom: 1px solid #f3f4f6;
     font-size: 0.925rem;
+
+    @media (max-width: 768px) {
+      padding: 0.75rem 0.875rem;
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 560px) {
+      padding: 0.625rem 0.75rem;
+      font-size: 0.85rem;
+    }
   }
 
   tr:last-child td {
@@ -345,6 +478,10 @@ table {
 .page {
   max-width: 960px;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 }
 
 // Wide content column — full width within app-main padding (tables, dashboards, etc.)
@@ -359,6 +496,10 @@ table {
 // Page title — strips default h2 bottom margin so sections control their own spacing
 .page-title {
   margin-bottom: 1.5rem;
+
+  @media (max-width: 560px) {
+    margin-bottom: 1rem;
+  }
 }
 
 // Inline feedback states
@@ -366,12 +507,20 @@ table {
   text-align: center;
   color: var(--text-muted);
   padding: 2rem 0;
+
+  @media (max-width: 560px) {
+    padding: 1.5rem 0;
+  }
 }
 
 .page-error {
   color: #dc2626;
   padding: 2rem 0;
   text-align: center;
+
+  @media (max-width: 560px) {
+    padding: 1.5rem 0;
+  }
 }
 
 // Empty state: icon centred above message
@@ -382,6 +531,15 @@ table {
   gap: 0.75rem;
   padding: 3rem 0;
   color: var(--text-muted);
+
+  @media (max-width: 768px) {
+    padding: 2rem 0;
+  }
+
+  @media (max-width: 560px) {
+    padding: 1.5rem 0;
+    gap: 0.5rem;
+  }
 
   p {
     margin: 0;
@@ -398,6 +556,11 @@ table {
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+
+  @media (max-width: 560px) {
+    font-size: 0.68rem;
+    padding: 0.18em 0.6em;
+  }
 
   &.status-pending {
     background: #fef3c7;
@@ -424,6 +587,11 @@ table {
   min-width: 120px;
   overflow: hidden;
 
+  @media (max-width: 560px) {
+    min-width: 110px;
+    border-radius: 6px;
+  }
+
   button {
     display: block !important;
     width: 100%;
@@ -435,6 +603,11 @@ table {
     color: #374151 !important;
     cursor: pointer;
     transition: background 0.15s;
+
+    @media (max-width: 560px) {
+      padding: 0.45rem 0.875rem !important;
+      font-size: 0.85rem;
+    }
 
     &:hover {
       background: #f9fafb !important;
@@ -454,6 +627,17 @@ table {
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    margin-bottom: 0.625rem;
+  }
+
+  @media (max-width: 560px) {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
 }
 
 .search-box {
@@ -468,6 +652,11 @@ table {
   height: 40px;
   color: #9ca3af;
 
+  @media (max-width: 560px) {
+    height: 36px;
+    padding: 0 0.75rem;
+  }
+
   input {
     flex: 1;
     border: none;
@@ -475,6 +664,10 @@ table {
     font-size: 0.875rem;
     color: #111827;
     background: transparent;
+
+    @media (max-width: 560px) {
+      font-size: 0.85rem;
+    }
 
     &::placeholder {
       color: #9ca3af;
@@ -498,6 +691,12 @@ table {
   white-space: nowrap;
   transition: background 0.15s;
 
+  @media (max-width: 560px) {
+    height: 36px;
+    padding: 0 1rem;
+    font-size: 0.85rem;
+  }
+
   &:hover {
     background: #16a34a;
   }
@@ -508,6 +707,15 @@ table {
   gap: 0.5rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    margin-bottom: 0.875rem;
+  }
+
+  @media (max-width: 560px) {
+    margin-bottom: 0.75rem;
+    gap: 0.375rem;
+  }
 
   select {
     appearance: none;
@@ -524,6 +732,11 @@ table {
     transition: border-color 0.15s;
     display: inline-block !important;
 
+    @media (max-width: 560px) {
+      padding: 0.325rem 1.75rem 0.325rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
     &:hover {
       border-color: #9ca3af;
     }
@@ -539,10 +752,24 @@ table {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.75rem;
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.625rem;
+  }
+
+  @media (max-width: 560px) {
+    margin-bottom: 0.5rem;
+  }
 }
 
 .count {
   font-size: 0.875rem;
   font-weight: 600;
   color: #374151;
+
+  @media (max-width: 560px) {
+    font-size: 0.85rem;
+  }
 }

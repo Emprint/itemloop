@@ -25,7 +25,9 @@ export class Navbar implements OnInit {
 
   readonly user = this.authService.user;
   readonly sidebarOpen = signal(false);
-  readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly settings = toSignal(this.appSettingsService.getAll(), {
+    initialValue: {} as AppSettings,
+  });
   readonly pendingCount = signal(0);
 
   ngOnInit() {
