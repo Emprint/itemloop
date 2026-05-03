@@ -5,6 +5,12 @@ import { environment } from '../../environments/environment';
 import { map, Observable, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
+export interface RegisterPendingResponse {
+  registered: boolean;
+  pending: true;
+  message: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
@@ -13,12 +19,15 @@ export class AuthService {
   private _user = signal<User | null>(null);
   readonly user = this._user;
 
-  register(name: string, email: string, password: string) {
+  register(name: string, email: string, password: string): Observable<boolean> {
     return this.registerApi({ name, email, password }).pipe(
       tap((res) => {
-        this.setUser(res);
+        if ('pending' in res) {
+          return;
+        }
+        this.setUser(res as AuthResponse);
       }),
-      map(() => void 0),
+      map((res) => !('pending' in res)),
     );
   }
 
@@ -74,7 +83,7 @@ export class AuthService {
   private registerApi(data: { name: string; email: string; password: string }) {
     return this.getCsrfCookie().pipe(
       switchMap(() => {
-        return this.http.post<AuthResponse>(`${environment.apiUrl}auth/register`, data);
+        return this.http.post<AuthResponse | RegisterPendingResponse>(`${environment.apiUrl}auth/register`, data);
       }),
     );
   }

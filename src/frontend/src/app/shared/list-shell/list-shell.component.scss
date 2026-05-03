@@ -76,6 +76,12 @@
   color: #374151;
 }
 
+.ls-pending-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-left: 0.75rem;
+}
+
 // ── Table ─────────────────────────────────────────────────
 .ls-table-wrap {
   background: #fff;
@@ -178,6 +184,24 @@
   &.role-customer {
     background: #f3f4f6;
     color: #6b7280;
+  }
+}
+
+// ── Status badge ──────────────────────────────────────────
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.625rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.status-active {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  &.status-pending {
+    background: #fef3c7;
+    color: #92400e;
   }
 }
 

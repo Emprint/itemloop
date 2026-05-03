@@ -10,6 +10,7 @@ use App\Middleware\CsrfMiddleware;
 use App\Middleware\EditorMiddleware;
 use App\Middleware\AdminMiddleware;
 use App\Middleware\PublicModeMiddleware;
+use App\Middleware\PendingUserMiddleware;
 use App\Controllers\AuthController;
 use App\Controllers\ProductController;
 use App\Controllers\ProductImageController;
@@ -112,7 +113,6 @@ $app->get('/api/me', [AuthController::class, 'me'])->add(new AuthMiddleware());
 
 // ---------------------------------------------------------------------------
 // Products — public reads (when public_mode enabled), auth writes
-// ---------------------------------------------------------------------------
 $app->get('/api/products',         [ProductController::class, 'index'])->add(new PublicModeMiddleware())->add(new OptionalAuthMiddleware());
 $app->get('/api/products/{id}',    [ProductController::class, 'show'])->add(new PublicModeMiddleware())->add(new OptionalAuthMiddleware());
 $app->get('/api/product-categories', [ProductCategoryController::class, 'index']);
@@ -154,12 +154,16 @@ $app->group('/api', function (RouteCollectorProxy $group) {
     $group->get('/users',           [UserController::class, 'index'])->add(new AdminMiddleware());
     $group->post('/users/save',     [UserController::class, 'save'])->add(new AdminMiddleware());
     $group->post('/users/delete',   [UserController::class, 'delete'])->add(new AdminMiddleware());
+    $group->get('/users/pending',         [UserController::class, 'pending'])->add(new AdminMiddleware());
+    $group->get('/users/pending/count', [UserController::class, 'pendingCount'])->add(new AdminMiddleware());
+    $group->patch('/users/{id}/validate', [UserController::class, 'validate'])->add(new AdminMiddleware());
+    $group->patch('/users/{id}/deactivate', [UserController::class, 'deactivate'])->add(new AdminMiddleware());
 
     // Orders — place order (any auth user); manage (editor+)
     $group->post('/orders',                    [OrderController::class, 'store']);
     $group->get('/orders/mine',               [OrderController::class, 'mine']);
     $group->get('/orders',                    [OrderController::class, 'index'])->add(new EditorMiddleware());
     $group->patch('/orders/{id}/status',      [OrderController::class, 'updateStatus'])->add(new EditorMiddleware());
-})->add(new AuthMiddleware());
+})->add(new PendingUserMiddleware())->add(new AuthMiddleware());
 
 $app->run();

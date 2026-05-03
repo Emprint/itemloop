@@ -2,25 +2,23 @@
 
 namespace App\Middleware;
 
-use App\Controllers\AppSettingsController;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class PublicModeMiddleware implements MiddlewareInterface
+class PendingUserMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $user = $_SESSION['user'] ?? null;
 
-        if ($user) {
-            return $handler->handle($request);
-        }
-
-        if (!AppSettingsController::isEnabled('public_mode', true)) {
+        if ($user && ($user['status'] ?? 'active') === 'pending') {
             $response = new \Slim\Psr7\Response();
-            $response->getBody()->write(json_encode(['error' => 'APP_NOT_PUBLIC']));
+            $response->getBody()->write(json_encode([
+                'error'   => 'ACCOUNT_PENDING',
+                'message' => 'Your account is pending administrator approval.',
+            ]));
             return $response
                 ->withHeader('Content-Type', 'application/json')
                 ->withStatus(403);

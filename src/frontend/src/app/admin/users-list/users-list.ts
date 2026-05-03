@@ -9,11 +9,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../auth/auth.service';
 import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
 import { ListShellComponent } from '../../shared/list-shell/list-shell.component';
+import { LocaleDatePipe } from '../../shared/locale-date.pipe';
 
 @Component({
   selector: 'app-users-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ConfirmModal, TranslateModule, ListShellComponent],
+  imports: [CommonModule, ReactiveFormsModule, ConfirmModal, TranslateModule, ListShellComponent, LocaleDatePipe],
   templateUrl: './users-list.html',
   styleUrl: './users-list.scss',
 })
@@ -24,9 +25,8 @@ export class UsersList implements OnInit {
   private authService = inject(AuthService);
   private dropdown = inject(DropdownService);
 
-  showReLoginNotice = false;
-  users = signal<User[]>([]);
-  selectedUser: User | null = null;
+showReLoginNotice = false;
+  allUsers = signal<User[]>([]);
   showForm = false;
   form: FormGroup;
   showPassword = false;
@@ -34,6 +34,16 @@ export class UsersList implements OnInit {
   userToDelete: User | null = null;
   errorMessage = signal<string | null>(null);
   serverErrors = signal<Record<string, string[]>>({});
+  selectedUser: User | null = null;
+
+  searchQuery = signal('');
+  selectedRole = signal('');
+  selectedStatus = signal('');
+
+  filteredUsers = signal<User[]>([]);
+
+  readonly roleOptions = ['', 'admin', 'editor', 'member', 'customer'];
+  readonly statusOptions = ['', 'active', 'pending'];
 
   userSearchFn = (user: User, q: string) =>
     user.name.toLowerCase().includes(q) || user.email.toLowerCase().includes(q);
@@ -55,7 +65,8 @@ export class UsersList implements OnInit {
   loadUsers() {
     this.userService.getUsers().subscribe({
       next: (users) => {
-        this.users.set(users);
+        this.allUsers.set(users);
+        this.applyFilter();
         this.errorMessage.set(null);
       },
       error: () => {
@@ -64,10 +75,86 @@ export class UsersList implements OnInit {
     });
   }
 
+  onSearch(q: string) {
+    this.searchQuery.set(q);
+    this.applyFilter();
+  }
+
+  onRoleChange(role: string) {
+    this.selectedRole.set(role);
+    this.applyFilter();
+  }
+
+  onStatusChange(status: string) {
+    this.selectedStatus.set(status);
+    this.applyFilter();
+  }
+
+  applyFilter() {
+    let result = this.allUsers();
+
+    const q = this.searchQuery().toLowerCase().trim();
+    if (q) {
+      result = result.filter(u =>
+        u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+      );
+    }
+
+    const role = this.selectedRole();
+    if (role) {
+      result = result.filter(u => u.role === role);
+    }
+
+    const status = this.selectedStatus();
+    if (status) {
+      result = result.filter(u => (u.status ?? 'active') === status);
+    }
+
+    this.filteredUsers.set(result);
+  }
+
+  pendingCount() {
+    return this.allUsers().filter(u => (u.status ?? 'active') === 'pending').length;
+  }
+
   selectUser(user: User) {
     this.selectedUser = { ...user };
     this.showForm = true;
     this.form.patchValue({ ...user, password: '' });
+  }
+
+  validateUser(user: User) {
+    if (!user.id) return;
+    this.userService.validateUser(user.id).subscribe({
+      next: () => {
+        this.loadUsers();
+      },
+      error: (err) => {
+        const code = err?.error?.error;
+        if (code) {
+          this.errorMessage.set(this.translate.instant('ERRORS.' + code));
+        } else {
+          this.errorMessage.set(this.translate.instant('ERRORS.FAILED_VALIDATE_USER'));
+        }
+      },
+    });
+  }
+
+  deactivateUser(user: User) {
+    if (!user.id) return;
+    this.userService.deactivateUser(user.id).subscribe({
+      next: () => {
+        this.loadUsers();
+      },
+      error: (err) => {
+        const code = err?.error?.error;
+        if (code) {
+          this.errorMessage.set(this.translate.instant('ERRORS.' + code));
+        } else {
+          this.errorMessage.set(this.translate.instant('ERRORS.FAILED_DEACTIVATE_USER'));
+        }
+      },
+    });
   }
 
   saveUser() {
@@ -161,23 +248,22 @@ export class UsersList implements OnInit {
   }
 
   openDropdown(user: User, e: MouseEvent) {
-    this.dropdown.open(
-      [
-        { label: this.translate.instant('EDIT'), action: () => this.selectUser(user) },
-        {
-          label: this.translate.instant('DELETE'),
-          danger: true,
-          disabled: this.isLastAdmin(user),
-          action: () => this.confirmDeleteUser(user),
-        },
-      ],
-      e,
-    );
+    const items = [];
+    if (user.status === 'pending') {
+      items.push({ label: this.translate.instant('ACTIVATE'), action: () => this.validateUser(user) });
+    } else if (user.status === 'active' && user.role !== UserRole.Admin) {
+      items.push({ label: this.translate.instant('DEACTIVATE'), danger: true, action: () => this.deactivateUser(user) });
+    }
+    items.push({ label: this.translate.instant('EDIT'), action: () => this.selectUser(user) });
+    if (!this.isLastAdmin(user)) {
+      items.push({ label: this.translate.instant('DELETE'), danger: true, action: () => this.confirmDeleteUser(user) });
+    }
+    this.dropdown.open(items, e);
   }
 
   isLastAdmin(user: User): boolean {
     if (user.role !== UserRole.Admin) return false;
-    const admins = this.users().filter((u: User) => u.role === UserRole.Admin);
+    const admins = this.allUsers().filter((u: User) => u.role === UserRole.Admin);
     return admins.length === 1 && admins[0].id === user.id;
   }
 

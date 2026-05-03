@@ -1,4 +1,4 @@
-import { Component, computed, signal, inject, HostListener } from '@angular/core';
+import { Component, computed, signal, inject, HostListener, OnInit } from '@angular/core';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -6,6 +6,7 @@ import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { CartService } from '../../cart/cart.service';
 import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
+import { UserService } from '../../admin/user.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -15,15 +16,28 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
-export class Navbar {
+export class Navbar implements OnInit {
   private authService = inject(AuthService);
   private translateService = inject(TranslateService);
   readonly cartService = inject(CartService);
   private appSettingsService = inject(AppSettingsService);
+  private userService = inject(UserService);
 
   readonly user = this.authService.user;
   readonly sidebarOpen = signal(false);
   readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
+  readonly pendingCount = signal(0);
+
+  ngOnInit() {
+    if (this.isAdmin()) {
+      this.userService.getPendingCount().subscribe({
+        next: (res) => this.pendingCount.set(res.count),
+        error: () => {
+          /* noop — badge simply won't show */
+        },
+      });
+    }
+  }
 
   readonly userInitials = computed(() => {
     const name = this.user()?.name ?? '';

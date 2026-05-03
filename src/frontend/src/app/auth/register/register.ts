@@ -57,8 +57,12 @@ export class Register {
       return;
     }
     this.auth.register(name, email, password).subscribe({
-      next: () => {
-        this.router.navigate(['/products']);
+      next: (isActive) => {
+        if (isActive) {
+          this.router.navigate(['/products']);
+        } else {
+          this.router.navigate(['/auth/login'], { queryParams: { pending: 1 } });
+        }
       },
       error: (err) => {
         if (err?.error?.error === 'ERROR_VALIDATION' && err?.error?.errors) {

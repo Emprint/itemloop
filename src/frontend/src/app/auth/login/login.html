@@ -1,5 +1,8 @@
 <form class="form-card" [formGroup]="form" (ngSubmit)="submit()">
   <h2>{{ 'LOGIN' | translate }}</h2>
+  @if (pendingMessage()) {
+    <div class="info">{{ pendingMessage() }}</div>
+  }
   <div class="form-field">
     <label for="email"
       ><span>{{ 'EMAIL' | translate }} <span class="req">*</span></span></label

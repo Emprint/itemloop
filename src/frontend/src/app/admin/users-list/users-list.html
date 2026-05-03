@@ -1,5 +1,6 @@
 <div class="page-wide users-list">
-  <h2>{{ 'USER_MANAGEMENT' | translate }}</h2>
+  <h2 class="page-title">{{ 'USER_MANAGEMENT' | translate }}</h2>
+
   @if (errorMessage()) {
     <div class="error">{{ errorMessage() }}</div>
   }
@@ -65,6 +66,17 @@
           }
         </div>
 
+        <div class="form-field form-field--half">
+          <span class="info-label">{{ 'DATE_ADDED' | translate }}</span>
+          <span class="info-value">{{ selectedUser?.created_at | localeDate }}</span>
+        </div>
+        @if (selectedUser?.last_login) {
+          <div class="form-field form-field--half">
+            <span class="info-label">{{ 'LAST_LOGIN' | translate }}</span>
+            <span class="info-value">{{ selectedUser?.last_login | localeDate }}</span>
+          </div>
+        }
+
         <div class="buttons-list">
           <button type="button" (click)="cancel()">{{ 'CANCEL' | translate }}</button>
           <button type="submit">{{ 'SAVE' | translate }}</button>
@@ -74,12 +86,56 @@
   }
 
   @if (!showForm && !showReLoginNotice) {
+    <div class="toolbar">
+      <div class="search-box">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+        <input
+          type="text"
+          [value]="searchQuery()"
+          (input)="onSearch($any($event.target).value)"
+          placeholder="{{ 'SEARCH' | translate }}"
+        />
+      </div>
+      <button class="btn-primary" (click)="newUserForm()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
+        {{ 'NEW_USER_BTN' | translate }}
+      </button>
+    </div>
+
+    <div class="filter-bar">
+      <select
+        [value]="selectedRole()"
+        (change)="onRoleChange($any($event.target).value)"
+      >
+        <option value="">{{ 'ALL_ROLES' | translate }}</option>
+        <option value="admin">{{ 'ADMIN' | translate }}</option>
+        <option value="editor">{{ 'EDITOR' | translate }}</option>
+        <option value="member">{{ 'MEMBER' | translate }}</option>
+        <option value="customer">{{ 'CUSTOMER' | translate }}</option>
+      </select>
+      <select
+        [value]="selectedStatus()"
+        (change)="onStatusChange($any($event.target).value)"
+      >
+        <option value="">{{ 'ALL_STATUSES' | translate }}</option>
+        <option value="active">{{ 'ACTIVE' | translate }}</option>
+        <option value="pending">{{ 'PENDING' | translate }}</option>
+      </select>
+    </div>
+
     <app-list-shell
-      [items]="users()"
-      [addLabel]="'NEW_USER_BTN' | translate"
+      [items]="filteredUsers()"
       [countLabel]="'USERS_UNIT' | translate"
+      [pendingCount]="pendingCount()"
       [searchFn]="userSearchFn"
       [searchPlaceholder]="'SEARCH' | translate"
+      [searchable]="false"
+      [addable]="false"
       (addClicked)="newUserForm()"
     >
       <ng-template #headTpl>
@@ -87,6 +143,9 @@
           <th>{{ 'NAME' | translate }}</th>
           <th class="user-col-email">{{ 'EMAIL' | translate }}</th>
           <th>{{ 'ROLE' | translate }}</th>
+          <th>{{ 'STATUS' | translate }}</th>
+          <th>{{ 'DATE_ADDED' | translate }}</th>
+          <th>{{ 'LAST_LOGIN' | translate }}</th>
           <th style="width: 48px"></th>
         </tr>
       </ng-template>
@@ -99,6 +158,13 @@
               user.role | uppercase | translate
             }}</span>
           </td>
+          <td>
+            <span class="status-badge status-{{ user.status }}">{{
+              user.status | uppercase | translate
+            }}</span>
+          </td>
+          <td>{{ user.created_at | localeDate }}</td>
+          <td>{{ user.last_login ? (user.last_login | localeDate) : '—' }}</td>
           <td class="ls-actions">
             <button class="ls-action-btn" (click)="openDropdown(user, $event)">⋮</button>
           </td>
@@ -110,9 +176,7 @@
 
 <app-confirm-modal
   [show]="showDeleteModal"
-  [message]="
-    'Are you sure you want to delete the user &quot;' + (userToDelete?.name || '') + '&quot;?'
-  "
+  message="Are you sure you want to delete this user?"
   (confirmEvent)="deleteUserConfirmed()"
   (cancelEvent)="cancelDeleteUser()"
 ></app-confirm-modal>

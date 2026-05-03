@@ -13,10 +13,74 @@ class UserController
     public function index(Request $request, Response $response): Response
     {
         $rows = Database::get()
-            ->query('SELECT id, name, email, role, created_at, updated_at FROM users ORDER BY name')
+            ->query('SELECT id, name, email, role, status, created_at, updated_at, last_login FROM users ORDER BY name')
             ->fetchAll();
 
         return $this->json($response, $rows);
+    }
+
+    public function pending(Request $request, Response $response): Response
+    {
+        $rows = Database::get()
+            ->query("SELECT id, name, email, role, status, created_at, updated_at, last_login FROM users WHERE status = 'pending' ORDER BY created_at DESC")
+            ->fetchAll();
+
+        return $this->json($response, $rows);
+    }
+
+    public function pendingCount(Request $request, Response $response): Response
+    {
+        $count = Database::get()
+            ->query("SELECT COUNT(*) as count FROM users WHERE status = 'pending'")
+            ->fetch()['count'] ?? 0;
+
+        return $this->json($response, ['count' => (int) $count]);
+    }
+
+    public function validate(Request $request, Response $response): Response
+    {
+        $id = $request->getAttribute('id');
+        if (!$id) {
+            return $this->json($response, ['error' => 'NOT_FOUND'], 404);
+        }
+        $db = Database::get();
+        $stmt = $db->prepare("SELECT id FROM users WHERE id = ? AND status = 'pending'");
+        $stmt->execute([(int) $id]);
+        if (!$stmt->fetch()) {
+            return $this->json($response, ['error' => 'NOT_FOUND'], 404);
+        }
+
+        $stmt = $db->prepare("UPDATE users SET status = 'active', updated_at = NOW() WHERE id = ?");
+        $stmt->execute([(int) $id]);
+
+        $stmt = $db->prepare('SELECT id, name, email, role, status, created_at, updated_at, last_login FROM users WHERE id = ?');
+        $stmt->execute([(int) $id]);
+        $user = $stmt->fetch();
+
+        return $this->json($response, $user);
+    }
+
+    public function deactivate(Request $request, Response $response): Response
+    {
+        $id = $request->getAttribute('id');
+        if (!$id) {
+            return $this->json($response, ['error' => 'NOT_FOUND'], 404);
+        }
+        $db = Database::get();
+        $stmt = $db->prepare("SELECT id FROM users WHERE id = ? AND status = 'active'");
+        $stmt->execute([(int) $id]);
+        if (!$stmt->fetch()) {
+            return $this->json($response, ['error' => 'NOT_FOUND'], 404);
+        }
+
+        $stmt = $db->prepare("UPDATE users SET status = 'pending', updated_at = NOW() WHERE id = ?");
+        $stmt->execute([(int) $id]);
+
+        $stmt = $db->prepare('SELECT id, name, email, role, status, created_at, updated_at, last_login FROM users WHERE id = ?');
+        $stmt->execute([(int) $id]);
+        $user = $stmt->fetch();
+
+        return $this->json($response, $user);
     }
 
     public function save(Request $request, Response $response): Response
@@ -44,12 +108,10 @@ class UserController
         }
 
         if ($id) {
-            // Update existing user
             $stmt = $db->prepare('SELECT id FROM users WHERE id = ?');
             $stmt->execute([$id]);
             if (!$stmt->fetch()) return $this->json($response, ['error' => 'NOT_FOUND'], 404);
 
-            // Check email uniqueness excluding self
             $stmt = $db->prepare('SELECT id FROM users WHERE email = ? AND id != ?');
             $stmt->execute([$email, $id]);
             if ($stmt->fetch()) return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['email' => ['Email already in use.']]], 422);
@@ -62,17 +124,16 @@ class UserController
                    ->execute([$name, $email, $role, $id]);
             }
         } else {
-            // Create new user
             $stmt = $db->prepare('SELECT id FROM users WHERE email = ?');
             $stmt->execute([$email]);
             if ($stmt->fetch()) return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['email' => ['Email already in use.']]], 422);
 
-            $db->prepare('INSERT INTO users (name, email, role, password) VALUES (?, ?, ?, ?)')
+            $db->prepare('INSERT INTO users (name, email, role, password, created_at) VALUES (?, ?, ?, ?, NOW())')
                ->execute([$name, $email, $role, password_hash($password, PASSWORD_BCRYPT)]);
             $id = (int) $db->lastInsertId();
         }
 
-        $stmt = $db->prepare('SELECT id, name, email, role, created_at, updated_at FROM users WHERE id = ?');
+        $stmt = $db->prepare('SELECT id, name, email, role, status, created_at, updated_at, last_login FROM users WHERE id = ?');
         $stmt->execute([$id]);
         return $this->json($response, $stmt->fetch());
     }
@@ -85,7 +146,6 @@ class UserController
 
         if (!$id) return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['id' => ['User ID is required.']]], 422);
 
-        // Prevent self-deletion
         $currentUser = $request->getAttribute('user');
         if ((int) $currentUser['id'] === $id) {
             return $this->json($response, ['error' => 'FORBIDDEN', 'message' => 'You cannot delete your own account.'], 403);

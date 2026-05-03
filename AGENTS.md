@@ -143,4 +143,16 @@ See `src/backend/sql/migrations/README.md` for the template and migration proces
 - Images are stored in `public/storage/products/` and served directly — no storage:link needed
 - First user on empty DB becomes admin automatically
 - Zoneless change detection is enabled — don't rely on Zone.js for automatic change detection
+
+### User Status & Pending Validation (US44)
+When `public_mode=OFF` and `open_registration=ON`:
+- New registrations create `pending` users (status column)
+- Pending users **cannot log in** — get `ACCOUNT_PENDING` error
+- Pending users are **blocked from all protected API routes** via `PendingUserMiddleware`
+- Admins see a **pending count badge** on the Users nav link
+- Users list has **Date Added** and **Last Login** columns
+- Users can be **Deactivated** (admin action) — goes back to `pending`
+- Deactivated users cannot log in until reactivated by admin
+- `last_login` column tracks user activity; updated on each login
+- `GET /api/users/pending/count` returns pending count for nav badge
 - Global styles are comprehensive — check `styles.scss` before adding component-specific CSS

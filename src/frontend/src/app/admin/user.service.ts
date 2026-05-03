@@ -8,6 +8,10 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  status: string | null;
+  created_at: string;
+  updated_at: string;
+  last_login: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -16,6 +20,22 @@ export class UserService {
 
   getUsers() {
     return this.http.get<User[]>(`${environment.apiUrl}users`);
+  }
+
+  getPendingUsers() {
+    return this.http.get<User[]>(`${environment.apiUrl}users/pending`);
+  }
+
+  getPendingCount() {
+    return this.http.get<{ count: number }>(`${environment.apiUrl}users/pending/count`);
+  }
+
+  validateUser(id: number) {
+    return this.http.patch<User>(`${environment.apiUrl}users/${id}/validate`, {});
+  }
+
+  deactivateUser(id: number) {
+    return this.http.patch<User>(`${environment.apiUrl}users/${id}/deactivate`, {});
   }
 
   saveUser(user: Partial<User> & { password?: string }) {

@@ -10,7 +10,6 @@ class AuthController
 {
     public function register(Request $request, Response $response): Response
     {
-        // Check if open registration is enabled
         if (!AppSettingsController::isEnabled('open_registration', true)) {
             return $this->json($response, ['error' => 'REGISTRATION_DISABLED'], 403);
         }
@@ -35,20 +34,30 @@ class AuthController
 
         $db = Database::get();
 
-        // Unique email check
         $stmt = $db->prepare('SELECT id FROM users WHERE email = ?');
         $stmt->execute([$email]);
         if ($stmt->fetch()) {
             return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['email' => ['The email has already been taken.']]], 422);
         }
 
-        // First user becomes admin
         $count = (int) $db->query('SELECT COUNT(*) FROM users')->fetchColumn();
         $role  = $count === 0 ? 'admin' : 'customer';
 
-        $stmt = $db->prepare('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)');
-        $stmt->execute([$name, $email, password_hash($password, PASSWORD_BCRYPT), $role]);
+        $publicModeDisabled  = !AppSettingsController::isEnabled('public_mode', true);
+        $openRegEnabled      = AppSettingsController::isEnabled('open_registration', true);
+        $status = ($publicModeDisabled && $openRegEnabled && $role === 'customer') ? 'pending' : 'active';
+
+        $stmt = $db->prepare('INSERT INTO users (name, email, password, role, status) VALUES (?, ?, ?, ?, ?)');
+        $stmt->execute([$name, $email, password_hash($password, PASSWORD_BCRYPT), $role, $status]);
         $userId = (int) $db->lastInsertId();
+
+        if ($status === 'pending') {
+            return $this->json($response, [
+                'registered' => true,
+                'pending'    => true,
+                'message'    => 'Your account has been created and is pending administrator approval.',
+            ], 201);
+        }
 
         $user = $this->fetchUser($db, $userId);
         $_SESSION['user'] = $user;
@@ -76,6 +85,12 @@ class AuthController
             return $this->json($response, ['error' => 'INVALID_CREDENTIALS'], 401);
         }
 
+        if (($user['status'] ?? 'active') === 'pending') {
+            return $this->json($response, ['error' => 'ACCOUNT_PENDING', 'message' => 'Your account is pending administrator approval.'], 403);
+        }
+
+        $db->prepare('UPDATE users SET last_login = NOW() WHERE id = ?')->execute([$user['id']]);
+
         unset($user['password']);
         $_SESSION['user'] = $user;
         session_regenerate_id(true);
@@ -94,9 +109,8 @@ class AuthController
     {
         $user = $request->getAttribute('user');
 
-        // Re-fetch from DB to get the freshest data
         $db   = Database::get();
-        $stmt = $db->prepare('SELECT id, name, email, role, created_at, updated_at FROM users WHERE id = ?');
+        $stmt = $db->prepare('SELECT id, name, email, role, status, created_at, updated_at FROM users WHERE id = ?');
         $stmt->execute([$user['id']]);
         $fresh = $stmt->fetch();
 
@@ -110,7 +124,7 @@ class AuthController
 
     private function fetchUser(\PDO $db, int $id): array
     {
-        $stmt = $db->prepare('SELECT id, name, email, role, created_at, updated_at FROM users WHERE id = ?');
+        $stmt = $db->prepare('SELECT id, name, email, role, status, created_at, updated_at FROM users WHERE id = ?');
         $stmt->execute([$id]);
         return $stmt->fetch();
     }

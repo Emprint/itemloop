@@ -13,3 +13,23 @@
   font-size: 0.9em;
   margin: 0;
 }
+
+.form-field--half {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-right: 2rem;
+}
+
+.info-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.info-value {
+  font-size: 0.875rem;
+  color: var(--text);
+}

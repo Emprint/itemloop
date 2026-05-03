@@ -1,10 +1,8 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal, OnInit } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { Router } from '@angular/router';
-import { signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -16,15 +14,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login {
+export class Login implements OnInit {
   private auth = inject(AuthService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private translate = inject(TranslateService);
   private appSettingsService = inject(AppSettingsService);
 
   form: FormGroup;
   error = signal('');
+  pendingMessage = signal('');
   readonly settings = toSignal(this.appSettingsService.getAll(), { initialValue: {} as AppSettings });
   readonly openRegistrationEnabled = computed(() => this.settings()['open_registration'] === '1');
 
@@ -35,6 +35,12 @@ export class Login {
     });
   }
 
+  ngOnInit() {
+    if (this.route.snapshot.queryParamMap.get('pending') === '1') {
+      this.pendingMessage.set(this.translate.instant('REGISTRATION_PENDING_MESSAGE'));
+    }
+  }
+
   submit() {
     this.error.set('');
     const { email, password } = this.form.value;
@@ -43,10 +49,11 @@ export class Login {
         this.router.navigate(['/products']);
       },
       error: (err) => {
-        // Use error code if present, otherwise fallback
         const code = err?.error?.error;
         let msg;
-        if (code) {
+        if (code === 'ACCOUNT_PENDING') {
+          msg = this.translate.instant('ERRORS.ACCOUNT_PENDING');
+        } else if (code) {
           msg = this.translate.instant('ERRORS.' + code);
         } else {
           msg = this.translate.instant('ERRORS.INVALID_CREDENTIALS');

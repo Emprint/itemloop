@@ -29,6 +29,7 @@ export class ListShellComponent implements OnChanges {
   @Input() searchable = true;
   @Input() searchPlaceholder = 'Search…';
   @Input() countLabel = '';
+  @Input() pendingCount = 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input() items: any[] = [];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

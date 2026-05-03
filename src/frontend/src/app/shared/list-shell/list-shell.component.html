@@ -51,6 +51,9 @@
         {{ countLabel }}
       }
     </span>
+    @if (pendingCount > 0) {
+      <span class="ls-pending-hint">{{ pendingCount }} {{ 'PENDING_USERS' | translate }}</span>
+    }
   </div>
 
   <div class="ls-table-wrap">
