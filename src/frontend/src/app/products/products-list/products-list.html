@@ -39,6 +39,29 @@
           (input)="onSearch($any($event.target).value)"
           placeholder="{{ 'SEARCH_PRODUCTS' | translate }}"
         />
+        <button
+          class="barcode-scan-btn"
+          (click)="openBarcodeScanner()"
+          [title]="'BARCODE_SCANNER.TITLE' | translate"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M3 5v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z" />
+            <path d="M7 15h0.01" />
+            <path d="M7 9h0.01" />
+            <path d="M11 9h0.01" />
+            <path d="M11 15h0.01" />
+            <path d="M15 9h0.01" />
+            <path d="M15 15h0.01" />
+          </svg>
+        </button>
       </div>
       @if (isEditorOrAdmin()) {
         <button class="btn-primary" (click)="showAddProductForm()">
@@ -357,3 +380,10 @@
   (confirmEvent)="confirmDeleteProduct()"
   (cancelEvent)="cancelDeleteProduct()"
 ></app-confirm-modal>
+
+@if (showBarcodeScanner()) {
+  <app-barcode-scanner
+    (scanComplete)="onBarcodeScanned($event)"
+    (closeEvent)="closeBarcodeScanner()"
+  ></app-barcode-scanner>
+}

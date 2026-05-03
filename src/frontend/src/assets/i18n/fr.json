@@ -1,4 +1,11 @@
 {
+  "BARCODE_SCANNER": {
+    "TITLE": "Scanner un code-barres",
+    "INSTRUCTION": "Pointez la caméra vers un code-barres pour le scanner",
+    "CAMERA_ERROR": "Impossible d'accéder à la caméra. Veuillez vérifier les permissions.",
+    "PERMISSION_REQUIRED": "L'autorisation de la caméra est requise pour scanner les codes-barres",
+    "CANCEL": "Annuler"
+  },
   "COMBOBOX_ADD": "Ajouter",
   "PRODUCT_FORM": {
     "CATEGORY_PLACEHOLDER": "Saisissez ou sélectionnez une catégorie",

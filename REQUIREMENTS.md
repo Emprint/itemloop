@@ -37,7 +37,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US3 | User | As a user, I want to add a product with a title, description, category, condition, color, quantity, estimated value, location (building → zone → shelf, all required), multiple photos, barcode, dimensions (L/W/H), weight, and destination so I can fully document inventory items. Location cascade is enforced: zone is disabled until a building is selected; shelf is disabled until a zone is selected. | High | 🔴 Complex | ✅ |
 | US4 | User | As a user, I want to edit or delete product entries to keep information up to date. | High | 🟡 Medium | ✅ |
 | US5 | User | As a user, I want to view and filter the product list (by condition, location, keyword) to find items easily. | High | 🔴 Complex | ✅ |
-| US6 | User | As a user, I want to scan a barcode to quickly search or add an item. | Medium | 🔴 Complex | ⚪ |
+| US6 | User | As a user, I want to scan a barcode to quickly search or add an item. | Medium | 🔴 Complex | ✅ |
 | US7 | Public visitor | As a visitor, I want to browse available items so I can prepare for an in-person visit. | Medium | 🟡 Medium | ✅ (public visibility filter) |
 | US8 | Customer | As a customer, I want to reserve items online to pick them up later. | Low | 🔴 Complex | ✅ (cart → order flow; staff manages pickup via Orders page) |
 | US9 | User | As a user, I want to use the app from a smartphone or browser so I can manage inventory anywhere. | High | 🟡 Medium | ✅ |

@@ -1,4 +1,11 @@
 {
+  "BARCODE_SCANNER": {
+    "TITLE": "Scan Barcode",
+    "INSTRUCTION": "Point the camera at a barcode to scan it",
+    "CAMERA_ERROR": "Unable to access camera. Please check permissions.",
+    "PERMISSION_REQUIRED": "Camera permission is required to scan barcodes",
+    "CANCEL": "Cancel"
+  },
   "USER_MANAGEMENT": "User Management",
   "EDIT": "Edit",
   "EDIT_USER": "Edit User",

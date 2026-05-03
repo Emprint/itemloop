@@ -42,6 +42,7 @@ import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { LocaleDatePipe } from '../../shared/locale-date.pipe';
 import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
+import { BarcodeScannerComponent } from '../../shared/barcode-scanner/barcode-scanner.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -54,6 +55,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     ComboboxComponent,
     DragDropModule,
     LocaleDatePipe,
+    BarcodeScannerComponent,
   ],
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css'],
@@ -129,6 +131,9 @@ export class ProductFormComponent implements OnChanges, OnInit {
   // Lightbox
   lightboxOpen = signal(false);
   lightboxIndex = signal(0);
+
+  // Barcode scanner
+  showBarcodeScanner = signal(false);
 
   openLightbox(index: number) {
     this.lightboxIndex.set(index);
@@ -498,5 +503,18 @@ export class ProductFormComponent implements OnChanges, OnInit {
       return zoneCode;
     }
     return '';
+  }
+
+  openBarcodeScanner() {
+    this.showBarcodeScanner.set(true);
+  }
+
+  onBarcodeScanned(barcode: string) {
+    this.form.patchValue({ barcode });
+    this.showBarcodeScanner.set(false);
+  }
+
+  closeBarcodeScanner() {
+    this.showBarcodeScanner.set(false);
   }
 }

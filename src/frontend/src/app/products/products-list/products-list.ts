@@ -10,12 +10,20 @@ import { LocaleDatePipe } from '../../shared/locale-date.pipe';
 import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
 import { DropdownService, DropdownItem } from '../../shared/dropdown.service';
 import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
+import { BarcodeScannerComponent } from '../../shared/barcode-scanner/barcode-scanner.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-products-list',
   standalone: true,
-  imports: [ProductFormComponent, TranslateModule, FormsModule, LocaleDatePipe, ConfirmModal],
+  imports: [
+    ProductFormComponent,
+    TranslateModule,
+    FormsModule,
+    LocaleDatePipe,
+    ConfirmModal,
+    BarcodeScannerComponent,
+  ],
   templateUrl: './products-list.html',
   styleUrl: './products-list.scss',
 })
@@ -51,6 +59,7 @@ export class ProductsList {
   viewMode = signal<'list' | 'grid'>(window.innerWidth <= 768 ? 'grid' : 'list');
   pageSize = signal(10);
   currentPage = signal(1);
+  showBarcodeScanner = signal(false);
 
   conditionOptions = computed(
     () =>
@@ -358,5 +367,19 @@ export class ProductsList {
     });
     a.click();
     URL.revokeObjectURL(a.href);
+  }
+
+  openBarcodeScanner() {
+    this.showBarcodeScanner.set(true);
+  }
+
+  onBarcodeScanned(barcode: string) {
+    this.searchQuery.set(barcode);
+    this.showBarcodeScanner.set(false);
+    this.currentPage.set(1);
+  }
+
+  closeBarcodeScanner() {
+    this.showBarcodeScanner.set(false);
   }
 }

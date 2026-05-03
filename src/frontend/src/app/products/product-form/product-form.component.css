@@ -85,6 +85,40 @@
   box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
 }
 
+.pf-input-with-action {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+
+  .pf-input {
+    flex: 1;
+  }
+
+  .pf-scan-btn {
+    background: none;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: #6b7280;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+
+    &:hover {
+      background: #f3f4f6;
+      border-color: #22c55e;
+      color: #22c55e;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
 /* Style native <select> elements to match the combobox arrow */
 select.pf-input {
   appearance: none;
