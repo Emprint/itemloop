@@ -187,3 +187,13 @@ When `public_mode=OFF` and `open_registration=ON`:
 - `last_login` column tracks user activity; updated on each login
 - `GET /api/users/pending/count` returns pending count for nav badge
 - Global styles are comprehensive — check `styles.scss` before adding component-specific CSS
+
+### Barcode Scanner (US6)
+- Uses `@zxing/library` with `BrowserMultiFormatReader` for cross-platform barcode scanning
+- Integrated into products list search box and product form barcode input field
+- **Permissions API**: Checks camera permission state before accessing camera via `navigator.permissions.query({ name: 'camera' })`
+- Listens for permission changes to automatically restart scanner when permission is granted
+- Shows appropriate error messages for different permission states (granted, denied, prompt, not found)
+- Button styling is consistent across all breakpoints (integrated in search field, not a separate green button)
+- Scanner modal shows permission request UI with "Request Permission" button for retry after denial
+- Camera access is requested with `getUserMedia` using environment-facing camera at 640×480 resolution

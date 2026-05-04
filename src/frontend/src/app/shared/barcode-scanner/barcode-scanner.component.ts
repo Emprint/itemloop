@@ -44,6 +44,9 @@ export class BarcodeScannerComponent implements AfterViewInit, OnDestroy {
       this.isScanning.set(true);
       this.errorMessage.set('');
 
+      // Wait for Angular to render the video element
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
       const video = this.videoElement?.nativeElement;
       if (!video) {
         console.error('Video element not found');

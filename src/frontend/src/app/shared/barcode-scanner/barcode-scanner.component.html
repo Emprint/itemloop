@@ -35,7 +35,7 @@
           </div>
         </div>
         <p class="scan-instruction">{{ 'BARCODE_SCANNER.INSTRUCTION' | translate }}</p>
-      } @else if (!hasCameraPermission()) {
+      } @else {
         <div class="permission-message">
           <svg
             xmlns="http://www.w3.org/2000/svg"
