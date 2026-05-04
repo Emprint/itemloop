@@ -102,7 +102,8 @@ export class ProductsList {
         q &&
         !p.title.toLowerCase().includes(q) &&
         !(p.description ?? '').toLowerCase().includes(q) &&
-        !this.productCode(p.id).toLowerCase().includes(q)
+        !this.productCode(p.id).toLowerCase().includes(q) &&
+        !(p.barcode ?? '').toLowerCase().includes(q)
       )
         return false;
       if (cond && p.condition?.name !== cond) return false;
@@ -377,6 +378,13 @@ export class ProductsList {
     this.searchQuery.set(barcode);
     this.showBarcodeScanner.set(false);
     this.currentPage.set(1);
+
+    // Check if there's a single matching product by barcode
+    const matchingProducts = this.products().filter((p) => p.barcode === barcode);
+    if (matchingProducts.length === 1) {
+      // Open the product in read-only view
+      this.viewProduct(matchingProducts[0]);
+    }
   }
 
   closeBarcodeScanner() {
