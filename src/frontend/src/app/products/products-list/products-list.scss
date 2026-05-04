@@ -450,6 +450,83 @@
   color: #9ca3af;
 }
 
+// ── Search box with barcode scan button ────────────────────────
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0 0.5rem 0 0.875rem;
+  height: 40px;
+  color: #9ca3af;
+
+  @media (max-width: 560px) {
+    height: 36px;
+    padding: 0 0.375rem 0 0.75rem;
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 0.875rem;
+    color: #111827;
+    background: transparent;
+    min-width: 0;
+    height: 100%;
+
+    @media (max-width: 560px) {
+      font-size: 0.85rem;
+    }
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+
+  .barcode-scan-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #6b7280;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+
+    @media (max-width: 560px) {
+      width: 28px;
+      height: 28px;
+    }
+
+    svg {
+      width: 18px;
+      height: 18px;
+
+      @media (max-width: 560px) {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    &:hover {
+      background: #f3f4f6;
+      color: #22c55e;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
 // ── Responsive ────────────────────────────────────────────
 @media (max-width: 768px) {
   .toolbar {
@@ -457,60 +534,8 @@
 
     .search-box {
       flex: 1;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 0 0.875rem;
-      height: 40px;
-      color: #9ca3af;
-
-      @media (max-width: 560px) {
-        height: 36px;
-        padding: 0 0.75rem;
-      }
-
-      input {
-        flex: 1;
-        border: none;
-        outline: none;
-        font-size: 0.875rem;
-        color: #111827;
-        background: transparent;
-
-        @media (max-width: 560px) {
-          font-size: 0.85rem;
-        }
-
-        &::placeholder {
-          color: #9ca3af;
-        }
-      }
-
-      .barcode-scan-btn {
-        background: none;
-        border: none;
-        padding: 0.375rem;
-        cursor: pointer;
-        color: #6b7280;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.15s;
-
-        &:hover {
-          background: #f3f4f6;
-          color: #22c55e;
-        }
-
-        @media (max-width: 560px) {
-          padding: 0.3rem;
-        }
-      }
     }
+
     .btn-primary {
       order: 2;
       flex: 1;

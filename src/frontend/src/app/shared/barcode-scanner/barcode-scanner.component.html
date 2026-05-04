@@ -29,7 +29,7 @@
 
       @if (isScanning()) {
         <div class="video-container">
-          <video #videoElement class="scanner-video" playsinline></video>
+          <video #videoElement class="scanner-video" playsinline autoplay muted></video>
           <div class="scan-overlay">
             <div class="scan-line"></div>
           </div>
@@ -54,6 +54,11 @@
             <circle cx="12" cy="13" r="4"></circle>
           </svg>
           <p>{{ 'BARCODE_SCANNER.PERMISSION_REQUIRED' | translate }}</p>
+          @if (permissionDenied()) {
+            <button class="btn-primary" (click)="retryPermission()">
+              {{ 'BARCODE_SCANNER.RETRY' | translate }}
+            </button>
+          }
         </div>
       }
     </div>

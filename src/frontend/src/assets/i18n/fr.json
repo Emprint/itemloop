@@ -4,6 +4,9 @@
     "INSTRUCTION": "Pointez la caméra vers un code-barres pour le scanner",
     "CAMERA_ERROR": "Impossible d'accéder à la caméra. Veuillez vérifier les permissions.",
     "PERMISSION_REQUIRED": "L'autorisation de la caméra est requise pour scanner les codes-barres",
+    "PERMISSION_DENIED": "L'accès à la caméra a été refusé. Veuillez activer l'accès à la caméra dans les paramètres de votre navigateur.",
+    "NO_CAMERA": "Aucune caméra trouvée sur cet appareil.",
+    "RETRY": "Réessayer",
     "CANCEL": "Annuler"
   },
   "COMBOBOX_ADD": "Ajouter",

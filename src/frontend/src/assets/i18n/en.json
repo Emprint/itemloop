@@ -4,6 +4,9 @@
     "INSTRUCTION": "Point the camera at a barcode to scan it",
     "CAMERA_ERROR": "Unable to access camera. Please check permissions.",
     "PERMISSION_REQUIRED": "Camera permission is required to scan barcodes",
+    "PERMISSION_DENIED": "Camera permission was denied. Please enable camera access in your browser settings.",
+    "NO_CAMERA": "No camera found on this device.",
+    "RETRY": "Retry",
     "CANCEL": "Cancel"
   },
   "USER_MANAGEMENT": "User Management",
