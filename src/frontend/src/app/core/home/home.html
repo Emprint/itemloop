@@ -117,7 +117,158 @@
           </div>
         </div>
       }
+
+      @if (isEditorOrAdmin() && stats()!.reuse_impact) {
+        <div class="kpi-card kpi-card--reuse">
+          <div class="kpi-icon kpi-icon--teal">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-value"
+              >{{ stats()!.reuse_impact.total_kg_recovered | number: '1.0-2' }} kg</span
+            >
+            <span class="kpi-label">{{ 'REUSE_IMPACT_KG_RECOVERED' | translate }}</span>
+          </div>
+        </div>
+      }
+
+      @if (isEditorOrAdmin() && stats()!.reuse_impact) {
+        <div class="kpi-card kpi-card--reuse">
+          <div class="kpi-icon kpi-icon--indigo">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{ stats()!.reuse_impact.items_redistributed }}</span>
+            <span class="kpi-label">{{ 'REUSE_IMPACT_ITEMS_REDISTRIBUTED' | translate }}</span>
+          </div>
+        </div>
+      }
+
+      @if (isEditorOrAdmin() && stats()!.reuse_impact) {
+        <div class="kpi-card kpi-card--reuse">
+          <div class="kpi-icon kpi-icon--emerald">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <div class="kpi-body">
+            <span class="kpi-value">{{
+              stats()!.reuse_impact.value_redistributed | currency: currency() : 'symbol' : '1.0-0'
+            }}</span>
+            <span class="kpi-label">{{ 'REUSE_IMPACT_VALUE_REDISTRIBUTED' | translate }}</span>
+          </div>
+        </div>
+      }
     </div>
+
+    <!-- Reuse Impact Section -->
+    @if (isEditorOrAdmin() && stats()!.reuse_impact) {
+      <div class="card reuse-impact-card">
+        <h3>{{ 'REUSE_IMPACT_TITLE' | translate }}</h3>
+        <div class="reuse-impact-grid">
+          <div class="reuse-impact-item">
+            <div class="reuse-impact-icon reuse-impact-icon--teal">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+            </div>
+            <div class="reuse-impact-content">
+              <span class="reuse-impact-value"
+                >{{ stats()!.reuse_impact.total_kg_recovered | number: '1.0-2' }} kg</span
+              >
+              <span class="reuse-impact-label">{{ 'REUSE_IMPACT_KG_RECOVERED' | translate }}</span>
+            </div>
+          </div>
+
+          <div class="reuse-impact-item">
+            <div class="reuse-impact-icon reuse-impact-icon--indigo">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="reuse-impact-content">
+              <span class="reuse-impact-value">{{
+                stats()!.reuse_impact.items_redistributed
+              }}</span>
+              <span class="reuse-impact-label">{{
+                'REUSE_IMPACT_ITEMS_REDISTRIBUTED' | translate
+              }}</span>
+            </div>
+          </div>
+
+          <div class="reuse-impact-item">
+            <div class="reuse-impact-icon reuse-impact-icon--emerald">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div class="reuse-impact-content">
+              <span class="reuse-impact-value">{{
+                stats()!.reuse_impact.value_redistributed
+                  | currency: currency() : 'symbol' : '1.0-0'
+              }}</span>
+              <span class="reuse-impact-label">{{
+                'REUSE_IMPACT_VALUE_REDISTRIBUTED' | translate
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
 
     <!-- Chart + Quick actions row -->
     <div class="dashboard-row">

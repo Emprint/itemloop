@@ -33,6 +33,25 @@ class DashboardController
                  ORDER BY count DESC'
             );
             $stats['products_by_category'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Reuse impact statistics
+            $stats['reuse_impact'] = [
+                'total_kg_recovered' => (float) $db->query(
+                    'SELECT COALESCE(SUM(weight * quantity), 0) FROM products WHERE weight IS NOT NULL'
+                )->fetchColumn(),
+                'items_redistributed' => (int) $db->query(
+                    'SELECT COALESCE(SUM(oi.quantity), 0)
+                     FROM order_items oi
+                     INNER JOIN orders o ON o.id = oi.order_id
+                     WHERE o.status = "completed"'
+                )->fetchColumn(),
+                'value_redistributed' => (float) $db->query(
+                    'SELECT COALESCE(SUM(oi.quantity * oi.unit_price), 0)
+                     FROM order_items oi
+                     INNER JOIN orders o ON o.id = oi.order_id
+                     WHERE o.status = "completed" AND oi.unit_price IS NOT NULL'
+                )->fetchColumn(),
+            ];
         }
 
         if ($role === 'admin') {

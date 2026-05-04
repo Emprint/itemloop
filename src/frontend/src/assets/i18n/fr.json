@@ -12,6 +12,10 @@
   "OFFLINE": "Vous êtes hors ligne. Certaines fonctionnalités peuvent ne pas être disponibles.",
   "SYNC_PENDING": "Les modifications seront synchronisées lorsque vous serez de nouveau en ligne.",
   "SYNC_ERROR": "Échec de la synchronisation",
+  "REUSE_IMPACT_TITLE": "Impact de la réutilisation",
+  "REUSE_IMPACT_KG_RECOVERED": "Total kg récupérés",
+  "REUSE_IMPACT_ITEMS_REDISTRIBUTED": "Articles redistribués",
+  "REUSE_IMPACT_VALUE_REDISTRIBUTED": "Valeur redistribuée",
   "COMBOBOX_ADD": "Ajouter",
   "PRODUCT_FORM": {
     "CATEGORY_PLACEHOLDER": "Saisissez ou sélectionnez une catégorie",
