@@ -10,6 +10,15 @@ interface SyncQueueItem {
   data: Product | Location;
   timestamp: number;
   synced: boolean;
+  syncError?: string;
+}
+
+interface SyncError {
+  itemId: string;
+  itemType: string;
+  action: string;
+  error: string;
+  timestamp: number;
 }
 
 @Injectable({
@@ -23,11 +32,13 @@ export class OfflineStorageService {
     products: 'products',
     locations: 'locations',
     syncQueue: 'syncQueue',
+    syncErrors: 'syncErrors',
   };
   private http = inject(HttpClient);
 
   isOnline = signal(navigator.onLine);
   hasPendingSync = signal(false);
+  syncErrors = signal<SyncError[]>([]);
 
   constructor() {
     this.initDB();
@@ -66,6 +77,14 @@ export class OfflineStorageService {
           const syncQueueStore = db.createObjectStore(this.STORES.syncQueue, { keyPath: 'id' });
           syncQueueStore.createIndex('synced', 'synced', { unique: false });
         }
+
+        if (!db.objectStoreNames.contains(this.STORES.syncErrors)) {
+          const syncErrorsStore = db.createObjectStore(this.STORES.syncErrors, {
+            keyPath: 'id',
+            autoIncrement: true,
+          });
+          syncErrorsStore.createIndex('timestamp', 'timestamp', { unique: false });
+        }
       };
     });
   }
@@ -91,15 +110,22 @@ export class OfflineStorageService {
           cursor.continue();
         } else {
           this.hasPendingSync.set(count > 0);
+          this.loadSyncErrors();
           resolve();
         }
       };
 
       request.onerror = () => {
         this.hasPendingSync.set(false);
+        this.loadSyncErrors();
         resolve();
       };
     });
+  }
+
+  private async loadSyncErrors(): Promise<void> {
+    const errors = await this.getSyncErrors();
+    this.syncErrors.set(errors);
   }
 
   async saveProduct(product: Product): Promise<void> {
@@ -237,6 +263,14 @@ export class OfflineStorageService {
         await this.markSyncItemAsSynced(item.id);
       } catch (error) {
         console.error('Failed to sync item:', item, error);
+        const syncError: SyncError = {
+          itemId: item.id,
+          itemType: item.type,
+          action: item.action,
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now(),
+        };
+        await this.addSyncError(syncError);
       }
     }
 
@@ -274,5 +308,60 @@ export class OfflineStorageService {
     }
 
     this.hasPendingSync.set(false);
+    this.syncErrors.set([]);
+  }
+
+  async addSyncError(error: SyncError): Promise<void> {
+    if (!this.db) await this.initDB();
+
+    const transaction = this.db!.transaction([this.STORES.syncErrors], 'readwrite');
+    const store = transaction.objectStore(this.STORES.syncErrors);
+    store.add(error);
+
+    const errors = await this.getSyncErrors();
+    this.syncErrors.set(errors);
+  }
+
+  async getSyncErrors(): Promise<SyncError[]> {
+    if (!this.db) await this.initDB();
+
+    const transaction = this.db!.transaction([this.STORES.syncErrors], 'readonly');
+    const store = transaction.objectStore(this.STORES.syncErrors);
+    const index = store.index('timestamp');
+    const request = index.openCursor(null, 'prev');
+
+    return new Promise((resolve, reject) => {
+      const results: SyncError[] = [];
+      request.onsuccess = (event) => {
+        const cursor = (event.target as IDBRequest).result;
+        if (cursor) {
+          results.push(cursor.value);
+          cursor.continue();
+        } else {
+          resolve(results);
+        }
+      };
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async clearSyncErrors(): Promise<void> {
+    if (!this.db) await this.initDB();
+
+    const transaction = this.db!.transaction([this.STORES.syncErrors], 'readwrite');
+    const store = transaction.objectStore(this.STORES.syncErrors);
+    store.clear();
+    this.syncErrors.set([]);
+  }
+
+  async removeSyncError(id: number): Promise<void> {
+    if (!this.db) await this.initDB();
+
+    const transaction = this.db!.transaction([this.STORES.syncErrors], 'readwrite');
+    const store = transaction.objectStore(this.STORES.syncErrors);
+    store.delete(id);
+
+    const errors = await this.getSyncErrors();
+    this.syncErrors.set(errors);
   }
 }

@@ -17,6 +17,10 @@
     background: #ff9800;
   }
 
+  &.has-errors {
+    background: #d32f2f;
+  }
+
   .offline-icon {
     display: flex;
     align-items: center;

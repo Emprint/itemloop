@@ -16,4 +16,9 @@ export class OfflineIndicatorComponent {
 
   isOnline = this.offlineStorage.isOnline;
   hasPendingSync = this.offlineStorage.hasPendingSync;
+  syncErrors = this.offlineStorage.syncErrors;
+
+  hasSyncErrors() {
+    return this.syncErrors().length > 0;
+  }
 }

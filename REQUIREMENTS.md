@@ -42,7 +42,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US8 | Customer | As a customer, I want to reserve items online to pick them up later. | Low | 🔴 Complex | ✅ (cart → order flow; staff manages pickup via Orders page) |
 | US9 | User | As a user, I want to use the app from a smartphone or browser so I can manage inventory anywhere. | High | 🟡 Medium | ✅ |
 | US10 | User | As a user, I want to use the app offline and sync data when reconnected so I can keep working without internet. | Medium | 🔴 Complex | ✅ (PWA support with IndexedDB storage, offline indicator, sync queue) |
-| US11 | User | As a user, I want to be notified if data fails to sync so I don't lose updates. | Medium | 🟡 Medium | ⚪ |
+| US11 | User | As a user, I want to be notified if data fails to sync so I don't lose updates. | Medium | 🟡 Medium | ✅ (sync error tracking and notification in offline indicator) |
 | US12 | Admin | As an admin, I want to export inventory data to CSV for backup or reporting. | Low | 🟡 Medium | ✅ (CSV export on products page) |
 | US13 | User | As a user, I want to view product photos to better identify each item. | High | ⚪ Simple | ✅ |
 | US14 | Admin | As an admin, I want to see statistics (total quantity, estimated value, etc.) to monitor reuse activity. | Low | 🔴 Complex | ✅ (dashboard with donut chart, KPI cards) |

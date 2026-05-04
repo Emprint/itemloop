@@ -1,4 +1,9 @@
-<div class="offline-indicator" [class.offline]="!isOnline()" [class.has-pending]="hasPendingSync()">
+<div
+  class="offline-indicator"
+  [class.offline]="!isOnline()"
+  [class.has-pending]="hasPendingSync()"
+  [class.has-errors]="hasSyncErrors()"
+>
   <div class="offline-icon">
     <svg
       *ngIf="!isOnline()"
@@ -13,7 +18,7 @@
       />
     </svg>
     <svg
-      *ngIf="isOnline() && hasPendingSync()"
+      *ngIf="isOnline() && hasPendingSync() && !hasSyncErrors()"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -24,9 +29,24 @@
         d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
       />
     </svg>
+    <svg
+      *ngIf="hasSyncErrors()"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
   </div>
   <div class="offline-text">
     <span *ngIf="!isOnline()">{{ 'OFFLINE' | translate }}</span>
-    <span *ngIf="isOnline() && hasPendingSync()">{{ 'SYNC_PENDING' | translate }}</span>
+    <span *ngIf="isOnline() && hasPendingSync() && !hasSyncErrors()">{{
+      'SYNC_PENDING' | translate
+    }}</span>
+    <span *ngIf="hasSyncErrors()">{{ 'SYNC_ERROR' | translate }} ({{ syncErrors().length }})</span>
   </div>
 </div>

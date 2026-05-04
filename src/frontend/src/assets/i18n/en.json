@@ -11,6 +11,7 @@
   },
   "OFFLINE": "You are offline. Some features may not be available.",
   "SYNC_PENDING": "Changes will sync when you're back online.",
+  "SYNC_ERROR": "Sync failed",
   "USER_MANAGEMENT": "User Management",
   "EDIT": "Edit",
   "EDIT_USER": "Edit User",
