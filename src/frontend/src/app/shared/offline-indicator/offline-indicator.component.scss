@@ -1,0 +1,44 @@
+.offline-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #f44336;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  transition: all 0.3s ease;
+
+  &.has-pending {
+    background: #ff9800;
+  }
+
+  .offline-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .offline-text {
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+@media (max-width: 768px) {
+  .offline-indicator {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    justify-content: center;
+  }
+}

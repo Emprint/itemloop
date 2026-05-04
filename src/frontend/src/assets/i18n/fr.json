@@ -9,6 +9,8 @@
     "RETRY": "Réessayer",
     "CANCEL": "Annuler"
   },
+  "OFFLINE": "Vous êtes hors ligne. Certaines fonctionnalités peuvent ne pas être disponibles.",
+  "SYNC_PENDING": "Les modifications seront synchronisées lorsque vous serez de nouveau en ligne.",
   "COMBOBOX_ADD": "Ajouter",
   "PRODUCT_FORM": {
     "CATEGORY_PLACEHOLDER": "Saisissez ou sélectionnez une catégorie",

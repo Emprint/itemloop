@@ -1,0 +1,32 @@
+<div class="offline-indicator" [class.offline]="!isOnline()" [class.has-pending]="hasPendingSync()">
+  <div class="offline-icon">
+    <svg
+      *ngIf="!isOnline()"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path
+        d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"
+      />
+    </svg>
+    <svg
+      *ngIf="isOnline() && hasPendingSync()"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path
+        d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+      />
+    </svg>
+  </div>
+  <div class="offline-text">
+    <span *ngIf="!isOnline()">{{ 'OFFLINE' | translate }}</span>
+    <span *ngIf="isOnline() && hasPendingSync()">{{ 'SYNC_PENDING' | translate }}</span>
+  </div>
+</div>

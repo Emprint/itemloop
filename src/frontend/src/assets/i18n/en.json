@@ -9,6 +9,8 @@
     "RETRY": "Retry",
     "CANCEL": "Cancel"
   },
+  "OFFLINE": "You are offline. Some features may not be available.",
+  "SYNC_PENDING": "Changes will sync when you're back online.",
   "USER_MANAGEMENT": "User Management",
   "EDIT": "Edit",
   "EDIT_USER": "Edit User",

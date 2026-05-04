@@ -9,6 +9,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
+import { provideServiceWorker } from '@angular/service-worker';
 
 import { routes } from './app.routes';
 import { XsrfInterceptor } from './auth/xsrf.interceptor';
@@ -29,6 +30,10 @@ export const appConfig: ApplicationConfig = {
       }),
       fallbackLang: 'en',
       lang: 'en',
+    }),
+    provideServiceWorker('/ngsw-worker.js', {
+      enabled: false, // Disabled for now - service worker generation not fully supported in Angular 20
+      registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
 };

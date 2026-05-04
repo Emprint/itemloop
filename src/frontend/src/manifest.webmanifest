@@ -1,5 +1,11 @@
 {
   "name": "ItemLoop",
+  "short_name": "ItemLoop",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#1976d2",
+  "scope": "/",
   "icons": [
     {
       "src": "assets/favicon/android-icon-36x36.png",
