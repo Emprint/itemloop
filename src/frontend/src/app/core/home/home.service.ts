@@ -9,6 +9,11 @@ export interface DashboardStats {
   estimated_value?: number;
   products_by_category?: { name: string; count: number }[];
   users_count?: number;
+  reuse_impact: {
+    total_kg_recovered: number;
+    items_redistributed: number;
+    value_redistributed: number;
+  };
 }
 
 @Injectable({ providedIn: 'root' })
