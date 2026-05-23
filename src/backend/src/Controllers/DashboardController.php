@@ -14,9 +14,12 @@ class DashboardController
         $user = $request->getAttribute('user');
         $role = $user['role'] ?? null;
 
+        $isPrivileged    = in_array($role, ['admin', 'editor', 'member'], true);
+        $visibilityWhere = $isPrivileged ? '' : "WHERE visibility = 'public'";
+
         $stats = [
-            'products_count'  => (int) $db->query('SELECT COUNT(*) FROM products')->fetchColumn(),
-            'items_count'     => (int) $db->query('SELECT COALESCE(SUM(quantity), 0) FROM products')->fetchColumn(),
+            'products_count'  => (int) $db->query("SELECT COUNT(*) FROM products $visibilityWhere")->fetchColumn(),
+            'items_count'     => (int) $db->query("SELECT COALESCE(SUM(quantity), 0) FROM products $visibilityWhere")->fetchColumn(),
             'locations_count' => (int) $db->query('SELECT COUNT(*) FROM locations')->fetchColumn(),
         ];
 

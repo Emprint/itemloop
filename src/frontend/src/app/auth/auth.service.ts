@@ -55,8 +55,8 @@ export class AuthService {
     this._user.set(null);
     localStorage.removeItem('user');
     // Clear cookies related to authentication and CSRF
-    document.cookie = 'XSRF-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    document.cookie = 'laravel_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = 'XSRF-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
+    document.cookie = 'PHPSESSID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax';
   }
 
   restoreSession() {
@@ -112,7 +112,7 @@ export class AuthService {
   }
 
   private logoutApi() {
-    return this.http.get(`${environment.apiUrl}auth/logout`);
+    return this.http.post(`${environment.apiUrl}auth/logout`, {});
   }
 
   private setUser(res: AuthResponse) {

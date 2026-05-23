@@ -32,6 +32,8 @@ $dotenv->load();
 // Start session (must happen before any output)
 ini_set('session.cookie_httponly', '1');
 ini_set('session.use_strict_mode', '1');
+ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) ? '1' : '0');
+ini_set('session.cookie_samesite', 'Lax');
 session_start();
 
 // Bootstrap Slim
@@ -53,9 +55,9 @@ $app->addErrorMiddleware(
 $app->add(function ($request, $handler) {
     $origin        = $request->getHeaderLine('Origin');
     $allowedOrigin = $_ENV['APP_URL'] ?? '';
-    $devOrigin     = 'http://localhost:4200';
+    $devOrigin     = ($_ENV['APP_ENV'] ?? 'production') === 'local' ? 'http://localhost:4200' : '';
 
-    $cors = ($origin === $devOrigin || $origin === $allowedOrigin) ? $origin : '';
+    $cors = ($devOrigin && $origin === $devOrigin) || $origin === $allowedOrigin ? $origin : '';
 
     if ($request->getMethod() === 'OPTIONS') {
         $response = new \Slim\Psr7\Response();
@@ -79,6 +81,17 @@ $app->add(function ($request, $handler) {
 // CSRF middleware — applied globally, skips GET/HEAD/OPTIONS internally
 // ---------------------------------------------------------------------------
 $app->add(new CsrfMiddleware());
+
+// ---------------------------------------------------------------------------
+// Security response headers
+// ---------------------------------------------------------------------------
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response
+        ->withHeader('X-Content-Type-Options', 'nosniff')
+        ->withHeader('X-Frame-Options', 'DENY')
+        ->withHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+});
 
 // ---------------------------------------------------------------------------
 // Routes
@@ -105,7 +118,7 @@ $app->put('/api/settings', [AppSettingsController::class, 'update'])->add(new Ad
 $app->group('/api/auth', function (RouteCollectorProxy $group) {
     $group->post('/register', [AuthController::class, 'register']);
     $group->post('/login',    [AuthController::class, 'login']);
-    $group->get('/logout',    [AuthController::class, 'logout'])->add(new AuthMiddleware());
+    $group->post('/logout',    [AuthController::class, 'logout'])->add(new AuthMiddleware());
 });
 
 // Current user (session restore)
@@ -133,11 +146,11 @@ $app->group('/api', function (RouteCollectorProxy $group) {
     $group->put('/product-categories/{id}',      [ProductCategoryController::class, 'update'])->add(new EditorMiddleware());
     $group->delete('/product-categories/{id}',   [ProductCategoryController::class, 'destroy'])->add(new EditorMiddleware());
     $group->get('/product-conditions',           [ProductConditionController::class, 'index']);
-    $group->post('/product-conditions',          [ProductConditionController::class, 'store']);
+    $group->post('/product-conditions',          [ProductConditionController::class, 'store'])->add(new EditorMiddleware());
     $group->put('/product-conditions/{id}',      [ProductConditionController::class, 'update'])->add(new EditorMiddleware());
     $group->delete('/product-conditions/{id}',   [ProductConditionController::class, 'destroy'])->add(new EditorMiddleware());
     $group->get('/product-colors',               [ProductColorController::class, 'index']);
-    $group->post('/product-colors',              [ProductColorController::class, 'store']);
+    $group->post('/product-colors',              [ProductColorController::class, 'store'])->add(new EditorMiddleware());
     $group->put('/product-colors/{id}',          [ProductColorController::class, 'update'])->add(new EditorMiddleware());
     $group->delete('/product-colors/{id}',       [ProductColorController::class, 'destroy'])->add(new EditorMiddleware());
 

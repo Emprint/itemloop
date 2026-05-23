@@ -96,6 +96,7 @@ class AuthController
 
         $db->prepare('UPDATE users SET last_login = NOW() WHERE id = ?')->execute([$user['id']]);
 
+        $user['last_login'] = date('Y-m-d H:i:s');
         unset($user['password']);
         $_SESSION['user'] = $user;
         session_regenerate_id(true);

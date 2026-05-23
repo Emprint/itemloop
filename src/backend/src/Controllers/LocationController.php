@@ -29,7 +29,10 @@ class LocationController
         if ($errors) return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => $errors], 422);
 
         $db->prepare('INSERT INTO buildings (name, code) VALUES (?, ?)')->execute([$name, $code]);
-        $building = $db->query('SELECT * FROM buildings WHERE id = ' . (int) $db->lastInsertId())->fetch();
+        $id       = (int) $db->lastInsertId();
+        $stmt     = $db->prepare('SELECT * FROM buildings WHERE id = ?');
+        $stmt->execute([$id]);
+        $building = $stmt->fetch();
         return $this->json($response, $building, 201);
     }
 
@@ -50,7 +53,9 @@ class LocationController
         if ($errors) return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => $errors], 422);
 
         $db->prepare('UPDATE buildings SET name = ?, code = ?, updated_at = NOW() WHERE id = ?')->execute([$name, $code, $id]);
-        $building = $db->query("SELECT * FROM buildings WHERE id = {$id}")->fetch();
+        $stmt = $db->prepare('SELECT * FROM buildings WHERE id = ?');
+        $stmt->execute([$id]);
+        $building = $stmt->fetch();
         return $this->json($response, $building);
     }
 

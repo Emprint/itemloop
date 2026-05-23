@@ -434,11 +434,12 @@ export class OfflineStorageService {
     this.isSyncing = true;
 
     try {
-      // Refresh CSRF token before pushing offline changes
+      // Refresh CSRF token before pushing offline changes — abort if it fails
       try {
         await this.http.get('/api/csrf-cookie', { withCredentials: true }).toPromise();
       } catch {
-        // Proceed anyway — CSRF refresh is best-effort
+        console.warn('CSRF refresh failed; skipping offline sync');
+        return;
       }
 
       const pendingItems = await this.getPendingSyncItems();

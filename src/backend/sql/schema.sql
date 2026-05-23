@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `email_verified_at` TIMESTAMP       NULL DEFAULT NULL,
     `password`          VARCHAR(255)   NOT NULL,
     `role`              ENUM('admin','editor','member','customer') NOT NULL DEFAULT 'customer',
-    `status`            ENUM('active','pending') NOT NULL DEFAULT 'active',
+    `status`            ENUM('active','pending','deactivated') NOT NULL DEFAULT 'active',
     `last_login`        TIMESTAMP       NULL DEFAULT NULL,
     `created_at`        TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`        TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

@@ -48,8 +48,12 @@ class ProductImageController
                 continue;
             }
 
-            $mime     = $file->getClientMediaType();
             $allowed  = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+            $content  = (string) $file->getStream();
+
+            // Detect MIME type from actual file content, not the client-supplied header
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mime  = $finfo->buffer($content);
             if (!in_array($mime, $allowed, true)) {
                 return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['images' => ['Only jpeg, png, webp and gif images are allowed.']]], 422);
             }
@@ -59,8 +63,7 @@ class ProductImageController
                 return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['images' => ['Each image must be under 10 MB.']]], 422);
             }
 
-            $content = (string) $file->getStream();
-            $img     = $manager->read($content);
+            $img = $manager->read($content);
             $img     = $img->scaleDown(width: 1920, height: 1920);
 
             $baseName  = pathinfo($file->getClientFilename(), PATHINFO_FILENAME);

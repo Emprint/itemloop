@@ -27,38 +27,40 @@ class OrderController
 
         $db = Database::get();
 
-        // Validate each item
-        $resolved = [];
-        foreach ($items as $item) {
-            $productId = (int) ($item['product_id'] ?? 0);
-            $quantity  = (int) ($item['quantity']   ?? 0);
-
-            if ($productId <= 0 || $quantity <= 0) {
-                return $this->json($response, ['error' => 'INVALID_ITEM'], 422);
-            }
-
-            $stmt = $db->prepare('SELECT id, quantity, estimated_value FROM products WHERE id = ?');
-            $stmt->execute([$productId]);
-            $product = $stmt->fetch();
-
-            if (!$product) {
-                return $this->json($response, ['error' => 'PRODUCT_NOT_FOUND', 'product_id' => $productId], 422);
-            }
-
-            if ($quantity > (int) $product['quantity']) {
-                return $this->json($response, ['error' => 'INSUFFICIENT_STOCK', 'product_id' => $productId], 422);
-            }
-
-            $resolved[] = [
-                'product_id' => $productId,
-                'quantity'   => $quantity,
-                'unit_price' => $product['estimated_value'],
-            ];
-        }
-
-        // Insert order
+        // Insert order inside a transaction; stock check uses FOR UPDATE to prevent overselling
         $db->beginTransaction();
         try {
+            $resolved = [];
+            foreach ($items as $item) {
+                $productId = (int) ($item['product_id'] ?? 0);
+                $quantity  = (int) ($item['quantity']   ?? 0);
+
+                if ($productId <= 0 || $quantity <= 0) {
+                    $db->rollBack();
+                    return $this->json($response, ['error' => 'INVALID_ITEM'], 422);
+                }
+
+                $stmt = $db->prepare('SELECT id, quantity, estimated_value FROM products WHERE id = ? FOR UPDATE');
+                $stmt->execute([$productId]);
+                $product = $stmt->fetch();
+
+                if (!$product) {
+                    $db->rollBack();
+                    return $this->json($response, ['error' => 'PRODUCT_NOT_FOUND', 'product_id' => $productId], 422);
+                }
+
+                if ($quantity > (int) $product['quantity']) {
+                    $db->rollBack();
+                    return $this->json($response, ['error' => 'INSUFFICIENT_STOCK', 'product_id' => $productId], 422);
+                }
+
+                $resolved[] = [
+                    'product_id' => $productId,
+                    'quantity'   => $quantity,
+                    'unit_price' => $product['estimated_value'],
+                ];
+            }
+
             $stmt = $db->prepare('INSERT INTO orders (user_id, status, notes) VALUES (?, ?, ?)');
             $stmt->execute([$user['id'], 'pending', $body['notes'] ?? null]);
             $orderId = (int) $db->lastInsertId();

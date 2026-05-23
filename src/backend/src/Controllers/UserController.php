@@ -37,9 +37,9 @@ class UserController
         return $this->json($response, ['count' => (int) $count]);
     }
 
-    public function validate(Request $request, Response $response): Response
+    public function validate(Request $request, Response $response, array $args): Response
     {
-        $id = $request->getAttribute('id');
+        $id = (int) ($args['id'] ?? 0);
         if (!$id) {
             return $this->json($response, ['error' => 'NOT_FOUND'], 404);
         }
@@ -60,20 +60,20 @@ class UserController
         return $this->json($response, $user);
     }
 
-    public function deactivate(Request $request, Response $response): Response
+    public function deactivate(Request $request, Response $response, array $args): Response
     {
-        $id = $request->getAttribute('id');
+        $id = (int) ($args['id'] ?? 0);
         if (!$id) {
             return $this->json($response, ['error' => 'NOT_FOUND'], 404);
         }
         $db = Database::get();
         $stmt = $db->prepare("SELECT id FROM users WHERE id = ? AND status = 'active'");
-        $stmt->execute([(int) $id]);
+        $stmt->execute([$id]);
         if (!$stmt->fetch()) {
             return $this->json($response, ['error' => 'NOT_FOUND'], 404);
         }
 
-        $stmt = $db->prepare("UPDATE users SET status = 'pending', updated_at = NOW() WHERE id = ?");
+        $stmt = $db->prepare("UPDATE users SET status = 'deactivated', updated_at = NOW() WHERE id = ?");
         $stmt->execute([(int) $id]);
 
         $stmt = $db->prepare('SELECT id, name, email, role, status, created_at, updated_at, last_login FROM users WHERE id = ?');
@@ -98,9 +98,14 @@ class UserController
         if ($name === '')  $errors['name']  = ['The name field is required.'];
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors['email'] = ['A valid email is required.'];
         if (!in_array($role, self::ALLOWED_ROLES, true)) $errors['role'] = ['Invalid role.'];
-        if (!$id && strlen($password) < 8) $errors['password'] = ['Password must be at least 8 characters.'];
-        if (!$id && !preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/', $password)) {
-            $errors['password'] = ['Password must contain at least one letter, one digit, and one special character.'];
+        if (!$id && $password === '') {
+            $errors['password'] = ['Password is required.'];
+        } elseif ($password !== '') {
+            if (strlen($password) < 8) {
+                $errors['password'] = ['Password must be at least 8 characters.'];
+            } elseif (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/', $password)) {
+                $errors['password'] = ['Password must contain at least one letter, one digit, and one special character.'];
+            }
         }
 
         if ($errors) {
