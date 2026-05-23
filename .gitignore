@@ -1,3 +1,5 @@
+/node_modules
+
 # Exclude deployment build output
 deploy_package/
 /.devdbrc

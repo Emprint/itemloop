@@ -7,12 +7,13 @@ import { UserRole } from '../../auth/auth-response';
 import { CartService } from '../../cart/cart.service';
 import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
 import { UserService } from '../../admin/user.service';
+import { SyncIndicatorComponent } from '../../shared/sync-indicator/sync-indicator.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule],
+  imports: [CommonModule, RouterModule, TranslateModule, SyncIndicatorComponent],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })

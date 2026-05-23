@@ -2,7 +2,7 @@ import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthResponse, User } from './auth-response';
 import { environment } from '../../environments/environment';
-import { map, Observable, switchMap, tap } from 'rxjs';
+import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 export interface RegisterPendingResponse {
@@ -42,6 +42,7 @@ export class AuthService {
 
   logout() {
     return this.logoutApi().pipe(
+      catchError(() => of(null)), // Handle offline: still log out locally
       tap(() => {
         this.softLogout();
         this.router.navigate(['/']);
@@ -59,15 +60,30 @@ export class AuthService {
   }
 
   restoreSession() {
-    const token = this.getCsrfCookie();
-    if (!token) return;
-    // First, get CSRF cookie
+    // Immediately restore from localStorage — enables offline-first for editors/admins
+    const cached = localStorage.getItem('user');
+    if (cached) {
+      try {
+        this._user.set(JSON.parse(cached));
+      } catch {
+        /* ignore invalid JSON */
+      }
+    }
+
+    // Don't try to verify session with API if offline
+    if (!navigator.onLine) return;
+
+    // Verify session with server when online
     return this.http.get<AuthResponse>(`${environment.apiUrl}me`).subscribe({
       next: (res: AuthResponse) => {
-        this.setUser(res);
+        this.setUser(res); // Update with fresh server data
       },
-      error: () => {
-        this.logout();
+      error: (err) => {
+        // Only clear session on explicit auth rejection (401/403)
+        // For 504, ERR_FAILED, or other network errors: keep cached user (stay logged in offline)
+        if (err.status === 401 || err.status === 403) {
+          this.softLogout();
+        }
       },
     });
   }

@@ -1,0 +1,146 @@
+.sync-indicator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 10px 14px;
+  margin: 0 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  &.error {
+    background: rgba(239, 68, 68, 0.1);
+  }
+
+  .sync-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .sync-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .sync-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #e5e7eb;
+  }
+
+  .sync-label {
+    font-size: 0.7rem;
+    color: #9ca3af;
+  }
+
+  .sync-time {
+    font-size: 0.65rem;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+
+  // State colors
+  &.synced .sync-label {
+    color: #22c55e;
+  }
+  &.syncing .sync-label {
+    color: #3b82f6;
+  }
+  &.offline .sync-label {
+    color: #f59e0b;
+  }
+  &.error .sync-label {
+    color: #ef4444;
+  }
+}
+
+// Popup panel — fixed positioned, computed from JS, opens above the indicator
+.sync-panel-popup {
+  position: fixed;
+  background: #1f2937;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow:
+    0 -4px 24px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  overflow: hidden;
+  min-width: 220px;
+}
+
+.sync-panel-content {
+  padding: 8px 0;
+}
+
+.sync-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 16px;
+}
+
+.sync-detail-label {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.sync-detail-value {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #f9fafb;
+}
+
+.sync-panel-footer {
+  padding: 8px 12px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sync-manual-btn {
+  width: 100%;
+  padding: 7px 16px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e5e7eb;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.syncing-icon {
+  animation: spin 1.2s linear infinite;
+}

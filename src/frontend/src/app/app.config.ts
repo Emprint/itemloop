@@ -14,6 +14,7 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { routes } from './app.routes';
 import { XsrfInterceptor } from './auth/xsrf.interceptor';
 import { MethodOverrideInterceptor } from './auth/method-override.interceptor';
+import { environment } from '../environments/environment';
 
 registerLocaleData(localeFr);
 
@@ -32,7 +33,7 @@ export const appConfig: ApplicationConfig = {
       lang: 'en',
     }),
     provideServiceWorker('/ngsw-worker.js', {
-      enabled: false, // Disabled for now - service worker generation not fully supported in Angular 20
+      enabled: environment.serviceWorker,
       registrationStrategy: 'registerWhenStable:30000',
     }),
   ],

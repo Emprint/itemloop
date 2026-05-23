@@ -507,6 +507,7 @@
 
     <!-- Sticky footer -->
     <div class="pf-footer">
+      <!-- Cart controls: only in read-only view with shop mode enabled -->
       @if (readOnly && shopModeEnabled()) {
         @if (product && product.quantity > 0) {
           <div class="pf-cart-controls">
@@ -552,21 +553,22 @@
         } @else if (product) {
           <span class="pf-out-of-stock">{{ 'CART.OUT_OF_STOCK' | translate }}</span>
         }
-        <div class="pf-footer-actions">
-          <button type="button" class="pf-btn-cancel" (click)="onCancel()">
-            {{ 'CANCEL' | translate }}
-          </button>
+      }
+
+      <!-- Footer action buttons -->
+      <div class="pf-footer-actions">
+        <button type="button" class="pf-btn-cancel" (click)="onCancel()">
+          {{ 'CANCEL' | translate }}
+        </button>
+        @if (readOnly) {
+          <!-- View mode: show Edit button for editors/admins -->
           @if (canEdit) {
             <button type="button" class="pf-btn-primary" (click)="editModeEvent.emit()">
               {{ 'EDIT' | translate }}
             </button>
           }
-        </div>
-      } @else {
-        <div class="pf-footer-actions">
-          <button type="button" class="pf-btn-cancel" (click)="onCancel()">
-            {{ 'CANCEL' | translate }}
-          </button>
+        } @else {
+          <!-- Edit/New mode: show Save buttons -->
           <button
             type="button"
             class="pf-btn-secondary"
@@ -594,8 +596,8 @@
             <span class="pf-btn-label-full">{{ 'PRODUCT_FORM.SAVE_CHANGES' | translate }}</span>
             <span class="pf-btn-label-short">{{ 'SAVE' | translate }}</span>
           </button>
-        </div>
-      }
+        }
+      </div>
     </div>
   </form>
 

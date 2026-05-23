@@ -5,11 +5,10 @@ import { RouterOutlet } from '@angular/router';
 import { DropdownService } from './shared/dropdown.service';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { OfflineIndicatorComponent } from './shared/offline-indicator/offline-indicator.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, OfflineIndicatorComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

@@ -5,7 +5,14 @@
       "installMode": "prefetch",
       "name": "app",
       "resources": {
-        "files": ["/favicon.ico", "/index.html", "/manifest.webmanifest", "/*.css", "/*.js"]
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js",
+          "/assets/i18n/*.json"
+        ]
       }
     },
     {
@@ -20,15 +27,12 @@
   "dataGroups": [
     {
       "cacheConfig": {
-        "maxAge": "0u",
-        "maxSize": 100,
-        "strategy": "freshness",
-        "timeout": "0u"
+        "maxSize": 500,
+        "maxAge": "30d",
+        "strategy": "performance"
       },
-      "name": "api-fallback",
-      "urls": ["/api/**"],
-      "version": 1,
-      "versionedFilesToCache": ["/api/**"]
+      "name": "product-images",
+      "urls": ["/storage/products/**"]
     }
   ],
   "index": "/index.html"

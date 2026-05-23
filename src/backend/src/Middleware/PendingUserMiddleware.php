@@ -13,11 +13,13 @@ class PendingUserMiddleware implements MiddlewareInterface
     {
         $user = $_SESSION['user'] ?? null;
 
-        if ($user && ($user['status'] ?? 'active') === 'pending') {
+        if ($user && in_array($user['status'] ?? 'active', ['pending', 'deactivated'])) {
             $response = new \Slim\Psr7\Response();
             $response->getBody()->write(json_encode([
-                'error'   => 'ACCOUNT_PENDING',
-                'message' => 'Your account is pending administrator approval.',
+                'error'   => $user['status'] === 'pending' ? 'ACCOUNT_PENDING' : 'ACCOUNT_DEACTIVATED',
+                'message' => $user['status'] === 'pending'
+                    ? 'Your account is pending administrator approval.'
+                    : 'Your account has been deactivated.',
             ]));
             return $response
                 ->withHeader('Content-Type', 'application/json')

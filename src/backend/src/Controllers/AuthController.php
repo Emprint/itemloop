@@ -85,8 +85,13 @@ class AuthController
             return $this->json($response, ['error' => 'INVALID_CREDENTIALS'], 401);
         }
 
-        if (($user['status'] ?? 'active') === 'pending') {
-            return $this->json($response, ['error' => 'ACCOUNT_PENDING', 'message' => 'Your account is pending administrator approval.'], 403);
+        if (in_array($user['status'] ?? 'active', ['pending', 'deactivated'])) {
+            return $this->json($response, [
+                'error' => $user['status'] === 'pending' ? 'ACCOUNT_PENDING' : 'ACCOUNT_DEACTIVATED',
+                'message' => $user['status'] === 'pending'
+                    ? 'Your account is pending administrator approval.'
+                    : 'Your account has been deactivated.',
+            ], 403);
         }
 
         $db->prepare('UPDATE users SET last_login = NOW() WHERE id = ?')->execute([$user['id']]);

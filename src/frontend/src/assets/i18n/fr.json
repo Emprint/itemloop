@@ -12,6 +12,12 @@
   "OFFLINE": "Vous êtes hors ligne. Certaines fonctionnalités peuvent ne pas être disponibles.",
   "SYNC_PENDING": "Les modifications seront synchronisées lorsque vous serez de nouveau en ligne.",
   "SYNC_ERROR": "Échec de la synchronisation",
+  "SYNC_DETAILS": "Détails de la synchronisation",
+  "SYNC_NOW": "Synchroniser",
+  "SYNCING": "Synchronisation...",
+  "SYNCED_IMAGES": "Images",
+  "LAST_SYNC": "Dernière synchronisation",
+  "SYNC_STATUS": "État de la synchronisation",
   "REUSE_IMPACT_TITLE": "Impact de la réutilisation",
   "REUSE_IMPACT_KG_RECOVERED": "Total kg récupérés",
   "REUSE_IMPACT_ITEMS_REDISTRIBUTED": "Articles redistribués",
@@ -237,6 +243,9 @@
   "ALL_CONDITIONS": "Tous les états",
   "ALL_LOCATIONS": "Tous les emplacements",
   "ALL_CATEGORIES": "Toutes les catégories",
+  "CATEGORIES": "Catégories",
+  "CONDITIONS": "États",
+  "COLORS": "Couleurs",
   "EXPORT_CSV": "Exporter CSV",
   "PRODUCTS_UNIT": "produits",
   "USERS_UNIT": "utilisateurs",
@@ -292,5 +301,7 @@
     "CONFIRM_REOPEN": "Rouvrir cette commande en attente ?",
     "ERROR_LOADING": "Impossible de charger les commandes.",
     "ERROR_UPDATING": "Impossible de mettre à jour le statut."
-  }
+  },
+  "DATA_IS_SAFE": "Données en sécurité",
+  "TAP_TO_RETRY": "Appuyer pour réessayer"
 }

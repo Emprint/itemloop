@@ -1,0 +1,189 @@
+@if (isEditorOrAdmin()) {
+  <div
+    class="sync-indicator"
+    [class.synced]="isState('synced')"
+    [class.syncing]="isState('syncing')"
+    [class.offline]="isState('offline')"
+    [class.error]="isState('error')"
+    (click)="togglePanel($event)"
+    role="button"
+    tabindex="0"
+    (keydown.enter)="togglePanel($event)"
+  >
+    <div class="sync-icon">
+      @if (isState('synced')) {
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M7 18C4.79086 18 3 16.2091 3 14C3 12.1362 4.27477 10.5702 6 10.126C6.41295 6.61166 9.4087 4 13 4C16.866 4 20 7.13401 20 11C20 11.3381 19.976 11.6705 19.9297 11.9958C21.1528 12.4174 22 13.5784 22 14.9375C22 16.6534 20.5909 18 18.875 18H7Z"
+            stroke="#22C55E"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <circle cx="18" cy="18" r="4" fill="#22C55E" />
+          <path
+            d="M16.5 18L17.5 19L19.5 17"
+            stroke="white"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      }
+      @if (isState('syncing')) {
+        <svg
+          class="syncing-icon"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M7 18C4.79086 18 3 16.2091 3 14C3 12.1362 4.27477 10.5702 6 10.126C6.41295 6.61166 9.4087 4 13 4C16.866 4 20 7.13401 20 11C20 11.3381 19.976 11.6705 19.9297 11.9958C21.1528 12.4174 22 13.5784 22 14.9375C22 16.6534 20.5909 18 18.875 18H7Z"
+            stroke="#3B82F6"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M16 15.5C16.5523 15.5 17 15.9477 17 16.5V17"
+            stroke="#3B82F6"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M20 18.5C20 17.9477 19.5523 17.5 19 17.5H18.5"
+            stroke="#3B82F6"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M18 21.5C17.4477 21.5 17 21.0523 17 20.5V20"
+            stroke="#3B82F6"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M14 18.5C14 19.0523 14.4477 19.5 15 19.5H15.5"
+            stroke="#3B82F6"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+      }
+      @if (isState('offline')) {
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M7 18C4.79086 18 3 16.2091 3 14C3 12.1362 4.27477 10.5702 6 10.126C6.41295 6.61166 9.4087 4 13 4C16.866 4 20 7.13401 20 11C20 11.3381 19.976 11.6705 19.9297 11.9958C21.1528 12.4174 22 13.5784 22 14.9375C22 16.6534 20.5909 18 18.875 18H7Z"
+            stroke="#F59E0B"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path d="M5 5L19 19" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round" />
+        </svg>
+      }
+      @if (isState('error')) {
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M7 18C4.79086 18 3 16.2091 3 14C3 12.1362 4.27477 10.5702 6 10.126C6.41295 6.61166 9.4087 4 13 4C16.866 4 20 7.13401 20 11C20 11.3381 19.976 11.6705 19.9297 11.9958C21.1528 12.4174 22 13.5784 22 14.9375C22 16.6534 20.5909 18 18.875 18H7Z"
+            stroke="#EF4444"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <circle cx="18" cy="18" r="4" fill="#EF4444" />
+          <path d="M18 16.5V18.5" stroke="white" stroke-width="1.8" stroke-linecap="round" />
+          <circle cx="18" cy="20" r="0.8" fill="white" />
+        </svg>
+      }
+    </div>
+
+    <div class="sync-text">
+      <span class="sync-title">{{ 'SYNC_STATUS' | translate }}</span>
+      <span class="sync-label">{{ label() }}</span>
+      @if (isState('synced') && lastSync()) {
+        <span class="sync-time">{{ getLastSyncText() }}</span>
+      }
+      @if (isState('syncing')) {
+        <span class="sync-time">{{ pendingChanges() }} {{ 'PENDING' | translate }}</span>
+      }
+      @if (isState('offline')) {
+        <span class="sync-time">{{ 'DATA_IS_SAFE' | translate }}</span>
+      }
+      @if (isState('error')) {
+        <span class="sync-time">{{ 'TAP_TO_RETRY' | translate }}</span>
+      }
+    </div>
+  </div>
+
+  @if (showPanel() && panelPosition()) {
+    <div
+      class="sync-panel-popup"
+      [style.bottom.px]="panelPosition()!.bottom"
+      [style.left.px]="panelPosition()!.left"
+      [style.width.px]="panelPosition()!.width"
+      role="region"
+      aria-label="Sync status details"
+      (click)="$event.stopPropagation()"
+      (keydown)="$event.stopPropagation()"
+    >
+      <div class="sync-panel-content">
+        <div class="sync-detail-item">
+          <span class="sync-detail-label">{{ 'PRODUCTS' | translate }}</span>
+          <span class="sync-detail-value">{{ syncDetails().products }}</span>
+        </div>
+        <div class="sync-detail-item">
+          <span class="sync-detail-label">{{ 'LOCATIONS' | translate }}</span>
+          <span class="sync-detail-value">{{ syncDetails().locations }}</span>
+        </div>
+        <div class="sync-detail-item">
+          <span class="sync-detail-label">{{ 'CATEGORIES' | translate }}</span>
+          <span class="sync-detail-value">{{ syncDetails().categories }}</span>
+        </div>
+        <div class="sync-detail-item">
+          <span class="sync-detail-label">{{ 'CONDITIONS' | translate }}</span>
+          <span class="sync-detail-value">{{ syncDetails().conditions }}</span>
+        </div>
+        <div class="sync-detail-item">
+          <span class="sync-detail-label">{{ 'COLORS' | translate }}</span>
+          <span class="sync-detail-value">{{ syncDetails().colors }}</span>
+        </div>
+        <div class="sync-detail-item">
+          <span class="sync-detail-label">{{ 'SYNCED_IMAGES' | translate }}</span>
+          <span class="sync-detail-value">{{ syncDetails().images }}</span>
+        </div>
+        @if (lastSync()) {
+          <div class="sync-detail-item">
+            <span class="sync-detail-label">{{ 'LAST_SYNC' | translate }}</span>
+            <span class="sync-detail-value">{{ getLastSyncText() }}</span>
+          </div>
+        }
+      </div>
+      <div class="sync-panel-footer">
+        <button class="sync-manual-btn" (click)="manualSync()" [disabled]="isSyncing()">
+          {{ isSyncing() ? ('SYNCING' | translate) : ('SYNC_NOW' | translate) }}
+        </button>
+      </div>
+    </div>
+  }
+}

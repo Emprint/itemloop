@@ -12,6 +12,12 @@
   "OFFLINE": "You are offline. Some features may not be available.",
   "SYNC_PENDING": "Changes will sync when you're back online.",
   "SYNC_ERROR": "Sync failed",
+  "SYNC_DETAILS": "Sync details",
+  "SYNC_NOW": "Sync now",
+  "SYNCING": "Syncing...",
+  "SYNCED_IMAGES": "Images",
+  "LAST_SYNC": "Last sync",
+  "SYNC_STATUS": "Sync status",
   "REUSE_IMPACT_TITLE": "Reuse Impact",
   "REUSE_IMPACT_KG_RECOVERED": "Total kg recovered",
   "REUSE_IMPACT_ITEMS_REDISTRIBUTED": "Items redistributed",
@@ -237,6 +243,9 @@
   "ALL_CONDITIONS": "All conditions",
   "ALL_LOCATIONS": "All locations",
   "ALL_CATEGORIES": "All categories",
+  "CATEGORIES": "Categories",
+  "CONDITIONS": "Conditions",
+  "COLORS": "Colors",
   "EXPORT_CSV": "Export CSV",
   "PRODUCTS_UNIT": "products",
   "USERS_UNIT": "users",
@@ -292,5 +301,7 @@
     "CONFIRM_REOPEN": "Reopen this order as pending?",
     "ERROR_LOADING": "Could not load orders.",
     "ERROR_UPDATING": "Could not update order status."
-  }
+  },
+  "DATA_IS_SAFE": "Data is safe",
+  "TAP_TO_RETRY": "Tap to retry"
 }

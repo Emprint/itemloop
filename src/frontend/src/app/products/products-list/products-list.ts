@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, effect } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -12,6 +12,7 @@ import { DropdownService, DropdownItem } from '../../shared/dropdown.service';
 import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
 import { BarcodeScannerComponent } from '../../shared/barcode-scanner/barcode-scanner.component';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { SyncService } from '../../shared/sync-indicator/sync.service';
 
 @Component({
   selector: 'app-products-list',
@@ -33,6 +34,7 @@ export class ProductsList {
   private dropdown = inject(DropdownService);
   private translate = inject(TranslateService);
   private appSettingsService = inject(AppSettingsService);
+  private syncService = inject(SyncService);
 
   readonly settings = toSignal(this.appSettingsService.getAll(), {
     initialValue: {} as AppSettings,
@@ -135,6 +137,13 @@ export class ProductsList {
 
   constructor() {
     this.loadProducts();
+    // Reload products when sync completes (e.g. returning online, temp IDs replaced with real ones)
+    effect(() => {
+      const lastSync = this.syncService.lastSync();
+      if (lastSync) {
+        this.loadProducts();
+      }
+    });
   }
 
   loadProducts() {

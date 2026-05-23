@@ -129,6 +129,36 @@
   }
 }
 
+// Sync indicator
+.sidebar-sync {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(244, 67, 54, 0.1);
+
+  .sync-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      stroke: #f44336;
+    }
+  }
+
+  .sync-text {
+    font-size: 0.75rem;
+    color: #f44336;
+    font-weight: 500;
+  }
+}
+
 // Navigation
 .sidebar-nav {
   flex: 1;

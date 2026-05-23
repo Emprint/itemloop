@@ -41,8 +41,8 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US7 | Public visitor | As a visitor, I want to browse available items so I can prepare for an in-person visit. | Medium | 🟡 Medium | ✅ (public visibility filter) |
 | US8 | Customer | As a customer, I want to reserve items online to pick them up later. | Low | 🔴 Complex | ✅ (cart → order flow; staff manages pickup via Orders page) |
 | US9 | User | As a user, I want to use the app from a smartphone or browser so I can manage inventory anywhere. | High | 🟡 Medium | ✅ |
-| US10 | User | As a user, I want to use the app offline and sync data when reconnected so I can keep working without internet. | Medium | 🔴 Complex | ✅ (PWA support with IndexedDB storage, offline indicator, sync queue) |
-| US11 | User | As a user, I want to be notified if data fails to sync so I don't lose updates. | Medium | 🟡 Medium | ✅ (sync error tracking and notification in offline indicator) |
+| US10 | Editor/Admin | As an editor or admin, I want to use the app offline (in buildings with poor connectivity) and sync data when reconnected so I can keep working without internet. Customers and visitors use the app as a regular website with direct API calls — no offline features for them. Offline features: IndexedDB caching of all products/locations/categories/conditions/colors; queued mutations synced on reconnect; search works offline (text + barcode); thumbnail-only image caching (full-size only when online or already cached). | Medium | 🔴 Complex | ✅ (role-based offline: editors/admins get full offline-first via IndexedDB + sync queue; customers/visitors use direct HTTP) |
+| US11 | Editor/Admin | As an editor or admin, I want to be notified if data fails to sync so I don't lose updates. The sync indicator at the bottom of the sidebar shows sync state (synced/syncing/offline/error) and opens a details popup (not a dialog) with counts of cached items and a manual sync button. | Medium | 🟡 Medium | ✅ (sync indicator in sidebar bottom; popup menu style; role-gated — hidden for customers/visitors) |
 | US12 | Admin | As an admin, I want to export inventory data to CSV for backup or reporting. | Low | 🟡 Medium | ✅ (CSV export on products page) |
 | US13 | User | As a user, I want to view product photos to better identify each item. | High | ⚪ Simple | ✅ |
 | US14 | Admin | As an admin, I want to see statistics (total quantity, estimated value, etc.) to monitor reuse activity. | Low | 🔴 Complex | ✅ (dashboard with donut chart, KPI cards) |
@@ -89,12 +89,49 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 
 - Online payment integration
 - PWA offline sync with conflict resolution
+- Offline search (product text + barcode) for editors/admins
+- Offline editing of categories, colors, conditions
+- Offline image add/remove with thumbnail-only caching
 
 ---
 
 ## 🛠️ Backlog / Next Session
 
-_Nothing pending at this time._
+### Offline-first (editors/admins) — ✅ Complete
+
+| Task | Status | Notes |
+|------|--------|-------|
+| Role-based offline architecture | ✅ Done | ProductService, LocationService, SyncService all role-aware |
+| Sync indicator position fix | ✅ Done | Bottom of sidebar, matches mockup |
+| Sync panel as dropdown menu (not dialog) | ✅ Done | `position:fixed` popup with `getBoundingClientRect()` positioning |
+| Hide sync indicator for customers/visitors | ✅ Done | `isEditorOrAdmin()` computed signal wraps template |
+| Products served from IndexedDB for editors/admins offline | ✅ Done | ProductService.getProducts() is role-aware |
+| Locations served from IndexedDB for editors/admins offline | ✅ Done | LocationService.getLocations() is role-aware |
+| Product/Location mutations queued offline | ✅ Done | addProduct/updateProduct/deleteProduct guard with isOfflineCapable() |
+| Offline search (text + barcode) | ✅ Done | Filtered via computed() on in-memory products signal — works offline |
+| Thumbnail-only image caching (not full-size) | ✅ Done | SyncService only fetches thumbnail_url, not full-size images |
+| Offline image upload (queue + sync) | ✅ Done | FileReader reads files as DataURL; queued in IDB syncQueue; on reconnect, dataUrlToBlob() converts back and POSTs to /api/products/{id}/images |
+| Offline image delete (queue + sync) | ✅ Done | delete-image action queued in syncQueue; on sync, sends DELETE to /api/products/{id}/images/{imageId} |
+| Offline location edit building/zone preserved | ✅ Done | location.service.ts fetches cached location and merges nested objects before save |
+| Build & test with PWA (production mode) | ✅ Done | `ng build --configuration=local-pwa` + Node proxy server on :4300 |
+| Remove old `offline-indicator` component | ✅ Done | Deleted unused component files |
+| Playwright tests across all roles | ✅ Done | Visitor ✅, Customer ✅, Editor ✅, Admin ✅; all offline flows tested end-to-end |
+
+### Verified flows (Playwright tested)
+
+| Flow | Role | Result |
+|------|------|--------|
+| Product list from IndexedDB (offline) | Editor, Admin | ✅ Pass |
+| Create product offline → sync | Editor, Admin | ✅ Pass |
+| Edit product offline → sync | Editor, Admin | ✅ Pass |
+| Delete product offline → sync | Editor | ✅ Pass |
+| Edit location offline, building/zone preserved → sync | Editor | ✅ Pass |
+| Upload image offline → sync | Editor | ✅ Pass |
+| Delete image offline → sync | Editor | ✅ Pass |
+| No sync indicator visible | Customer, Visitor | ✅ Pass |
+| Only public products shown | Customer, Visitor | ✅ Pass |
+| Cart + order placement | Customer | ✅ Pass |
+| Admin full nav (Users, Settings, Orders) | Admin | ✅ Pass |
 
 ---
 
