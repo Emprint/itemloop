@@ -10,6 +10,7 @@ import { UserRole } from '../auth/auth-response';
 export interface ProductCategory {
   id: number;
   name: string;
+  product_count?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -40,5 +41,14 @@ export class ProductCategoryService {
 
   addCategory(name: string): Observable<ProductCategory> {
     return this.http.post<ProductCategory>(this.apiUrl, { name });
+  }
+
+  updateCategory(id: number, name: string): Observable<ProductCategory> {
+    return this.http.put<ProductCategory>(`${this.apiUrl}/${id}`, { name });
+  }
+
+  deleteCategory(id: number, reassignTo?: number): Observable<{ success: boolean }> {
+    const params = reassignTo ? `?reassign_to=${reassignTo}` : '';
+    return this.http.delete<{ success: boolean }>(`${this.apiUrl}/${id}${params}`);
   }
 }

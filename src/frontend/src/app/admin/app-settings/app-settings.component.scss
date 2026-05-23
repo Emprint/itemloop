@@ -14,3 +14,27 @@
   cursor: pointer;
   user-select: none;
 }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+
+  a {
+    color: #6b7280;
+    text-decoration: none;
+
+    &:hover {
+      color: #111827;
+      text-decoration: underline;
+    }
+  }
+
+  span:last-child {
+    color: #111827;
+    font-weight: 500;
+  }
+}

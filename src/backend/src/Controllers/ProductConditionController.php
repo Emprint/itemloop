@@ -10,7 +10,13 @@ class ProductConditionController
 {
     public function index(Request $request, Response $response): Response
     {
-        $rows = Database::get()->query('SELECT * FROM product_conditions ORDER BY name')->fetchAll();
+        $rows = Database::get()->query(
+            'SELECT c.*, COUNT(p.id) AS product_count
+             FROM product_conditions c
+             LEFT JOIN products p ON p.condition_id = c.id
+             GROUP BY c.id
+             ORDER BY c.name'
+        )->fetchAll();
         return $this->json($response, $rows);
     }
 
@@ -30,10 +36,59 @@ class ProductConditionController
         if ($existing) return $this->json($response, $existing);
 
         $db->prepare('INSERT INTO product_conditions (name) VALUES (?)')->execute([$name]);
-        $id   = (int) $db->lastInsertId();
-        $stmt = $db->prepare('SELECT * FROM product_conditions WHERE id = ?');
+        $id = (int) $db->lastInsertId();
+        return $this->json($response, ['id' => $id, 'name' => $name, 'product_count' => 0], 201);
+    }
+
+    public function update(Request $request, Response $response, array $args): Response
+    {
+        $db   = Database::get();
+        $id   = (int) $args['id'];
+        $body = (array) $request->getParsedBody();
+        $name = trim($body['name'] ?? '');
+
+        if ($name === '') {
+            return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['name' => ['Name is required.']]], 422);
+        }
+
+        $stmt = $db->prepare('SELECT id FROM product_conditions WHERE id = ?');
         $stmt->execute([$id]);
-        return $this->json($response, $stmt->fetch(), 201);
+        if (!$stmt->fetch()) {
+            return $this->json($response, ['error' => 'NOT_FOUND'], 404);
+        }
+
+        $db->prepare('UPDATE product_conditions SET name = ? WHERE id = ?')->execute([$name, $id]);
+
+        $stmt = $db->prepare(
+            'SELECT c.*, COUNT(p.id) AS product_count
+             FROM product_conditions c
+             LEFT JOIN products p ON p.condition_id = c.id
+             WHERE c.id = ?
+             GROUP BY c.id'
+        );
+        $stmt->execute([$id]);
+        return $this->json($response, $stmt->fetch());
+    }
+
+    public function destroy(Request $request, Response $response, array $args): Response
+    {
+        $db         = Database::get();
+        $id         = (int) $args['id'];
+        $reassignTo = (int) ($request->getQueryParams()['reassign_to'] ?? 0);
+
+        $stmt = $db->prepare('SELECT id FROM product_conditions WHERE id = ?');
+        $stmt->execute([$id]);
+        if (!$stmt->fetch()) {
+            return $this->json($response, ['error' => 'NOT_FOUND'], 404);
+        }
+
+        if ($reassignTo > 0) {
+            $db->prepare('UPDATE products SET condition_id = ? WHERE condition_id = ?')
+               ->execute([$reassignTo, $id]);
+        }
+
+        $db->prepare('DELETE FROM product_conditions WHERE id = ?')->execute([$id]);
+        return $this->json($response, ['success' => true]);
     }
 
     private function json(Response $response, mixed $data, int $status = 200): Response

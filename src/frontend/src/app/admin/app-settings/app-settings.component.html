@@ -1,4 +1,9 @@
 <div class="page app-settings">
+  <nav class="breadcrumb">
+    <a routerLink="/admin/settings">{{ 'SETTINGS_DASHBOARD.TITLE' | translate }}</a>
+    <span>›</span>
+    <span>{{ 'APP_SETTINGS.TITLE' | translate }}</span>
+  </nav>
   <h2>{{ 'APP_SETTINGS.TITLE' | translate }}</h2>
 
   @if (loading) {
@@ -16,7 +21,6 @@
   @if (!loading && !error) {
     <div class="form-card">
       <form (ngSubmit)="saveSettings()">
-        <!-- Currency -->
         <div class="form-field">
           <label for="currency">{{ 'APP_SETTINGS.CURRENCY_LABEL' | translate }}</label>
           <select id="currency" [(ngModel)]="settings()['currency']" name="currency">
@@ -27,7 +31,6 @@
           <small class="form-hint">{{ 'APP_SETTINGS.CURRENCY_HINT' | translate }}</small>
         </div>
 
-        <!-- Open Registration -->
         <div class="form-field">
           <label>
             <input
@@ -41,7 +44,6 @@
           <small class="form-hint">{{ 'APP_SETTINGS.OPEN_REGISTRATION_HINT' | translate }}</small>
         </div>
 
-        <!-- Public Mode -->
         <div class="form-field">
           <label>
             <input
@@ -55,7 +57,6 @@
           <small class="form-hint">{{ 'APP_SETTINGS.PUBLIC_MODE_HINT' | translate }}</small>
         </div>
 
-        <!-- Language Mode -->
         <div class="form-field">
           <label for="language_mode">{{ 'APP_SETTINGS.LANGUAGE_MODE_LABEL' | translate }}</label>
           <select id="language_mode" [(ngModel)]="settings()['language_mode']" name="language_mode">
@@ -65,7 +66,6 @@
           <small class="form-hint">{{ 'APP_SETTINGS.LANGUAGE_MODE_HINT' | translate }}</small>
         </div>
 
-        <!-- Fixed Locale -->
         @if (settings()['language_mode'] === 'single') {
           <div class="form-field">
             <label for="fixed_locale">{{ 'APP_SETTINGS.FIXED_LOCALE_LABEL' | translate }}</label>
@@ -78,7 +78,6 @@
           </div>
         }
 
-        <!-- Shop Mode -->
         <div class="form-field">
           <label>
             <input

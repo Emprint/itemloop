@@ -76,6 +76,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US42 | Admin | As an admin, I want to export inventory or order data as a formatted PDF report, so I can share or archive summaries without needing spreadsheet software. | Low | 🟡 Medium | ⚪ |
 | US43 | User/Editor/Admin | As a user or editor, I want to see who added and last edited a product in the product's Quick Info panel, so I have traceability over inventory changes. | Low | 🟢 Simple | ✅ |
 | US44 | System | As a system, when **public mode is disabled** but **open registration is enabled**, I want newly registered customer accounts to remain **pending validation** after registration so that only manually-approved users can access the site and browse products or place orders. Specifically: (1) The customer can register successfully and receives confirmation that their account is pending approval; (2) After registration, the customer is redirected to the login page with a message indicating their account requires validation; (3) The customer **cannot** access the dashboard, products, or any other protected route until an admin validates their account; (4) Admins can view a list of pending users and mark their accounts as validated; (5) Only after admin validation can the customer log in and fully access the application. | Medium | 🔴 Complex | ✅ |
+| US45 | Editor/Admin | As an editor or admin, I want a dedicated page to manage product attribute values (categories, conditions, colors) — listing all values with usage counts, renaming them inline, and deleting them with the option to reassign products to a replacement value before deletion — so the taxonomy stays clean and consistent over time. | Medium | 🟡 Medium | 🔲 |
 
 ---
 
@@ -88,50 +89,11 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 ## 📌 Roadmap Ideas
 
 - Online payment integration
-- PWA offline sync with conflict resolution
-- Offline search (product text + barcode) for editors/admins
-- Offline editing of categories, colors, conditions
-- Offline image add/remove with thumbnail-only caching
-
----
-
-## 🛠️ Backlog / Next Session
-
-### Offline-first (editors/admins) — ✅ Complete
-
-| Task | Status | Notes |
-|------|--------|-------|
-| Role-based offline architecture | ✅ Done | ProductService, LocationService, SyncService all role-aware |
-| Sync indicator position fix | ✅ Done | Bottom of sidebar, matches mockup |
-| Sync panel as dropdown menu (not dialog) | ✅ Done | `position:fixed` popup with `getBoundingClientRect()` positioning |
-| Hide sync indicator for customers/visitors | ✅ Done | `isEditorOrAdmin()` computed signal wraps template |
-| Products served from IndexedDB for editors/admins offline | ✅ Done | ProductService.getProducts() is role-aware |
-| Locations served from IndexedDB for editors/admins offline | ✅ Done | LocationService.getLocations() is role-aware |
-| Product/Location mutations queued offline | ✅ Done | addProduct/updateProduct/deleteProduct guard with isOfflineCapable() |
-| Offline search (text + barcode) | ✅ Done | Filtered via computed() on in-memory products signal — works offline |
-| Thumbnail-only image caching (not full-size) | ✅ Done | SyncService only fetches thumbnail_url, not full-size images |
-| Offline image upload (queue + sync) | ✅ Done | FileReader reads files as DataURL; queued in IDB syncQueue; on reconnect, dataUrlToBlob() converts back and POSTs to /api/products/{id}/images |
-| Offline image delete (queue + sync) | ✅ Done | delete-image action queued in syncQueue; on sync, sends DELETE to /api/products/{id}/images/{imageId} |
-| Offline location edit building/zone preserved | ✅ Done | location.service.ts fetches cached location and merges nested objects before save |
-| Build & test with PWA (production mode) | ✅ Done | `ng build --configuration=local-pwa` + Node proxy server on :4300 |
-| Remove old `offline-indicator` component | ✅ Done | Deleted unused component files |
-| Playwright tests across all roles | ✅ Done | Visitor ✅, Customer ✅, Editor ✅, Admin ✅; all offline flows tested end-to-end |
-
-### Verified flows (Playwright tested)
-
-| Flow | Role | Result |
-|------|------|--------|
-| Product list from IndexedDB (offline) | Editor, Admin | ✅ Pass |
-| Create product offline → sync | Editor, Admin | ✅ Pass |
-| Edit product offline → sync | Editor, Admin | ✅ Pass |
-| Delete product offline → sync | Editor | ✅ Pass |
-| Edit location offline, building/zone preserved → sync | Editor | ✅ Pass |
-| Upload image offline → sync | Editor | ✅ Pass |
-| Delete image offline → sync | Editor | ✅ Pass |
-| No sync indicator visible | Customer, Visitor | ✅ Pass |
-| Only public products shown | Customer, Visitor | ✅ Pass |
-| Cart + order placement | Customer | ✅ Pass |
-| Admin full nav (Users, Settings, Orders) | Admin | ✅ Pass |
+- PWA offline sync with conflict resolution (sync is implemented; conflict resolution is not)
+- Notifications (in-app or email) for order status changes
+- Product history / audit trail (US38)
+- PDF report export (US42)
+- Print/export shelf labels as barcode or QR code (US40)
 
 ---
 

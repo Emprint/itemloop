@@ -33,7 +33,24 @@ export class ProductConditionService {
     );
   }
 
-  addCondition(name: string): Observable<{ id: number; name: string }> {
-    return this.http.post<{ id: number; name: string }>(this.apiUrl, { name });
+  addCondition(name: string): Observable<{ id: number; name: string; product_count?: number }> {
+    return this.http.post<{ id: number; name: string; product_count?: number }>(this.apiUrl, {
+      name,
+    });
+  }
+
+  updateCondition(
+    id: number,
+    name: string,
+  ): Observable<{ id: number; name: string; product_count: number }> {
+    return this.http.put<{ id: number; name: string; product_count: number }>(
+      `${this.apiUrl}/${id}`,
+      { name },
+    );
+  }
+
+  deleteCondition(id: number, reassignTo?: number): Observable<{ success: boolean }> {
+    const params = reassignTo ? `?reassign_to=${reassignTo}` : '';
+    return this.http.delete<{ success: boolean }>(`${this.apiUrl}/${id}${params}`);
   }
 }

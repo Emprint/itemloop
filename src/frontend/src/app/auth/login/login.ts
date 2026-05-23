@@ -53,7 +53,9 @@ export class Login implements OnInit {
       error: (err) => {
         const code = err?.error?.error;
         let msg;
-        if (code === 'ACCOUNT_PENDING') {
+        if (err?.status === 0 || err?.status === 504) {
+          msg = this.translate.instant('ERRORS.SERVER_UNAVAILABLE');
+        } else if (code === 'ACCOUNT_PENDING') {
           msg = this.translate.instant('ERRORS.ACCOUNT_PENDING');
         } else if (code) {
           msg = this.translate.instant('ERRORS.' + code);

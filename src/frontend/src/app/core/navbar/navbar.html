@@ -149,8 +149,10 @@
             }
           </a>
         </li>
+      }
+      @if (isEditorOrAdmin()) {
         <li>
-          <a routerLink="/admin/settings" routerLinkActive="active" (click)="closeSidebar()">
+          <a [routerLink]="settingsLink()" routerLinkActive="active" (click)="closeSidebar()">
             <svg
               viewBox="0 0 24 24"
               fill="none"

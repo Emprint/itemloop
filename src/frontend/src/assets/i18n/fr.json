@@ -145,6 +145,10 @@
   "LOCATIONS": "Emplacements",
   "USERS": "Utilisateurs",
   "SETTINGS": "Paramètres",
+  "SETTINGS_DASHBOARD": {
+    "TITLE": "Paramètres",
+    "GENERAL_HINT": "Devise, inscription, mode de langue et paramètres de boutique"
+  },
   "APP_SETTINGS": {
     "TITLE": "Paramètres de l'application",
     "LOADING": "Chargement des paramètres...",
@@ -163,7 +167,8 @@
     "FIXED_LOCALE_LABEL": "Langue fixe",
     "FIXED_LOCALE_HINT": "La langue à utiliser lorsque le mode de langue est réglé sur langue fixe.",
     "SHOP_MODE_LABEL": "Activer le mode boutique",
-    "SHOP_MODE_HINT": "Lorsqu'activé, les fonctionnalités de panier, de commande et de paiement sont disponibles. Lorsque désactivé, tous les éléments d'interface liés à la boutique sont masqués."
+    "SHOP_MODE_HINT": "Lorsqu'activé, les fonctionnalités de panier, de commande et de paiement sont disponibles. Lorsque désactivé, tous les éléments d'interface liés à la boutique sont masqués.",
+    "TAB_GENERAL": "Général"
   },
   "CONFIRM_PASSWORD": "Confirmer le mot de passe",
   "PASSWORD_HELPER": "Le mot de passe doit comporter au moins 8 caractères et inclure :",
@@ -204,7 +209,8 @@
     "EMAIL_TAKEN": "Cette adresse e-mail est déjà enregistrée.",
     "ACCOUNT_PENDING": "Votre compte est en attente d'approbation par l'administrateur.",
     "FAILED_VALIDATE_USER": "Échec de la validation de l'utilisateur.",
-    "FAILED_DEACTIVATE_USER": "Échec de la désactivation de l'utilisateur."
+    "FAILED_DEACTIVATE_USER": "Échec de la désactivation de l'utilisateur.",
+    "SERVER_UNAVAILABLE": "Serveur indisponible. Veuillez vérifier votre connexion et réessayer."
   },
   "LOCATIONS_MANAGEMENT": "Gestion des emplacements",
   "EDIT_LOCATION": "Modifier l'emplacement",
@@ -303,5 +309,40 @@
     "ERROR_UPDATING": "Impossible de mettre à jour le statut."
   },
   "DATA_IS_SAFE": "Données en sécurité",
-  "TAP_TO_RETRY": "Appuyer pour réessayer"
+  "TAP_TO_RETRY": "Appuyer pour réessayer",
+  "ATTRIBUTES": {
+    "TAB": "Attributs",
+    "TITLE": "Attributs",
+    "SETTINGS_HINT": "Gérer les catégories, conditions et couleurs",
+    "LOADING": "Chargement des attributs...",
+    "LOAD_ERROR": "Échec du chargement des attributs.",
+    "CATEGORIES": "Catégories",
+    "CONDITIONS": "Conditions",
+    "COLORS": "Couleurs",
+    "CATEGORIES_TAB": "Catégories",
+    "CONDITIONS_TAB": "Conditions",
+    "COLORS_TAB": "Couleurs",
+    "NAME": "Nom",
+    "PRODUCTS": "Produits",
+    "ADD": "Ajouter",
+    "ADD_PLACEHOLDER": "Nouveau nom...",
+    "ADD_CATEGORY": "Ajouter une catégorie",
+    "ADD_CONDITION": "Ajouter une condition",
+    "ADD_COLOR": "Ajouter une couleur",
+    "RENAME": "Renommer",
+    "EDIT": "Modifier",
+    "SAVE_TITLE": "Renommer l'attribut",
+    "NEW_TITLE": "Ajouter un attribut",
+    "GENERAL_SETTINGS": "Paramètres généraux",
+    "DELETE": "Supprimer",
+    "DELETE_MODAL": {
+      "TITLE": "Supprimer l'attribut",
+      "IN_USE": "\"{{name}}\" est utilisé par {{count}} produit(s). Choisissez un remplaçant ou laissez les produits sans assignation.",
+      "CONFIRM": "Supprimer \"{{name}}\" ? Cette action est irréversible.",
+      "REASSIGN_LABEL": "Remplacer par",
+      "LEAVE_UNASSIGNED": "— Laisser sans assignation —",
+      "CANCEL": "Annuler",
+      "DELETE": "Supprimer"
+    }
+  }
 }

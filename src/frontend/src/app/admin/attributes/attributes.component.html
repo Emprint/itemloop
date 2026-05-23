@@ -1,0 +1,190 @@
+<div class="page attributes-page">
+  @if (isAdmin()) {
+    <nav class="attr-cross-nav">
+      <a routerLink="/admin/settings">{{ 'SETTINGS_DASHBOARD.TITLE' | translate }}</a>
+      <span class="attr-cross-nav-sep">›</span>
+      <span class="attr-cross-nav-active">{{ 'ATTRIBUTES.TAB' | translate }}</span>
+    </nav>
+  }
+
+  <div class="location-tabs">
+    <nav class="tabs-nav">
+      <button [class.active]="activeTab() === 'categories'" (click)="setTab('categories')">
+        {{ 'ATTRIBUTES.CATEGORIES_TAB' | translate }}
+      </button>
+      <button [class.active]="activeTab() === 'conditions'" (click)="setTab('conditions')">
+        {{ 'ATTRIBUTES.CONDITIONS_TAB' | translate }}
+      </button>
+      <button [class.active]="activeTab() === 'colors'" (click)="setTab('colors')">
+        {{ 'ATTRIBUTES.COLORS_TAB' | translate }}
+      </button>
+    </nav>
+
+    <section class="tab-content">
+      @if (loading()) {
+        <div class="page-loading">{{ 'ATTRIBUTES.LOADING' | translate }}</div>
+      }
+
+      @if (loadError()) {
+        <div class="error">{{ loadError()! | translate }}</div>
+      }
+
+      @if (!loading() && !loadError()) {
+        @if (actionError()) {
+          <div class="error">{{ actionError()! | translate }}</div>
+        }
+        @if (showAddForm()) {
+          <div class="form-card">
+            <h3>{{ 'ATTRIBUTES.NEW_TITLE' | translate }}</h3>
+            <form (ngSubmit)="saveForm()" autocomplete="off">
+              <div class="form-field">
+                <label for="attributeName"
+                  >{{ 'ATTRIBUTES.NAME' | translate }} <span class="req">*</span></label
+                >
+                <input
+                  id="attributeName"
+                  type="text"
+                  [ngModel]="formName()"
+                  (ngModelChange)="formName.set($event)"
+                  name="name"
+                  required
+                />
+              </div>
+              <div class="buttons-list">
+                <button type="button" (click)="cancelForm()">{{ 'CANCEL' | translate }}</button>
+                <button type="submit" [disabled]="!formName().trim() || saving()">
+                  {{ 'SAVE' | translate }}
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+
+        <app-list-shell
+          [items]="activeItems()"
+          [addLabel]="addLabel() | translate"
+          [addable]="!showAddForm()"
+          [countLabel]="countLabel() | translate"
+          [searchFn]="searchFn"
+          [searchPlaceholder]="'SEARCH' | translate"
+          (addClicked)="showNewForm()"
+        >
+          <ng-template #headTpl>
+            <tr>
+              <th>{{ 'ATTRIBUTES.NAME' | translate }}</th>
+              <th>{{ 'ATTRIBUTES.PRODUCTS' | translate }}</th>
+              <th style="width: 48px"></th>
+            </tr>
+          </ng-template>
+
+          <ng-template #rowTpl let-item>
+            @if (editState()?.id === item.id) {
+              <tr class="inline-edit-row">
+                <td colspan="2">
+                  <form (ngSubmit)="saveForm()" autocomplete="off" class="inline-edit-form">
+                    <input
+                      type="text"
+                      [ngModel]="formName()"
+                      (ngModelChange)="formName.set($event)"
+                      name="name"
+                      required
+                    />
+                  </form>
+                </td>
+                <td class="ls-actions inline-edit-actions">
+                  <button
+                    class="ls-action-btn save-btn"
+                    (click)="saveForm()"
+                    [disabled]="!formName().trim() || saving()"
+                    title="{{ 'SAVE' | translate }}"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </button>
+                  <button
+                    class="ls-action-btn cancel-btn"
+                    (click)="cancelForm()"
+                    title="{{ 'CANCEL' | translate }}"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            } @else {
+              <tr>
+                <td>{{ item.name }}</td>
+                <td>
+                  <span class="count-badge" [class.has-products]="item.product_count > 0">
+                    {{ item.product_count }}
+                  </span>
+                </td>
+                <td class="ls-actions">
+                  <button class="ls-action-btn" (click)="openDropdown(item, $event)">⋮</button>
+                </td>
+              </tr>
+            }
+          </ng-template>
+        </app-list-shell>
+      }
+    </section>
+  </div>
+</div>
+
+<app-confirm-modal
+  [show]="showDeleteModal()"
+  [message]="deleteMessage()"
+  (confirmEvent)="confirmDelete()"
+  (cancelEvent)="cancelDelete()"
+></app-confirm-modal>
+
+@if (showReassignModal()) {
+  <div class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-content">
+        <p>{{ reassignMessage() }}</p>
+        <div class="form-field">
+          <label for="attributeReplacement">{{
+            'ATTRIBUTES.DELETE_MODAL.REASSIGN_LABEL' | translate
+          }}</label>
+          <select
+            id="attributeReplacement"
+            [ngModel]="replacementId()"
+            (ngModelChange)="replacementId.set($event)"
+            name="replacementId"
+          >
+            <option [ngValue]="null">
+              {{ 'ATTRIBUTES.DELETE_MODAL.LEAVE_UNASSIGNED' | translate }}
+            </option>
+            @for (sibling of reassignSiblings(); track sibling.id) {
+              <option [ngValue]="sibling.id">{{ sibling.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button (click)="cancelDelete()">{{ 'CANCEL' | translate }}</button>
+          <button class="danger" (click)="confirmDelete()" [disabled]="saving()">
+            {{ 'DELETE' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

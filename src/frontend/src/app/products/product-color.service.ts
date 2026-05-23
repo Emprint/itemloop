@@ -33,7 +33,24 @@ export class ProductColorService {
     );
   }
 
-  addColor(name: string): Observable<{ id: number; name: string }> {
-    return this.http.post<{ id: number; name: string }>(this.apiUrl, { name });
+  addColor(name: string): Observable<{ id: number; name: string; product_count?: number }> {
+    return this.http.post<{ id: number; name: string; product_count?: number }>(this.apiUrl, {
+      name,
+    });
+  }
+
+  updateColor(
+    id: number,
+    name: string,
+  ): Observable<{ id: number; name: string; product_count: number }> {
+    return this.http.put<{ id: number; name: string; product_count: number }>(
+      `${this.apiUrl}/${id}`,
+      { name },
+    );
+  }
+
+  deleteColor(id: number, reassignTo?: number): Observable<{ success: boolean }> {
+    const params = reassignTo ? `?reassign_to=${reassignTo}` : '';
+    return this.http.delete<{ success: boolean }>(`${this.apiUrl}/${id}${params}`);
   }
 }

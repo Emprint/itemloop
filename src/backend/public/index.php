@@ -128,11 +128,18 @@ $app->group('/api', function (RouteCollectorProxy $group) {
     $group->patch('/products/{id}/images/reorder',           [ProductImageController::class, 'reorder'])->add(new EditorMiddleware());
     $group->delete('/products/{id}/images/{image_id}',       [ProductImageController::class, 'destroy'])->add(new EditorMiddleware());
 
-    // Taxonomy
-    $group->get('/product-conditions',  [ProductConditionController::class, 'index']);
-    $group->post('/product-conditions', [ProductConditionController::class, 'store']);
-    $group->get('/product-colors',      [ProductColorController::class, 'index']);
-    $group->post('/product-colors',     [ProductColorController::class, 'store']);
+    // Taxonomy (editor+)
+    $group->post('/product-categories',          [ProductCategoryController::class, 'store'])->add(new EditorMiddleware());
+    $group->put('/product-categories/{id}',      [ProductCategoryController::class, 'update'])->add(new EditorMiddleware());
+    $group->delete('/product-categories/{id}',   [ProductCategoryController::class, 'destroy'])->add(new EditorMiddleware());
+    $group->get('/product-conditions',           [ProductConditionController::class, 'index']);
+    $group->post('/product-conditions',          [ProductConditionController::class, 'store']);
+    $group->put('/product-conditions/{id}',      [ProductConditionController::class, 'update'])->add(new EditorMiddleware());
+    $group->delete('/product-conditions/{id}',   [ProductConditionController::class, 'destroy'])->add(new EditorMiddleware());
+    $group->get('/product-colors',               [ProductColorController::class, 'index']);
+    $group->post('/product-colors',              [ProductColorController::class, 'store']);
+    $group->put('/product-colors/{id}',          [ProductColorController::class, 'update'])->add(new EditorMiddleware());
+    $group->delete('/product-colors/{id}',       [ProductColorController::class, 'destroy'])->add(new EditorMiddleware());
 
     // Locations (editor+)
     $group->get('/buildings',       [LocationController::class, 'buildingsIndex']);
