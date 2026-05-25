@@ -1,6 +1,15 @@
-section.card {
-  margin-bottom: 24px;
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
 
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+section.card {
   h3 {
     margin: 0 0 16px;
   }

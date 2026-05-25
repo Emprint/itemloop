@@ -1,12 +1,13 @@
 <div class="page">
-  <nav class="breadcrumb">
+  <nav class="attr-cross-nav">
     <a routerLink="/admin/settings">{{ 'SETTINGS' | translate }}</a>
-    <span>/</span>
-    <span>{{ 'PROFILE' | translate }}</span>
+    <span class="attr-cross-nav-sep">›</span>
+    <span class="attr-cross-nav-active">{{ 'PROFILE' | translate }}</span>
   </nav>
 
   <h2>{{ 'PROFILE' | translate }}</h2>
 
+  <div class="profile-grid">
   <!-- Personal Info -->
   <section class="card">
     <h3>{{ 'PERSONAL_INFO' | translate }}</h3>
@@ -99,4 +100,6 @@
       </div>
     </form>
   </section>
+
+  </div><!-- /profile-grid -->
 </div>
