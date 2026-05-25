@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Database;
+use App\Services\EmailService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -47,8 +48,18 @@ class AuthController
         $openRegEnabled      = AppSettingsController::isEnabled('open_registration', true);
         $status = ($publicModeDisabled && $openRegEnabled && $role === 'customer') ? 'pending' : 'active';
 
-        $stmt = $db->prepare('INSERT INTO users (name, email, password, role, status) VALUES (?, ?, ?, ?, ?)');
-        $stmt->execute([$name, $email, password_hash($password, PASSWORD_BCRYPT), $role, $status]);
+        // Detect preferred locale from Accept-Language header (e.g. "fr-FR,fr;q=0.9,en;q=0.8" → "fr")
+        $acceptLang = $request->getHeaderLine('Accept-Language');
+        $locale     = 'en';
+        if ($acceptLang !== '') {
+            preg_match('/^([a-zA-Z]{2})/', $acceptLang, $m);
+            if (!empty($m[1])) {
+                $locale = strtolower($m[1]) === 'fr' ? 'fr' : 'en';
+            }
+        }
+
+        $stmt = $db->prepare('INSERT INTO users (name, email, password, role, status, locale) VALUES (?, ?, ?, ?, ?, ?)');
+        $stmt->execute([$name, $email, password_hash($password, PASSWORD_BCRYPT), $role, $status, $locale]);
         $userId = (int) $db->lastInsertId();
 
         if ($status === 'pending') {
@@ -116,7 +127,7 @@ class AuthController
         $user = $request->getAttribute('user');
 
         $db   = Database::get();
-        $stmt = $db->prepare('SELECT id, name, email, role, status, created_at, updated_at FROM users WHERE id = ?');
+        $stmt = $db->prepare('SELECT id, name, email, role, status, locale, created_at, updated_at FROM users WHERE id = ?');
         $stmt->execute([$user['id']]);
         $fresh = $stmt->fetch();
 
@@ -128,9 +139,87 @@ class AuthController
         return $this->json($response, ['user' => $fresh]);
     }
 
+    public function forgotPassword(Request $request, Response $response): Response
+    {
+        $body  = (array) $request->getParsedBody();
+        $email = trim($body['email'] ?? '');
+
+        // Always return 200 to prevent email enumeration
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->json($response, ['message' => 'If this email exists, a reset link has been sent.']);
+        }
+
+        $db   = Database::get();
+        $stmt = $db->prepare('SELECT id, name, locale FROM users WHERE email = ?');
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        if ($user) {
+            $token = bin2hex(random_bytes(32));
+            $db->prepare('INSERT INTO password_reset_tokens (email, token, created_at) VALUES (?, ?, NOW())
+                          ON DUPLICATE KEY UPDATE token = VALUES(token), created_at = NOW()')
+               ->execute([$email, $token]);
+
+            $appUrl   = rtrim($_ENV['APP_URL'] ?? '', '/');
+            $resetUrl = $appUrl . '/auth/reset-password?token=' . urlencode($token) . '&email=' . urlencode($email);
+            $locale   = $user['locale'] ?? 'en';
+
+            (new EmailService())->sendTemplate(
+                $email,
+                $user['name'],
+                'password-reset',
+                ['resetUrl' => $resetUrl, 'userName' => $user['name']],
+                $locale
+            );
+        }
+
+        return $this->json($response, ['message' => 'If this email exists, a reset link has been sent.']);
+    }
+
+    public function resetPassword(Request $request, Response $response): Response
+    {
+        $body     = (array) $request->getParsedBody();
+        $email    = trim($body['email']    ?? '');
+        $token    = trim($body['token']    ?? '');
+        $password = $body['password'] ?? '';
+
+        $errors = [];
+        if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors['email'] = ['Valid email required.'];
+        if ($token === '')    $errors['token']    = ['Token is required.'];
+        if (strlen($password) < 8) $errors['password'] = ['Password must be at least 8 characters.'];
+        if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/', $password)) {
+            $errors['password'] = ['Password must contain at least one letter, one digit, and one special character.'];
+        }
+
+        if ($errors) {
+            return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => $errors], 422);
+        }
+
+        $db   = Database::get();
+        $stmt = $db->prepare('SELECT token, created_at FROM password_reset_tokens WHERE email = ?');
+        $stmt->execute([$email]);
+        $record = $stmt->fetch();
+
+        if (!$record || $record['token'] !== $token) {
+            return $this->json($response, ['error' => 'RESET_LINK_INVALID'], 422);
+        }
+
+        $createdAt = strtotime($record['created_at']);
+        if (time() - $createdAt > 3600) {
+            $db->prepare('DELETE FROM password_reset_tokens WHERE email = ?')->execute([$email]);
+            return $this->json($response, ['error' => 'RESET_LINK_EXPIRED'], 422);
+        }
+
+        $db->prepare('UPDATE users SET password = ? WHERE email = ?')
+           ->execute([password_hash($password, PASSWORD_BCRYPT), $email]);
+        $db->prepare('DELETE FROM password_reset_tokens WHERE email = ?')->execute([$email]);
+
+        return $this->json($response, ['message' => 'Password reset successfully.']);
+    }
+
     private function fetchUser(\PDO $db, int $id): array
     {
-        $stmt = $db->prepare('SELECT id, name, email, role, status, created_at, updated_at FROM users WHERE id = ?');
+        $stmt = $db->prepare('SELECT id, name, email, role, status, locale, created_at, updated_at FROM users WHERE id = ?');
         $stmt->execute([$id]);
         return $stmt->fetch();
     }
