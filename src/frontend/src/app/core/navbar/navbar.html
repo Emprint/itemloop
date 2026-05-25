@@ -38,12 +38,12 @@
 
   @if (user()) {
     <div class="sidebar-user">
-      <div class="user-avatar">
+      <a class="user-avatar" routerLink="/profile" [attr.aria-label]="'PROFILE' | translate">
         {{ userInitials() }}
         <span class="user-online"></span>
-      </div>
+      </a>
       <div class="user-info">
-        <span class="user-name">{{ user()!.name }}</span>
+        <a class="user-name" routerLink="/profile">{{ user()!.name }}</a>
         <span class="user-role">{{ roleLabel() }}</span>
       </div>
     </div>
@@ -128,28 +128,6 @@
           </a>
         </li>
       }
-      @if (isAdmin()) {
-        <li>
-          <a routerLink="/admin/users" routerLinkActive="active" (click)="closeSidebar()">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
-            </svg>
-            <span>{{ 'USERS' | translate }}</span>
-            @if (pendingCount() > 0) {
-              <span class="nav-badge">{{ pendingCount() }}</span>
-            }
-          </a>
-        </li>
-      }
       @if (isEditorOrAdmin()) {
         <li>
           <a [routerLink]="settingsLink()" routerLinkActive="active" (click)="closeSidebar()">
@@ -167,6 +145,9 @@
               />
             </svg>
             <span>{{ 'SETTINGS' | translate }}</span>
+            @if (isAdmin() && pendingCount() > 0) {
+              <span class="nav-badge">{{ pendingCount() }}</span>
+            }
           </a>
         </li>
       }

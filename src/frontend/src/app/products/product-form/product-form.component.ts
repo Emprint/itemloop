@@ -43,6 +43,8 @@ import { UserRole } from '../../auth/auth-response';
 import { LocaleDatePipe } from '../../shared/locale-date.pipe';
 import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
 import { BarcodeScannerComponent } from '../../shared/barcode-scanner/barcode-scanner.component';
+import { OfflineStorageService } from '../../shared/offline-storage.service';
+import { SyncService } from '../../shared/sync-indicator/sync.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -88,6 +90,8 @@ export class ProductFormComponent implements OnChanges, OnInit {
   readonly cartService = inject(CartService);
   private auth = inject(AuthService);
   private appSettingsService = inject(AppSettingsService);
+  private offlineStorage = inject(OfflineStorageService);
+  private syncService = inject(SyncService);
 
   isEditorOrAdmin = computed(() => {
     const user = this.auth.user();
@@ -387,7 +391,14 @@ export class ProductFormComponent implements OnChanges, OnInit {
     if (!this.product) return;
     this.imageError.set(null);
     this.productService.uploadImages(this.product.id, files).subscribe({
-      next: (res) => this.images.update((imgs) => [...imgs, ...res.images]),
+      next: (res) => {
+        const updated = [...this.images(), ...res.images];
+        this.images.set(updated);
+        // Persist temp images to IDB so they show when reopening the product offline
+        if (!this.offlineStorage.isOnline() && this.product) {
+          this.offlineStorage.saveProduct({ ...this.product, images: updated });
+        }
+      },
       error: () => this.imageError.set('Image upload failed.'),
     });
   }
@@ -426,6 +437,11 @@ export class ProductFormComponent implements OnChanges, OnInit {
     if (!this.categoryNames().includes(category)) {
       const updated = [...this.categories(), { id: 0, name: category }];
       this.categories.set(updated);
+      if (!this.offlineStorage.isOnline() && this.isEditorOrAdmin()) {
+        this.offlineStorage.saveCategory({ id: -Date.now(), name: category }).then(() =>
+          this.syncService.refreshIDBCounts(),
+        );
+      }
     }
     this.form.get('category')?.setValue({ id: 0, name: category });
   }
@@ -446,6 +462,12 @@ export class ProductFormComponent implements OnChanges, OnInit {
     const cond = value.toLowerCase();
     const exists = this.conditionNames().some((name) => name.toLowerCase() === cond);
     if (!exists) {
+      this.conditions.update((list) => [...list, { id: 0, name: cond }]);
+      if (!this.offlineStorage.isOnline() && this.isEditorOrAdmin()) {
+        this.offlineStorage.saveCondition({ id: -Date.now(), name: cond }).then(() =>
+          this.syncService.refreshIDBCounts(),
+        );
+      }
       this.form.get('condition_id')?.setValue(0);
     }
   }
@@ -454,6 +476,12 @@ export class ProductFormComponent implements OnChanges, OnInit {
     const color = value.toLowerCase();
     const exists = this.colorNames().some((name) => name.toLowerCase() === color);
     if (!exists) {
+      this.colors.update((list) => [...list, { id: 0, name: color }]);
+      if (!this.offlineStorage.isOnline() && this.isEditorOrAdmin()) {
+        this.offlineStorage.saveColor({ id: -Date.now(), name: color }).then(() =>
+          this.syncService.refreshIDBCounts(),
+        );
+      }
       this.form.get('color_id')?.setValue(0);
     }
   }
@@ -462,14 +490,17 @@ export class ProductFormComponent implements OnChanges, OnInit {
     const colorObj = this.form.get('color')?.value as IdNamePair;
     const conditionObj = this.form.get('condition')?.value as IdNamePair;
     const categoryObj = this.form.get('category')?.value as IdNamePair;
+    // Normalize negative temp IDs (offline-created attributes stored in IDB) to 0
+    // so the backend resolveRelations upsert fires correctly for both products.
+    const normalizeId = (id: number | null | undefined) => (id && id > 0 ? id : 0);
     return {
       ...this.form.value,
       color: colorObj,
-      color_id: colorObj?.id ?? 0,
+      color_id: normalizeId(colorObj?.id),
       condition: conditionObj,
-      condition_id: conditionObj?.id ?? 0,
+      condition_id: normalizeId(conditionObj?.id),
       category: categoryObj,
-      category_id: categoryObj?.id ?? 0,
+      category_id: normalizeId(categoryObj?.id),
     };
   }
 

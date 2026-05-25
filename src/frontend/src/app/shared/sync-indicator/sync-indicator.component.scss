@@ -93,6 +93,19 @@
   justify-content: space-between;
   align-items: center;
   padding: 6px 16px;
+
+  &.sync-detail-pending {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 4px;
+
+    .sync-detail-label {
+      color: #f59e0b;
+    }
+
+    .sync-detail-value {
+      color: #f59e0b;
+    }
+  }
 }
 
 .sync-detail-label {

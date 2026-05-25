@@ -3,6 +3,9 @@
   @if (pendingMessage()) {
     <div class="info">{{ pendingMessage() }}</div>
   }
+  @if (successMessage()) {
+    <div class="info">{{ successMessage() }}</div>
+  }
   <div class="form-field">
     <label for="email"
       ><span>{{ 'EMAIL' | translate }} <span class="req">*</span></span></label
@@ -28,6 +31,9 @@
   @if (error()) {
     <div class="error">{{ error() }}</div>
   }
+  <div class="link">
+    <a routerLink="/auth/forgot-password">{{ 'FORGOT_PASSWORD' | translate }}</a>
+  </div>
   @if (openRegistrationEnabled()) {
     <div class="link">
       <span>{{ 'NO_ACCOUNT' | translate }}</span>

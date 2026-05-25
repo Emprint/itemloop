@@ -1,4 +1,10 @@
 <div class="page-wide users-list">
+  <nav class="attr-cross-nav">
+    <a routerLink="/admin/settings">{{ 'SETTINGS_DASHBOARD.TITLE' | translate }}</a>
+    <span class="attr-cross-nav-sep">›</span>
+    <span class="attr-cross-nav-active">{{ 'USER_MANAGEMENT' | translate }}</span>
+  </nav>
+
   <h2 class="page-title">{{ 'USER_MANAGEMENT' | translate }}</h2>
 
   @if (errorMessage()) {

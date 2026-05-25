@@ -1,0 +1,82 @@
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--card-border);
+    color: var(--text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--card-border);
+    vertical-align: top;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.cell-date { white-space: nowrap; color: var(--text-muted); font-size: 13px; }
+.cell-recipient { font-family: monospace; }
+.cell-template { color: var(--text-muted); font-size: 13px; }
+.cell-subject { max-width: 240px; }
+.cell-error { color: #ef4444; font-size: 13px; max-width: 200px; word-break: break-word; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-sent {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.badge-failed {
+  background: #fee2e2;
+  color: #dc2626;
+}

@@ -1,5 +1,12 @@
 <router-outlet></router-outlet>
 
+@if (updateAvailable()) {
+  <div class="update-banner" role="alert">
+    <span>{{ 'UPDATE_AVAILABLE' | translate }}</span>
+    <button (click)="applyUpdate()">{{ 'UPDATE_NOW' | translate }}</button>
+  </div>
+}
+
 @if (dropdown.pos()) {
   <div
     class="global-dropdown"

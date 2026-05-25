@@ -20,7 +20,19 @@ export interface User {
   email: string;
   role: UserRole | null;
   status: UserStatus | null;
+  locale: string;
   created_at: string;
   updated_at: string;
   last_login: string | null;
+}
+
+export interface UserProfile {
+  id: number;
+  name: string;
+  email: string;
+  role: UserRole | null;
+  status: UserStatus | null;
+  locale: string;
+  created_at: string;
+  updated_at: string;
 }

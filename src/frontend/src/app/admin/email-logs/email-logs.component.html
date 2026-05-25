@@ -1,0 +1,55 @@
+<div class="page-wide">
+  <div class="page-header">
+    <a routerLink="/admin/settings" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+      {{ 'SETTINGS_DASHBOARD.TITLE' | translate }}
+    </a>
+    <h2>{{ 'EMAIL_LOGS.TITLE' | translate }}</h2>
+  </div>
+
+  @if (loading()) {
+    <p class="page-loading">{{ 'LOADING' | translate }}</p>
+  } @else if (error()) {
+    <p class="page-error">{{ error() | translate }}</p>
+  } @else if (logs().length === 0) {
+    <div class="page-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+      </svg>
+      <p>{{ 'EMAIL_LOGS.EMPTY' | translate }}</p>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'EMAIL_LOGS.DATE' | translate }}</th>
+            <th>{{ 'EMAIL_LOGS.RECIPIENT' | translate }}</th>
+            <th>{{ 'EMAIL_LOGS.TEMPLATE' | translate }}</th>
+            <th>{{ 'EMAIL_LOGS.SUBJECT' | translate }}</th>
+            <th>{{ 'EMAIL_LOGS.STATUS' | translate }}</th>
+            <th>{{ 'EMAIL_LOGS.ERROR' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (log of logs(); track log.id) {
+            <tr>
+              <td class="cell-date">{{ log.created_at | localeDate:'short' }}</td>
+              <td class="cell-recipient">{{ log.recipient }}</td>
+              <td class="cell-template">{{ log.template || '—' }}</td>
+              <td class="cell-subject">{{ log.subject }}</td>
+              <td class="cell-status">
+                <span class="badge" [class.badge-sent]="log.status === 'sent'" [class.badge-failed]="log.status === 'failed'">
+                  {{ 'EMAIL_LOGS.STATUS_' + log.status.toUpperCase() | translate }}
+                </span>
+              </td>
+              <td class="cell-error">{{ log.error || '—' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

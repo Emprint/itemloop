@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `password`          VARCHAR(255)   NOT NULL,
     `role`              ENUM('admin','editor','member','customer') NOT NULL DEFAULT 'customer',
     `status`            ENUM('active','pending','deactivated') NOT NULL DEFAULT 'active',
+    `locale`            VARCHAR(5)      NOT NULL DEFAULT 'en',
     `last_login`        TIMESTAMP       NULL DEFAULT NULL,
     `created_at`        TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`        TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -183,6 +184,15 @@ CREATE TABLE IF NOT EXISTS `order_items` (
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ----------------------------
+-- Password reset tokens
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
+    `email`      VARCHAR(255) NOT NULL PRIMARY KEY,
+    `token`      VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
 -- App settings (centralized configuration)
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `app_settings` (
@@ -199,3 +209,18 @@ INSERT INTO `app_settings` (`key`, `value`, `description`) VALUES
     ('fixed_locale',        'en',   'Fixed locale when language_mode is "single"'),
     ('shop_mode',           '1',    'Whether cart, order, and checkout features are enabled (1 = yes, 0 = no)')
 ON DUPLICATE KEY UPDATE `value` = VALUES(`value`);
+
+-- ----------------------------
+-- Email logs
+-- ----------------------------
+CREATE TABLE IF NOT EXISTS `email_logs` (
+    `id`         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `recipient`  VARCHAR(255)    NOT NULL COMMENT 'Masked email address',
+    `template`   VARCHAR(100)    NULL DEFAULT NULL,
+    `subject`    VARCHAR(255)    NOT NULL,
+    `status`     ENUM('sent','failed') NOT NULL,
+    `error`      TEXT            NULL DEFAULT NULL,
+    `created_at` TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_email_logs_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

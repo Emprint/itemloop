@@ -1,0 +1,102 @@
+<div class="page">
+  <nav class="breadcrumb">
+    <a routerLink="/admin/settings">{{ 'SETTINGS' | translate }}</a>
+    <span>/</span>
+    <span>{{ 'PROFILE' | translate }}</span>
+  </nav>
+
+  <h2>{{ 'PROFILE' | translate }}</h2>
+
+  <!-- Personal Info -->
+  <section class="card">
+    <h3>{{ 'PERSONAL_INFO' | translate }}</h3>
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+      <div class="form-field">
+        <label for="name"
+          ><span>{{ 'NAME' | translate }} <span class="req">*</span></span></label
+        >
+        <input type="text" formControlName="name" id="name" required autocomplete="name" />
+      </div>
+
+      <div class="form-field">
+        <label for="locale">{{ 'LANGUAGE_PREFERENCE' | translate }}</label>
+        <select formControlName="locale" id="locale">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+        </select>
+      </div>
+
+      @if (profileError()) {
+        <div class="error">{{ profileError() }}</div>
+      }
+      @if (profileSaved()) {
+        <div class="page-loading">{{ 'SAVE_CHANGES_SUCCESS' | translate }}</div>
+      }
+
+      <div class="buttons-list">
+        <button type="submit" [disabled]="loading()">{{ 'SAVE_CHANGES' | translate }}</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Change Password -->
+  <section class="card">
+    <h3>{{ 'CHANGE_PASSWORD' | translate }}</h3>
+    <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+      <div class="form-field">
+        <label for="current_password"
+          ><span>{{ 'CURRENT_PASSWORD' | translate }} <span class="req">*</span></span></label
+        >
+        <input
+          type="password"
+          formControlName="current_password"
+          id="current_password"
+          required
+          autocomplete="current-password"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="new_password"
+          ><span>{{ 'NEW_PASSWORD' | translate }} <span class="req">*</span></span></label
+        >
+        <input
+          type="password"
+          formControlName="new_password"
+          id="new_password"
+          required
+          autocomplete="new-password"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="confirm_password"
+          ><span>{{ 'CONFIRM_PASSWORD' | translate }} <span class="req">*</span></span></label
+        >
+        <input
+          type="password"
+          formControlName="confirm_password"
+          id="confirm_password"
+          required
+          autocomplete="new-password"
+        />
+        @if (passwordForm.hasError('mismatch') && passwordForm.get('confirm_password')?.touched) {
+          <span class="error">{{ 'PASSWORDS_DONT_MATCH' | translate }}</span>
+        }
+      </div>
+
+      @if (passwordError()) {
+        <div class="error">{{ passwordError() }}</div>
+      }
+      @if (passwordSaved()) {
+        <div class="page-loading">{{ 'PASSWORD_CHANGED_SUCCESS' | translate }}</div>
+      }
+
+      <div class="buttons-list">
+        <button type="submit" [disabled]="passwordLoading()">
+          {{ 'CHANGE_PASSWORD' | translate }}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

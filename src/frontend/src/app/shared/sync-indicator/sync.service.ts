@@ -14,7 +14,7 @@ export class SyncService {
   private offlineStorage = inject(OfflineStorageService);
   private authService = inject(AuthService);
 
-  readonly syncState = signal<SyncState>('synced');
+  readonly syncState = signal<SyncState>(navigator.onLine ? 'synced' : 'offline');
   readonly pendingChanges = signal(0);
   readonly lastSync = signal<Date | null>(null);
   readonly syncDetails = signal<{
@@ -40,13 +40,13 @@ export class SyncService {
   readonly label = computed(() => {
     switch (this.syncState()) {
       case 'synced':
-        return 'All synced';
+        return this.pendingChanges() > 0 ? 'SYNC_PENDING_UPLOAD' : 'SYNC_ALL_SYNCED';
       case 'syncing':
-        return `${this.pendingChanges()} pending changes`;
+        return 'SYNCING';
       case 'offline':
-        return 'Changes saved locally';
+        return 'SYNC_CHANGES_SAVED_LOCALLY';
       case 'error':
-        return 'Tap to retry';
+        return 'TAP_TO_RETRY';
     }
   });
 
@@ -57,6 +57,11 @@ export class SyncService {
   }
 
   constructor() {
+    // Keep pendingChanges in sync with the live queue count from OfflineStorageService
+    effect(() => {
+      this.pendingChanges.set(this.offlineStorage.pendingSyncCount());
+    });
+
     // React to online/offline events — but only sync for editors/admins
     effect(() => {
       const isOnline = this.offlineStorage.isOnline();
@@ -78,10 +83,15 @@ export class SyncService {
         this.startPeriodicSync();
       } else if (!user || !this.isOfflineCapable()) {
         this.stopPeriodicSync();
-        // Reset sync state for non-offline-capable users
-        this.syncState.set('synced');
+        // Only reset to synced when actually online; don't override 'offline' state
+        if (this.offlineStorage.isOnline()) {
+          this.syncState.set('synced');
+        }
       }
     });
+
+    // Load IDB counts on startup so the panel shows data even before syncAll runs
+    this.refreshIDBCounts();
   }
 
   private startPeriodicSync() {
@@ -229,6 +239,24 @@ export class SyncService {
   private async updatePendingCount() {
     const items = await this.offlineStorage.getPendingSyncItems();
     this.pendingChanges.set(items.length);
+    await this.refreshIDBCounts();
+  }
+
+  /** Reads counts directly from IDB and updates syncDetails — visible even when offline. */
+  async refreshIDBCounts(): Promise<void> {
+    try {
+      const [products, locations, categories, conditions, colors] = await Promise.all([
+        this.offlineStorage.getProducts(),
+        this.offlineStorage.getLocations(),
+        this.offlineStorage.getCategories(),
+        this.offlineStorage.getConditions(),
+        this.offlineStorage.getColors(),
+      ]);
+      const images = products.reduce((acc, p) => acc + (p.images?.length || 0), 0);
+      this.syncDetails.set({ products: products.length, locations: locations.length, categories: categories.length, conditions: conditions.length, colors: colors.length, images });
+    } catch {
+      /* ignore — panel will show stale counts rather than crash */
+    }
   }
 
   async retrySync() {

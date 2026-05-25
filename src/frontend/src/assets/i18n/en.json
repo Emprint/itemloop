@@ -73,7 +73,10 @@
   "SETTINGS": "Settings",
   "SETTINGS_DASHBOARD": {
     "TITLE": "Settings",
-    "GENERAL_HINT": "Currency, registration, language mode and shop settings"
+    "GENERAL_HINT": "Currency, registration, language mode and shop settings",
+    "USERS_HINT": "Manage accounts, roles and pending registrations",
+    "PROFILE_HINT": "Edit your name, language preference and password",
+    "EMAIL_LOGS_HINT": "Audit outgoing emails and delivery status"
   },
   "APP_SETTINGS": {
     "TITLE": "Application Settings",
@@ -280,6 +283,19 @@
   "DASHBOARD_MANAGE_USERS": "Manage users",
   "LOADING": "Loading",
   "ERROR_LOADING_STATS": "Could not load dashboard data",
+  "EMAIL_LOGS": {
+    "TITLE": "Email Logs",
+    "EMPTY": "No emails have been sent yet.",
+    "LOAD_ERROR": "Could not load email logs.",
+    "DATE": "Date",
+    "RECIPIENT": "Recipient",
+    "TEMPLATE": "Template",
+    "SUBJECT": "Subject",
+    "STATUS": "Status",
+    "ERROR": "Error",
+    "STATUS_SENT": "Sent",
+    "STATUS_FAILED": "Failed"
+  },
   "VIEW_PRODUCT": "View Product",
   "VIEW": "View",
   "ORDERS": {
@@ -310,6 +326,13 @@
   },
   "DATA_IS_SAFE": "Data is safe",
   "TAP_TO_RETRY": "Tap to retry",
+  "UPDATE_AVAILABLE": "A new version is available.",
+  "UPDATE_NOW": "Update now",
+  "SYNC_ALL_SYNCED": "All synced",
+  "SYNC_PENDING_UPLOAD": "Pending upload",
+  "SYNC_CHANGES_SAVED_LOCALLY": "Changes saved locally",
+  "SYNC_PENDING_CHANGES": "pending changes",
+  "SYNC_WAITING_UPLOAD": "Waiting to upload",
   "ATTRIBUTES": {
     "TAB": "Attributes",
     "TITLE": "Attributes",
@@ -344,5 +367,25 @@
       "CANCEL": "Cancel",
       "DELETE": "Delete"
     }
-  }
+  },
+  "FORGOT_PASSWORD": "Forgot your password?",
+  "FORGOT_PASSWORD_HINT": "Enter your email address and we'll send you a link to reset your password.",
+  "RESET_LINK_SENT": "If this email exists, a reset link has been sent. Please check your inbox.",
+  "SEND_RESET_LINK": "Send reset link",
+  "RESET_PASSWORD": "Reset password",
+  "PASSWORD_RESET_SUCCESS": "Your password has been reset. You can now log in.",
+  "RESET_LINK_INVALID": "This reset link is invalid. Please request a new one.",
+  "RESET_LINK_EXPIRED": "This reset link has expired. Please request a new one.",
+  "PASSWORDS_DONT_MATCH": "Passwords do not match.",
+  "PROFILE": "Profile",
+  "PERSONAL_INFO": "Personal information",
+  "LANGUAGE_PREFERENCE": "Language preference",
+  "CHANGE_PASSWORD": "Change password",
+  "CURRENT_PASSWORD": "Current password",
+  "NEW_PASSWORD": "New password",
+  "CONFIRM_PASSWORD": "Confirm password",
+  "SAVE_CHANGES": "Save changes",
+  "SAVE_CHANGES_SUCCESS": "Changes saved successfully.",
+  "PASSWORD_CHANGED_SUCCESS": "Password changed successfully.",
+  "BACK_TO_LOGIN": "Back to login"
 }

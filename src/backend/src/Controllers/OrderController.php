@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Database;
+use App\Services\EmailService;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -78,7 +79,10 @@ class OrderController
             return $this->json($response, ['error' => 'SERVER_ERROR'], 500);
         }
 
-        return $this->json($response, $this->findOrder($db, $orderId), 201);
+        $order = $this->findOrder($db, $orderId);
+        $this->sendOrderConfirmationEmails($order, $user);
+
+        return $this->json($response, $order, 201);
     }
 
     // -----------------------------------------------------------------------
@@ -125,12 +129,103 @@ class OrderController
             return $this->json($response, ['error' => 'NOT_FOUND'], 404);
         }
 
-        return $this->json($response, $this->findOrder($db, $id));
+        $order = $this->findOrder($db, $id);
+
+        if (in_array($status, ['completed', 'cancelled'], true)) {
+            $this->sendOrderStatusEmail($db, $order, $status);
+        }
+
+        return $this->json($response, $order);
     }
 
     // -----------------------------------------------------------------------
     // Helpers
     // -----------------------------------------------------------------------
+
+    private function sendOrderConfirmationEmails(array $order, array $user): void
+    {
+        try {
+            $db     = Database::get();
+            $locale = $this->getUserLocale($db, (int) $user['id']);
+            $currency = $_ENV['CURRENCY'] ?? 'EUR';
+
+            $items = array_map(fn($i) => [
+                'name'  => $i['product_title'] ?? '—',
+                'qty'   => $i['quantity'],
+                'price' => $i['unit_price'] ?? 0,
+            ], $order['items'] ?? []);
+
+            $mailer = new EmailService();
+
+            // Customer confirmation
+            $mailer->sendTemplate(
+                $user['email'],
+                $user['name'],
+                'order-confirmation',
+                [
+                    'userName'   => $user['name'],
+                    'orderId'    => $order['id'],
+                    'orderItems' => $items,
+                    'orderTotal' => $order['total'] ?? 0,
+                    'currency'   => $currency,
+                ],
+                $locale
+            );
+
+            // Admin notification
+            $adminEmail = $_ENV['MAIL_ADMIN_TO'] ?? '';
+            if ($adminEmail !== '') {
+                $mailer->sendTemplate(
+                    $adminEmail,
+                    'Admin',
+                    'order-notification-admin',
+                    [
+                        'orderId'       => $order['id'],
+                        'customerName'  => $user['name'],
+                        'customerEmail' => $user['email'],
+                        'orderItems'    => $items,
+                        'orderTotal'    => $order['total'] ?? 0,
+                        'currency'      => $currency,
+                    ],
+                    'en' // Admin email always in English (or could fetch admin's locale)
+                );
+            }
+        } catch (\Throwable $e) {
+            error_log('OrderController: failed to send order confirmation emails — ' . $e->getMessage());
+        }
+    }
+
+    private function sendOrderStatusEmail(\PDO $db, array $order, string $status): void
+    {
+        try {
+            $userId   = (int) ($order['user']['id'] ?? 0);
+            if (!$userId) return;
+            $locale   = $this->getUserLocale($db, $userId);
+            $currency = $_ENV['CURRENCY'] ?? 'EUR';
+
+            (new EmailService())->sendTemplate(
+                $order['user']['email'],
+                $order['user']['name'],
+                'order-status-update',
+                [
+                    'userName'  => $order['user']['name'],
+                    'orderId'   => $order['id'],
+                    'newStatus' => $status,
+                    'currency'  => $currency,
+                ],
+                $locale
+            );
+        } catch (\Throwable $e) {
+            error_log('OrderController: failed to send order status email — ' . $e->getMessage());
+        }
+    }
+
+    private function getUserLocale(\PDO $db, int $userId): string
+    {
+        $stmt = $db->prepare('SELECT locale FROM users WHERE id = ?');
+        $stmt->execute([$userId]);
+        return $stmt->fetchColumn() ?: 'en';
+    }
 
     private function fetchOrders(\PDO $db, array $conditions = []): array
     {

@@ -95,6 +95,13 @@
     justify-content: center;
     flex-shrink: 0;
     position: relative;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #4b5563;
+    }
 
     .user-online {
       position: absolute;
@@ -120,6 +127,11 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
 
     .user-role {

@@ -120,12 +120,12 @@
 
     <div class="sync-text">
       <span class="sync-title">{{ 'SYNC_STATUS' | translate }}</span>
-      <span class="sync-label">{{ label() }}</span>
+      <span class="sync-label">{{ label() | translate }}</span>
       @if (isState('synced') && lastSync()) {
         <span class="sync-time">{{ getLastSyncText() }}</span>
       }
       @if (isState('syncing')) {
-        <span class="sync-time">{{ pendingChanges() }} {{ 'PENDING' | translate }}</span>
+        <span class="sync-time">{{ pendingChanges() }} {{ 'SYNC_PENDING_CHANGES' | translate }}</span>
       }
       @if (isState('offline')) {
         <span class="sync-time">{{ 'DATA_IS_SAFE' | translate }}</span>
@@ -176,6 +176,12 @@
           <div class="sync-detail-item">
             <span class="sync-detail-label">{{ 'LAST_SYNC' | translate }}</span>
             <span class="sync-detail-value">{{ getLastSyncText() }}</span>
+          </div>
+        }
+        @if (pendingChanges() > 0) {
+          <div class="sync-detail-item sync-detail-pending">
+            <span class="sync-detail-label">{{ 'SYNC_WAITING_UPLOAD' | translate }}</span>
+            <span class="sync-detail-value">{{ pendingChanges() }}</span>
           </div>
         }
       </div>

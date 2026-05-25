@@ -25,6 +25,7 @@ export class Login implements OnInit {
   form: FormGroup;
   error = signal('');
   pendingMessage = signal('');
+  successMessage = signal('');
   readonly settings = toSignal(this.appSettingsService.getAll(), {
     initialValue: {} as AppSettings,
   });
@@ -40,6 +41,9 @@ export class Login implements OnInit {
   ngOnInit() {
     if (this.route.snapshot.queryParamMap.get('pending') === '1') {
       this.pendingMessage.set(this.translate.instant('REGISTRATION_PENDING_MESSAGE'));
+    }
+    if (this.route.snapshot.queryParamMap.get('reset') === '1') {
+      this.successMessage.set(this.translate.instant('PASSWORD_RESET_SUCCESS'));
     }
   }
 

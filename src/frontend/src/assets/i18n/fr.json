@@ -147,7 +147,10 @@
   "SETTINGS": "Paramètres",
   "SETTINGS_DASHBOARD": {
     "TITLE": "Paramètres",
-    "GENERAL_HINT": "Devise, inscription, mode de langue et paramètres de boutique"
+    "GENERAL_HINT": "Devise, inscription, mode de langue et paramètres de boutique",
+    "USERS_HINT": "Gérer les comptes, les rôles et les inscriptions en attente",
+    "PROFILE_HINT": "Modifier votre nom, votre langue préférée et votre mot de passe",
+    "EMAIL_LOGS_HINT": "Auditer les emails sortants et leur statut de livraison"
   },
   "APP_SETTINGS": {
     "TITLE": "Paramètres de l'application",
@@ -280,6 +283,19 @@
   "DASHBOARD_MANAGE_USERS": "Gérer les utilisateurs",
   "LOADING": "Chargement",
   "ERROR_LOADING_STATS": "Impossible de charger les données",
+  "EMAIL_LOGS": {
+    "TITLE": "Journaux d'emails",
+    "EMPTY": "Aucun email n'a encore été envoyé.",
+    "LOAD_ERROR": "Impossible de charger les journaux d'emails.",
+    "DATE": "Date",
+    "RECIPIENT": "Destinataire",
+    "TEMPLATE": "Modèle",
+    "SUBJECT": "Sujet",
+    "STATUS": "Statut",
+    "ERROR": "Erreur",
+    "STATUS_SENT": "Envoyé",
+    "STATUS_FAILED": "Échoué"
+  },
   "VIEW_PRODUCT": "Voir le produit",
   "VIEW": "Voir",
   "ORDERS": {
@@ -310,6 +326,13 @@
   },
   "DATA_IS_SAFE": "Données en sécurité",
   "TAP_TO_RETRY": "Appuyer pour réessayer",
+  "UPDATE_AVAILABLE": "Une nouvelle version est disponible.",
+  "UPDATE_NOW": "Mettre à jour",
+  "SYNC_ALL_SYNCED": "Tout synchronisé",
+  "SYNC_PENDING_UPLOAD": "En attente d'envoi",
+  "SYNC_CHANGES_SAVED_LOCALLY": "Modifications sauvegardées localement",
+  "SYNC_PENDING_CHANGES": "modifications en attente",
+  "SYNC_WAITING_UPLOAD": "En attente d'envoi",
   "ATTRIBUTES": {
     "TAB": "Attributs",
     "TITLE": "Attributs",
@@ -344,5 +367,25 @@
       "CANCEL": "Annuler",
       "DELETE": "Supprimer"
     }
-  }
+  },
+  "FORGOT_PASSWORD": "Mot de passe oublié ?",
+  "FORGOT_PASSWORD_HINT": "Entrez votre adresse email et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+  "RESET_LINK_SENT": "Si cet email existe, un lien de réinitialisation a été envoyé. Vérifiez votre boîte de réception.",
+  "SEND_RESET_LINK": "Envoyer le lien",
+  "RESET_PASSWORD": "Réinitialiser le mot de passe",
+  "PASSWORD_RESET_SUCCESS": "Votre mot de passe a été réinitialisé. Vous pouvez maintenant vous connecter.",
+  "RESET_LINK_INVALID": "Ce lien de réinitialisation est invalide. Veuillez en demander un nouveau.",
+  "RESET_LINK_EXPIRED": "Ce lien de réinitialisation a expiré. Veuillez en demander un nouveau.",
+  "PASSWORDS_DONT_MATCH": "Les mots de passe ne correspondent pas.",
+  "PROFILE": "Profil",
+  "PERSONAL_INFO": "Informations personnelles",
+  "LANGUAGE_PREFERENCE": "Langue préférée",
+  "CHANGE_PASSWORD": "Changer le mot de passe",
+  "CURRENT_PASSWORD": "Mot de passe actuel",
+  "NEW_PASSWORD": "Nouveau mot de passe",
+  "CONFIRM_PASSWORD": "Confirmer le mot de passe",
+  "SAVE_CHANGES": "Enregistrer les modifications",
+  "SAVE_CHANGES_SUCCESS": "Modifications enregistrées avec succès.",
+  "PASSWORD_CHANGED_SUCCESS": "Mot de passe modifié avec succès.",
+  "BACK_TO_LOGIN": "Retour à la connexion"
 }

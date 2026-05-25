@@ -55,6 +55,8 @@ export class OfflineStorageService {
   hasPendingSync = signal(false);
   syncErrors = signal<SyncError[]>([]);
 
+  pendingSyncCount = signal(0);
+
   /** Prevents concurrent syncPendingChanges() calls from racing each other. */
   private isSyncing = false;
 
@@ -158,11 +160,13 @@ export class OfflineStorageService {
         const items = request.result as SyncQueueItem[];
         const count = items.filter((item) => !item.synced).length;
         this.hasPendingSync.set(count > 0);
+        this.pendingSyncCount.set(count);
         this.loadSyncErrors();
         resolve();
       };
       request.onerror = () => {
         this.hasPendingSync.set(false);
+        this.pendingSyncCount.set(0);
         this.loadSyncErrors();
         resolve();
       };
@@ -295,6 +299,23 @@ export class OfflineStorageService {
     });
   }
 
+  // App settings cache (stored in meta store)
+  async saveSettings(settings: Record<string, string>): Promise<void> {
+    await this.ensureDB();
+    const tx = this.db!.transaction([this.STORES.meta], 'readwrite');
+    tx.objectStore(this.STORES.meta).put({ key: 'app_settings', value: JSON.stringify(settings) });
+  }
+
+  async getCachedSettings(): Promise<Record<string, string> | null> {
+    await this.ensureDB();
+    const tx = this.db!.transaction([this.STORES.meta], 'readonly');
+    const req = tx.objectStore(this.STORES.meta).get('app_settings');
+    return new Promise((resolve) => {
+      req.onsuccess = () => resolve(req.result ? JSON.parse(req.result.value) : null);
+      req.onerror = () => resolve(null);
+    });
+  }
+
   // Meta methods for tracking sync state
   async getLastSync(entityType: string): Promise<Date | null> {
     await this.ensureDB();
@@ -368,6 +389,7 @@ export class OfflineStorageService {
     const store = transaction.objectStore(this.STORES.syncQueue);
     store.add(item);
     this.hasPendingSync.set(true);
+    this.pendingSyncCount.update((n) => n + 1);
   }
 
   async getPendingSyncItems(): Promise<SyncQueueItem[]> {
@@ -381,7 +403,11 @@ export class OfflineStorageService {
     return new Promise((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => {
-        resolve((request.result as SyncQueueItem[]).filter((item) => !item.synced));
+        resolve(
+          (request.result as SyncQueueItem[])
+            .filter((item) => !item.synced)
+            .sort((a, b) => a.timestamp - b.timestamp),
+        );
       };
       request.onerror = () => reject(request.error);
     });
@@ -444,10 +470,16 @@ export class OfflineStorageService {
 
       const pendingItems = await this.getPendingSyncItems();
 
+      // Maps temp negative IDs → real server IDs assigned after a create sync.
+      // Applied to subsequent update/upload-image items before they are processed.
+      const idMap = new Map<number, number>();
+
       for (const item of pendingItems) {
         try {
-          await this.syncItem(item);
+          this.applyIdMap(item, idMap);
+          const mapping = await this.syncItem(item);
           await this.markSyncItemAsSynced(item.id);
+          if (mapping) idMap.set(mapping.tempId, mapping.realId);
         } catch (error) {
           console.error('Failed to sync item:', item, error);
           const syncError: SyncError = {
@@ -467,19 +499,32 @@ export class OfflineStorageService {
     }
   }
 
-  private async syncItem(item: SyncQueueItem): Promise<void> {
+  /** Replaces any stale temp IDs in an item's payload with the real server ID. */
+  private applyIdMap(item: SyncQueueItem, idMap: Map<number, number>): void {
+    if (item.type !== 'product') return;
+    if (item.action === 'update' || item.action === 'delete') {
+      const p = item.data as Product;
+      const realId = idMap.get(p.id);
+      if (realId !== undefined) p.id = realId;
+    } else if (item.action === 'upload-image' || item.action === 'delete-image') {
+      const d = item.data as ImageUploadData | ImageDeleteData;
+      const realId = idMap.get(d.productId);
+      if (realId !== undefined) d.productId = realId;
+    }
+  }
+
+  private async syncItem(
+    item: SyncQueueItem,
+  ): Promise<{ tempId: number; realId: number } | null> {
     switch (item.type) {
       case 'product':
         if (item.action === 'create') {
-          // Use POST for new products (temp IDs are negative numbers)
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { id: _tempId, ...productData } = item.data as Product;
+          const { id: tempId, ...productData } = item.data as Product;
           const created = await this.http.post<Product>('/api/products', productData).toPromise();
           if (created) {
-            // Save the real product to IndexedDB
             await this.saveProduct(created);
-            // Remove the temp product from IndexedDB
-            await this.deleteProductById((item.data as Product).id);
+            await this.deleteProductById(tempId);
+            return { tempId, realId: created.id };
           }
         } else if (item.action === 'update') {
           const p = item.data as Product;
@@ -497,7 +542,7 @@ export class OfflineStorageService {
           const result = await this.http
             .post<{ images: unknown[] }>(`/api/products/${uploadData.productId}/images`, form)
             .toPromise();
-          // Refresh product in IDB after image upload
+          // Refresh product in IDB with real images after upload
           if (result) {
             try {
               const updated = await this.http
@@ -529,6 +574,7 @@ export class OfflineStorageService {
         }
         break;
     }
+    return null;
   }
 
   private async deleteProductById(id: number): Promise<void> {

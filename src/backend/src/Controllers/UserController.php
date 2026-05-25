@@ -164,6 +164,71 @@ class UserController
         return $this->json($response, ['success' => true]);
     }
 
+    public function getProfile(Request $request, Response $response): Response
+    {
+        $user = $request->getAttribute('user');
+        $db   = Database::get();
+        $stmt = $db->prepare('SELECT id, name, email, role, status, locale, created_at, updated_at FROM users WHERE id = ?');
+        $stmt->execute([$user['id']]);
+        return $this->json($response, $stmt->fetch());
+    }
+
+    public function updateProfile(Request $request, Response $response): Response
+    {
+        $user   = $request->getAttribute('user');
+        $body   = (array) $request->getParsedBody();
+        $name   = trim($body['name']   ?? '');
+        $locale = trim($body['locale'] ?? '');
+
+        $errors = [];
+        if ($name === '') $errors['name'] = ['Name is required.'];
+        if (!in_array($locale, ['en', 'fr'], true)) $errors['locale'] = ['Invalid locale. Supported: en, fr.'];
+        if ($errors) return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => $errors], 422);
+
+        $db = Database::get();
+        $db->prepare('UPDATE users SET name = ?, locale = ?, updated_at = NOW() WHERE id = ?')
+           ->execute([$name, $locale, $user['id']]);
+
+        $stmt = $db->prepare('SELECT id, name, email, role, status, locale, created_at, updated_at FROM users WHERE id = ?');
+        $stmt->execute([$user['id']]);
+        $updated = $stmt->fetch();
+
+        // Refresh session with updated name/locale
+        $_SESSION['user'] = $updated;
+
+        return $this->json($response, $updated);
+    }
+
+    public function changePassword(Request $request, Response $response): Response
+    {
+        $user            = $request->getAttribute('user');
+        $body            = (array) $request->getParsedBody();
+        $currentPassword = $body['current_password'] ?? '';
+        $newPassword     = $body['new_password']     ?? '';
+
+        $errors = [];
+        if ($currentPassword === '') $errors['current_password'] = ['Current password is required.'];
+        if (strlen($newPassword) < 8) $errors['new_password'] = ['Password must be at least 8 characters.'];
+        if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/', $newPassword)) {
+            $errors['new_password'] = ['Password must contain at least one letter, one digit, and one special character.'];
+        }
+        if ($errors) return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => $errors], 422);
+
+        $db   = Database::get();
+        $stmt = $db->prepare('SELECT password FROM users WHERE id = ?');
+        $stmt->execute([$user['id']]);
+        $row  = $stmt->fetch();
+
+        if (!$row || !password_verify($currentPassword, $row['password'])) {
+            return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['current_password' => ['Current password is incorrect.']]], 422);
+        }
+
+        $db->prepare('UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?')
+           ->execute([password_hash($newPassword, PASSWORD_BCRYPT), $user['id']]);
+
+        return $this->json($response, ['message' => 'Password updated successfully.']);
+    }
+
     private function json(Response $response, mixed $data, int $status = 200): Response
     {
         $response->getBody()->write(json_encode($data));

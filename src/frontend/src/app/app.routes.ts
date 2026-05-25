@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Layout } from './core/layout/layout';
 import { AuthLayout } from './core/auth-layout/auth-layout';
+import { Profile } from './profile/profile';
 
 export const routes: Routes = [
   {
@@ -40,6 +41,7 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./orders/orders-routing-module').then((m) => m.OrdersRoutingModule),
       },
+      { path: 'profile', component: Profile },
     ],
   },
 ];

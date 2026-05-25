@@ -773,3 +773,32 @@ table {
     font-size: 0.85rem;
   }
 }
+
+// Breadcrumb nav — used on sub-pages (Attributes, Users, etc.)
+.attr-cross-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+
+  a {
+    color: #6b7280;
+    text-decoration: none;
+
+    &:hover {
+      color: #111827;
+      text-decoration: underline;
+    }
+  }
+}
+
+.attr-cross-nav-sep {
+  color: #9ca3af;
+}
+
+.attr-cross-nav-active {
+  color: #111827;
+  font-weight: 500;
+}

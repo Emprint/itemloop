@@ -22,6 +22,7 @@ use App\Controllers\ProductColorController;
 use App\Controllers\DashboardController;
 use App\Controllers\OrderController;
 use App\Controllers\AppSettingsController;
+use App\Controllers\EmailLogController;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -113,16 +114,24 @@ $app->get('/api/csrf-cookie', function ($request, $response) {
 // App settings — GET is public; PUT is admin-only
 $app->get('/api/settings', [AppSettingsController::class, 'getAll']);
 $app->put('/api/settings', [AppSettingsController::class, 'update'])->add(new AdminMiddleware())->add(new AuthMiddleware());
+$app->get('/api/admin/email-logs', [EmailLogController::class, 'index'])->add(new AdminMiddleware())->add(new AuthMiddleware());
 
 // Auth
 $app->group('/api/auth', function (RouteCollectorProxy $group) {
-    $group->post('/register', [AuthController::class, 'register']);
-    $group->post('/login',    [AuthController::class, 'login']);
-    $group->post('/logout',    [AuthController::class, 'logout'])->add(new AuthMiddleware());
+    $group->post('/register',        [AuthController::class, 'register']);
+    $group->post('/login',           [AuthController::class, 'login']);
+    $group->post('/logout',          [AuthController::class, 'logout'])->add(new AuthMiddleware());
+    $group->post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    $group->post('/reset-password',  [AuthController::class, 'resetPassword']);
 });
 
 // Current user (session restore)
 $app->get('/api/me', [AuthController::class, 'me'])->add(new AuthMiddleware());
+
+// User profile (self-service — any authenticated user)
+$app->get('/api/me/profile',          [UserController::class, 'getProfile'])->add(new AuthMiddleware());
+$app->patch('/api/me/profile',        [UserController::class, 'updateProfile'])->add(new AuthMiddleware());
+$app->post('/api/me/change-password', [UserController::class, 'changePassword'])->add(new AuthMiddleware());
 
 // ---------------------------------------------------------------------------
 // Products — public reads (when public_mode enabled), auth writes

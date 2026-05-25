@@ -21,7 +21,8 @@ const routes: Routes = [
       },
       {
         path: 'users',
-        loadComponent: () => import('./users-list/users-list').then((m) => m.UsersList),
+        redirectTo: 'settings/users',
+        pathMatch: 'full',
       },
       {
         path: 'settings',
@@ -37,6 +38,15 @@ const routes: Routes = [
             path: 'general',
             loadComponent: () =>
               import('./app-settings/app-settings.component').then((m) => m.AppSettingsComponent),
+          },
+          {
+            path: 'email-logs',
+            loadComponent: () =>
+              import('./email-logs/email-logs.component').then((m) => m.EmailLogsComponent),
+          },
+          {
+            path: 'users',
+            loadComponent: () => import('./users-list/users-list').then((m) => m.UsersList),
           },
         ],
       },
