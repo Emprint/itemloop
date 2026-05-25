@@ -157,6 +157,8 @@
     "LOADING": "Chargement des paramètres...",
     "SAVING": "Enregistrement...",
     "SAVE": "Enregistrer les modifications",
+    "APP_NAME_LABEL": "Nom de l'application",
+    "APP_NAME_HINT": "Nom affiché dans l'en-tête de l'application et dans les e-mails sortants (max 50 caractères).",
     "CURRENCY_LABEL": "Devise",
     "CURRENCY_HINT": "Code de devise ISO 4217 utilisé dans l'interface pour les prix et les valeurs.",
     "OPEN_REGISTRATION_LABEL": "Autoriser l'inscription publique",
@@ -391,5 +393,7 @@
   "SAVE_CHANGES": "Enregistrer les modifications",
   "SAVE_CHANGES_SUCCESS": "Modifications enregistrées avec succès.",
   "PASSWORD_CHANGED_SUCCESS": "Mot de passe modifié avec succès.",
+  "NOTIFY_ADMIN_EMAILS": "Recevoir les notifications e-mail admin",
+  "NOTIFY_ADMIN_EMAILS_HINT": "Lorsqu'activé, vous recevrez un e-mail à chaque nouvelle commande ou inscription en attente d'approbation.",
   "BACK_TO_LOGIN": "Retour à la connexion"
 }

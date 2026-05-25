@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class AppSettingsController
 {
     private const VALID_KEYS = [
+        'app_name',
         'currency',
         'open_registration',
         'public_mode',
@@ -34,6 +35,7 @@ class AppSettingsController
         // Provide defaults for any missing keys so the frontend always gets
         // a complete response even before the migration is applied.
         $defaults = [
+            'app_name'          => 'Itemloop',
             'currency'          => 'EUR',
             'open_registration' => '1',
             'public_mode'       => '1',
@@ -57,6 +59,14 @@ class AppSettingsController
         foreach ($body as $key => $value) {
             if (!in_array($key, self::VALID_KEYS, true)) {
                 continue;
+            }
+
+            // Validate app_name (non-empty string, max 50 chars)
+            if ($key === 'app_name') {
+                $value = trim($value);
+                if ($value === '' || mb_strlen($value) > 50) {
+                    continue;
+                }
             }
 
             // Normalize boolean-like settings to '0' or '1'

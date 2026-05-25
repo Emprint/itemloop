@@ -11,17 +11,18 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Users
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `users` (
-    `id`                BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `name`              VARCHAR(255)    NOT NULL,
-    `email`            VARCHAR(255)    NOT NULL UNIQUE,
-    `email_verified_at` TIMESTAMP       NULL DEFAULT NULL,
-    `password`          VARCHAR(255)   NOT NULL,
-    `role`              ENUM('admin','editor','member','customer') NOT NULL DEFAULT 'customer',
-    `status`            ENUM('active','pending','deactivated') NOT NULL DEFAULT 'active',
-    `locale`            VARCHAR(5)      NOT NULL DEFAULT 'en',
-    `last_login`        TIMESTAMP       NULL DEFAULT NULL,
-    `created_at`        TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at`        TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `id`                   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name`                 VARCHAR(255)    NOT NULL,
+    `email`               VARCHAR(255)    NOT NULL UNIQUE,
+    `email_verified_at`    TIMESTAMP       NULL DEFAULT NULL,
+    `password`             VARCHAR(255)   NOT NULL,
+    `role`                 ENUM('admin','editor','member','customer') NOT NULL DEFAULT 'customer',
+    `status`               ENUM('active','pending','deactivated') NOT NULL DEFAULT 'active',
+    `locale`               VARCHAR(5)      NOT NULL DEFAULT 'en',
+    `notify_admin_emails`  TINYINT(1)      NOT NULL DEFAULT 0,
+    `last_login`           TIMESTAMP       NULL DEFAULT NULL,
+    `created_at`           TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`           TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -202,6 +203,7 @@ CREATE TABLE IF NOT EXISTS `app_settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `app_settings` (`key`, `value`, `description`) VALUES
+    ('app_name',            'Itemloop', 'Application name shown in the UI and outgoing emails'),
     ('currency',            'EUR',  'ISO 4217 currency code used throughout the UI'),
     ('open_registration',   '1',    'Whether new users can self-register (1 = yes, 0 = no)'),
     ('public_mode',         '1',    'Whether the app is publicly accessible to non-logged-in users (1 = yes, 0 = no)'),

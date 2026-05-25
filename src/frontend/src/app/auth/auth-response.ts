@@ -24,6 +24,7 @@ export interface User {
   created_at: string;
   updated_at: string;
   last_login: string | null;
+  notify_admin_emails?: number;
 }
 
 export interface UserProfile {
@@ -35,4 +36,5 @@ export interface UserProfile {
   locale: string;
   created_at: string;
   updated_at: string;
+  notify_admin_emails?: number;
 }

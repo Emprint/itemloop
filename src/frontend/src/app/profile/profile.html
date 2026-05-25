@@ -27,6 +27,20 @@
         </select>
       </div>
 
+      @if (isAdmin()) {
+        <div class="form-field checkbox-field">
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              [checked]="notifyAdminEmails()"
+              (change)="notifyAdminEmails.set($any($event.target).checked)"
+            />
+            <span>{{ 'NOTIFY_ADMIN_EMAILS' | translate }}</span>
+          </label>
+          <small class="form-hint">{{ 'NOTIFY_ADMIN_EMAILS_HINT' | translate }}</small>
+        </div>
+      }
+
       @if (profileError()) {
         <div class="error">{{ profileError() }}</div>
       }

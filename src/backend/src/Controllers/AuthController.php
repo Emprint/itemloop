@@ -63,6 +63,26 @@ class AuthController
         $userId = (int) $db->lastInsertId();
 
         if ($status === 'pending') {
+            // Notify opted-in admins about the new pending registration
+            try {
+                $appUrl = rtrim($_ENV['APP_URL'] ?? '', '/');
+                $mailer = new EmailService();
+                foreach (EmailService::getAdminRecipients() as $admin) {
+                    $mailer->sendTemplate(
+                        $admin['email'],
+                        $admin['name'],
+                        'pending-user-notification',
+                        [
+                            'newUserName'  => $name,
+                            'newUserEmail' => $email,
+                            'appUrl'       => $appUrl,
+                        ],
+                        $admin['locale'] ?? 'en'
+                    );
+                }
+            } catch (\Throwable $e) {
+                error_log('AuthController: failed to send pending-user notifications — ' . $e->getMessage());
+            }
             return $this->json($response, [
                 'registered' => true,
                 'pending'    => true,

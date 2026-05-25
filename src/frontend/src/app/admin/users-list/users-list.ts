@@ -62,6 +62,7 @@ export class UsersList implements OnInit {
       email: ['', [Validators.required, emailTldValidator, Validators.maxLength(255)]],
       role: [UserRole.Customer, [Validators.required]],
       password: [''],
+      notify_admin_emails: [false],
     });
   }
 
@@ -127,7 +128,7 @@ export class UsersList implements OnInit {
   selectUser(user: User) {
     this.selectedUser = { ...user };
     this.showForm = true;
-    this.form.patchValue({ ...user, password: '' });
+    this.form.patchValue({ ...user, password: '', notify_admin_emails: !!user.notify_admin_emails });
   }
 
   validateUser(user: User) {
@@ -286,6 +287,6 @@ export class UsersList implements OnInit {
   }
 
   private resetForm() {
-    this.form.reset({ name: '', email: '', role: UserRole.Customer, password: '' });
+    this.form.reset({ name: '', email: '', role: UserRole.Customer, password: '', notify_admin_emails: false });
   }
 }

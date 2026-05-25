@@ -83,6 +83,16 @@
           </div>
         }
 
+        @if (form.get('role')?.value === 'admin') {
+          <div class="form-field">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="notify_admin_emails" />
+              <span>{{ 'NOTIFY_ADMIN_EMAILS' | translate }}</span>
+            </label>
+            <small class="form-hint">{{ 'NOTIFY_ADMIN_EMAILS_HINT' | translate }}</small>
+          </div>
+        }
+
         <div class="buttons-list">
           <button type="button" (click)="cancel()">{{ 'CANCEL' | translate }}</button>
           <button type="submit">{{ 'SAVE' | translate }}</button>

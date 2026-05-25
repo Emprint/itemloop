@@ -29,6 +29,9 @@ export class Profile implements OnInit {
   passwordSaved = signal(false);
   passwordError = signal('');
 
+  isAdmin = signal(false);
+  notifyAdminEmails = signal(false);
+
   constructor() {
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
@@ -49,12 +52,14 @@ export class Profile implements OnInit {
     this.auth.getProfile().subscribe({
       next: (profile: UserProfile) => {
         this.profileForm.patchValue({ name: profile.name, locale: profile.locale ?? 'en' });
+        this.isAdmin.set(profile.role === 'admin');
+        this.notifyAdminEmails.set(!!(profile as any).notify_admin_emails);
       },
       error: () => {
-        // If offline or error, populate from cached user signal
         const user = this.auth.user();
         if (user) {
           this.profileForm.patchValue({ name: user.name, locale: user.locale ?? 'en' });
+          this.isAdmin.set(user.role === 'admin');
         }
       },
     });
@@ -65,7 +70,11 @@ export class Profile implements OnInit {
     this.loading.set(true);
     this.profileSaved.set(false);
     this.profileError.set('');
-    this.auth.updateProfile(this.profileForm.value).subscribe({
+    const payload: any = { ...this.profileForm.value };
+    if (this.isAdmin()) {
+      payload.notify_admin_emails = this.notifyAdminEmails();
+    }
+    this.auth.updateProfile(payload).subscribe({
       next: () => {
         this.loading.set(false);
         this.profileSaved.set(true);

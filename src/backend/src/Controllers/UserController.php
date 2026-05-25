@@ -13,7 +13,7 @@ class UserController
     public function index(Request $request, Response $response): Response
     {
         $rows = Database::get()
-            ->query('SELECT id, name, email, role, status, created_at, updated_at, last_login FROM users ORDER BY name')
+            ->query('SELECT id, name, email, role, status, notify_admin_emails, created_at, updated_at, last_login FROM users ORDER BY name')
             ->fetchAll();
 
         return $this->json($response, $rows);
@@ -22,7 +22,7 @@ class UserController
     public function pending(Request $request, Response $response): Response
     {
         $rows = Database::get()
-            ->query("SELECT id, name, email, role, status, created_at, updated_at, last_login FROM users WHERE status = 'pending' ORDER BY created_at DESC")
+            ->query("SELECT id, name, email, role, status, notify_admin_emails, created_at, updated_at, last_login FROM users WHERE status = 'pending' ORDER BY created_at DESC")
             ->fetchAll();
 
         return $this->json($response, $rows);
@@ -53,7 +53,7 @@ class UserController
         $stmt = $db->prepare("UPDATE users SET status = 'active', updated_at = NOW() WHERE id = ?");
         $stmt->execute([(int) $id]);
 
-        $stmt = $db->prepare('SELECT id, name, email, role, status, created_at, updated_at, last_login FROM users WHERE id = ?');
+        $stmt = $db->prepare('SELECT id, name, email, role, status, notify_admin_emails, created_at, updated_at, last_login FROM users WHERE id = ?');
         $stmt->execute([(int) $id]);
         $user = $stmt->fetch();
 
@@ -76,7 +76,7 @@ class UserController
         $stmt = $db->prepare("UPDATE users SET status = 'deactivated', updated_at = NOW() WHERE id = ?");
         $stmt->execute([(int) $id]);
 
-        $stmt = $db->prepare('SELECT id, name, email, role, status, created_at, updated_at, last_login FROM users WHERE id = ?');
+        $stmt = $db->prepare('SELECT id, name, email, role, status, notify_admin_emails, created_at, updated_at, last_login FROM users WHERE id = ?');
         $stmt->execute([(int) $id]);
         $user = $stmt->fetch();
 
@@ -93,6 +93,7 @@ class UserController
         $email    = trim($body['email'] ?? '');
         $role     = $body['role']       ?? 'customer';
         $password = $body['password']   ?? '';
+        $notifyAdmin = isset($body['notify_admin_emails']) ? (int)(bool)$body['notify_admin_emails'] : null;
 
         $errors = [];
         if ($name === '')  $errors['name']  = ['The name field is required.'];
@@ -128,6 +129,10 @@ class UserController
                 $db->prepare('UPDATE users SET name = ?, email = ?, role = ?, updated_at = NOW() WHERE id = ?')
                    ->execute([$name, $email, $role, $id]);
             }
+            // Update notify_admin_emails if provided (only meaningful for admin role)
+            if ($notifyAdmin !== null) {
+                $db->prepare('UPDATE users SET notify_admin_emails = ? WHERE id = ?')->execute([$notifyAdmin, $id]);
+            }
         } else {
             $stmt = $db->prepare('SELECT id FROM users WHERE email = ?');
             $stmt->execute([$email]);
@@ -138,7 +143,7 @@ class UserController
             $id = (int) $db->lastInsertId();
         }
 
-        $stmt = $db->prepare('SELECT id, name, email, role, status, created_at, updated_at, last_login FROM users WHERE id = ?');
+        $stmt = $db->prepare('SELECT id, name, email, role, status, notify_admin_emails, created_at, updated_at, last_login FROM users WHERE id = ?');
         $stmt->execute([$id]);
         return $this->json($response, $stmt->fetch());
     }
@@ -168,7 +173,7 @@ class UserController
     {
         $user = $request->getAttribute('user');
         $db   = Database::get();
-        $stmt = $db->prepare('SELECT id, name, email, role, status, locale, created_at, updated_at FROM users WHERE id = ?');
+        $stmt = $db->prepare('SELECT id, name, email, role, status, locale, notify_admin_emails, created_at, updated_at FROM users WHERE id = ?');
         $stmt->execute([$user['id']]);
         return $this->json($response, $stmt->fetch());
     }
@@ -189,7 +194,13 @@ class UserController
         $db->prepare('UPDATE users SET name = ?, locale = ?, updated_at = NOW() WHERE id = ?')
            ->execute([$name, $locale, $user['id']]);
 
-        $stmt = $db->prepare('SELECT id, name, email, role, status, locale, created_at, updated_at FROM users WHERE id = ?');
+        // Admin-only: update notify_admin_emails if provided
+        if ($user['role'] === 'admin' && array_key_exists('notify_admin_emails', $body)) {
+            $notifyAdmin = (int)(bool)$body['notify_admin_emails'];
+            $db->prepare('UPDATE users SET notify_admin_emails = ? WHERE id = ?')->execute([$notifyAdmin, $user['id']]);
+        }
+
+        $stmt = $db->prepare('SELECT id, name, email, role, status, locale, notify_admin_emails, created_at, updated_at FROM users WHERE id = ?');
         $stmt->execute([$user['id']]);
         $updated = $stmt->fetch();
 

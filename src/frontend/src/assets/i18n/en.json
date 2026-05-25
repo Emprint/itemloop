@@ -83,6 +83,8 @@
     "LOADING": "Loading settings...",
     "SAVING": "Saving...",
     "SAVE": "Save Changes",
+    "APP_NAME_LABEL": "Application name",
+    "APP_NAME_HINT": "Name displayed in the app header and outgoing emails (max 50 characters).",
     "CURRENCY_LABEL": "Currency",
     "CURRENCY_HINT": "ISO 4217 currency code used throughout the UI for prices and values.",
     "OPEN_REGISTRATION_LABEL": "Allow public registration",
@@ -391,5 +393,7 @@
   "SAVE_CHANGES": "Save changes",
   "SAVE_CHANGES_SUCCESS": "Changes saved successfully.",
   "PASSWORD_CHANGED_SUCCESS": "Password changed successfully.",
+  "NOTIFY_ADMIN_EMAILS": "Receive admin notification emails",
+  "NOTIFY_ADMIN_EMAILS_HINT": "When enabled, you will receive an email when a new order is placed or a user is pending approval.",
   "BACK_TO_LOGIN": "Back to login"
 }

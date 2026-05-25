@@ -172,22 +172,22 @@ class OrderController
                 $locale
             );
 
-            // Admin notification
-            $adminEmail = $_ENV['MAIL_ADMIN_TO'] ?? '';
-            if ($adminEmail !== '') {
+            // Admin notifications — send to all opted-in admins in their own locale
+            $adminData = [
+                'orderId'       => $order['id'],
+                'customerName'  => $user['name'],
+                'customerEmail' => $user['email'],
+                'orderItems'    => $items,
+                'orderTotal'    => $order['total'] ?? 0,
+                'currency'      => $currency,
+            ];
+            foreach (\App\Services\EmailService::getAdminRecipients() as $admin) {
                 $mailer->sendTemplate(
-                    $adminEmail,
-                    'Admin',
+                    $admin['email'],
+                    $admin['name'],
                     'order-notification-admin',
-                    [
-                        'orderId'       => $order['id'],
-                        'customerName'  => $user['name'],
-                        'customerEmail' => $user['email'],
-                        'orderItems'    => $items,
-                        'orderTotal'    => $order['total'] ?? 0,
-                        'currency'      => $currency,
-                    ],
-                    'en' // Admin email always in English (or could fetch admin's locale)
+                    $adminData,
+                    $admin['locale'] ?? 'en'
                 );
             }
         } catch (\Throwable $e) {

@@ -12,6 +12,7 @@ export interface User {
   created_at: string;
   updated_at: string;
   last_login: string | null;
+  notify_admin_emails?: number;
 }
 
 @Injectable({ providedIn: 'root' })

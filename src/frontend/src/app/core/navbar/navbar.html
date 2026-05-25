@@ -33,7 +33,7 @@
       <path d="M30 20c0 5.523-4.477 10-10 10" stroke="currentColor" stroke-width="2" fill="none" />
       <polygon points="20,32 17,29 23,29" fill="currentColor" />
     </svg>
-    <span class="logo-text">Itemloop</span>
+    <span class="logo-text">{{ settings()['app_name'] || 'Itemloop' }}</span>
   </div>
 
   @if (user()) {

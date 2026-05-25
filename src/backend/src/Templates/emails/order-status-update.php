@@ -16,13 +16,13 @@ $t = $locale === 'fr' ? [
     'hi'     => "Bonjour $userName,",
     'body'   => "Le statut de votre commande <strong>#$orderId</strong> a été mis à jour :",
     'status' => 'Nouveau statut',
-    'footer' => 'Itemloop — Gestion d\'inventaire communautaire',
+    'footer' => "$appName — Gestion d'inventaire communautaire",
 ] : [
     'title'  => "Order #$orderId status update",
     'hi'     => "Hello $userName,",
     'body'   => "Your order <strong>#$orderId</strong> status has been updated:",
     'status' => 'New status',
-    'footer' => 'Itemloop — Community Inventory Management',
+    'footer' => "$appName — Community Inventory Management",
 ];
 
 $badgeColor = match($newStatus) {
@@ -39,7 +39,7 @@ $badgeColor = match($newStatus) {
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);">
         <tr><td style="background:#111827;padding:24px 32px;">
-          <span style="color:#fff;font-size:20px;font-weight:700;">Itemloop</span>
+          <span style="color:#fff;font-size:20px;font-weight:700;"><?= htmlspecialchars($appName) ?></span>
         </td></tr>
         <tr><td style="padding:32px;">
           <h1 style="margin:0 0 16px;font-size:20px;color:#111827;"><?= htmlspecialchars($t['title']) ?></h1>

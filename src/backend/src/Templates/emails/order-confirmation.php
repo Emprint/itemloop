@@ -12,7 +12,7 @@ $t = $locale === 'fr' ? [
     'qty'      => 'Qté',
     'price'    => 'Prix',
     'total'    => 'Total',
-    'footer'   => 'Itemloop — Gestion d\'inventaire communautaire',
+    'footer'   => "$appName — Gestion d'inventaire communautaire",
 ] : [
     'title'    => "Order confirmation #$orderId",
     'hi'       => "Hello $userName,",
@@ -21,7 +21,7 @@ $t = $locale === 'fr' ? [
     'qty'      => 'Qty',
     'price'    => 'Price',
     'total'    => 'Total',
-    'footer'   => 'Itemloop — Community Inventory Management',
+    'footer'   => "$appName — Community Inventory Management",
 ];
 ?>
 <!DOCTYPE html>
@@ -32,7 +32,7 @@ $t = $locale === 'fr' ? [
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);">
         <tr><td style="background:#111827;padding:24px 32px;">
-          <span style="color:#fff;font-size:20px;font-weight:700;">Itemloop</span>
+          <span style="color:#fff;font-size:20px;font-weight:700;"><?= htmlspecialchars($appName) ?></span>
         </td></tr>
         <tr><td style="padding:32px;">
           <h1 style="margin:0 0 16px;font-size:20px;color:#111827;"><?= htmlspecialchars($t['title']) ?></h1>

@@ -1,8 +1,8 @@
 <div class="page app-settings">
-  <nav class="breadcrumb">
+  <nav class="attr-cross-nav">
     <a routerLink="/admin/settings">{{ 'SETTINGS_DASHBOARD.TITLE' | translate }}</a>
-    <span>›</span>
-    <span>{{ 'APP_SETTINGS.TITLE' | translate }}</span>
+    <span class="attr-cross-nav-sep">›</span>
+    <span class="attr-cross-nav-active">{{ 'APP_SETTINGS.TITLE' | translate }}</span>
   </nav>
   <h2>{{ 'APP_SETTINGS.TITLE' | translate }}</h2>
 
@@ -21,6 +21,19 @@
   @if (!loading && !error) {
     <div class="form-card">
       <form (ngSubmit)="saveSettings()">
+        <div class="form-field">
+          <label for="app_name">{{ 'APP_SETTINGS.APP_NAME_LABEL' | translate }}</label>
+          <input
+            type="text"
+            id="app_name"
+            [(ngModel)]="settings()['app_name']"
+            name="app_name"
+            maxlength="50"
+            required
+          />
+          <small class="form-hint">{{ 'APP_SETTINGS.APP_NAME_HINT' | translate }}</small>
+        </div>
+
         <div class="form-field">
           <label for="currency">{{ 'APP_SETTINGS.CURRENCY_LABEL' | translate }}</label>
           <select id="currency" [(ngModel)]="settings()['currency']" name="currency">
