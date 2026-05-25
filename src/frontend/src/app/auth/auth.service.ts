@@ -1,6 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthResponse, User } from './auth-response';
+import { AuthResponse, User, UserProfile } from './auth-response';
 import { environment } from '../../environments/environment';
 import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
@@ -113,6 +113,44 @@ export class AuthService {
 
   private logoutApi() {
     return this.http.post(`${environment.apiUrl}auth/logout`, {});
+  }
+
+  forgotPassword(email: string): Observable<void> {
+    return this.getCsrfCookie().pipe(
+      switchMap(() => this.http.post<void>(`${environment.apiUrl}auth/forgot-password`, { email })),
+    );
+  }
+
+  resetPassword(email: string, token: string, password: string): Observable<void> {
+    return this.getCsrfCookie().pipe(
+      switchMap(() =>
+        this.http.post<void>(`${environment.apiUrl}auth/reset-password`, { email, token, password }),
+      ),
+    );
+  }
+
+  getProfile(): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${environment.apiUrl}me/profile`);
+  }
+
+  updateProfile(data: { name: string; locale: string }): Observable<UserProfile> {
+    return this.http.patch<UserProfile>(`${environment.apiUrl}me/profile`, data).pipe(
+      tap((profile) => {
+        // Keep local user signal in sync
+        const current = this._user();
+        if (current) {
+          this._user.set({ ...current, name: profile.name, locale: profile.locale });
+          localStorage.setItem('user', JSON.stringify({ ...current, name: profile.name, locale: profile.locale }));
+        }
+      }),
+    );
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}me/change-password`, {
+      current_password: currentPassword,
+      new_password: newPassword,
+    });
   }
 
   private setUser(res: AuthResponse) {
