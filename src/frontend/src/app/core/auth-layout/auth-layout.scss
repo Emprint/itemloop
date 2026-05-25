@@ -1,7 +1,11 @@
 .auth-shell {
   min-height: 100vh;
+  min-height: 100dvh; /* dynamic viewport height — excludes iOS browser chrome */
   display: flex;
   align-items: center;
   justify-content: center;
   background: #f9fafb;
+  padding: 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  box-sizing: border-box;
 }
