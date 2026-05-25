@@ -66,9 +66,7 @@ export class Navbar implements OnInit {
 
   readonly isAdmin = computed(() => this.user()?.role === UserRole.Admin);
 
-  readonly settingsLink = computed(() =>
-    this.isAdmin() ? '/admin/settings' : '/admin/attributes',
-  );
+    readonly settingsLink = computed(() => '/admin/settings');
 
   readonly shopModeEnabled = computed(() => this.settings()['shop_mode'] === '1');
   readonly languageMode = computed(() => this.settings()['language_mode'] || 'multi');

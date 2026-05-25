@@ -213,7 +213,11 @@
     "ACCOUNT_PENDING": "Votre compte est en attente d'approbation par l'administrateur.",
     "FAILED_VALIDATE_USER": "Échec de la validation de l'utilisateur.",
     "FAILED_DEACTIVATE_USER": "Échec de la désactivation de l'utilisateur.",
-    "SERVER_UNAVAILABLE": "Serveur indisponible. Veuillez vérifier votre connexion et réessayer."
+    "SERVER_UNAVAILABLE": "Serveur indisponible. Veuillez vérifier votre connexion et réessayer.",
+    "GENERIC": "Une erreur est survenue. Veuillez réessayer.",
+    "PASSWORD_MIN": "Le mot de passe doit contenir au moins 8 caractères.",
+    "PASSWORD_PATTERN": "Le mot de passe doit contenir au moins une lettre, un chiffre et un caractère spécial.",
+    "REQUIRED": "Ce champ est obligatoire."
   },
   "LOCATIONS_MANAGEMENT": "Gestion des emplacements",
   "EDIT_LOCATION": "Modifier l'emplacement",

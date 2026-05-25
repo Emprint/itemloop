@@ -1,13 +1,11 @@
 <div class="page-wide">
-  <div class="page-header">
-    <a routerLink="/admin/settings" class="back-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6" />
-      </svg>
-      {{ 'SETTINGS_DASHBOARD.TITLE' | translate }}
-    </a>
-    <h2>{{ 'EMAIL_LOGS.TITLE' | translate }}</h2>
-  </div>
+  <nav class="attr-cross-nav">
+    <a routerLink="/admin/settings">{{ 'SETTINGS_DASHBOARD.TITLE' | translate }}</a>
+    <span class="attr-cross-nav-sep">›</span>
+    <span class="attr-cross-nav-active">{{ 'EMAIL_LOGS.TITLE' | translate }}</span>
+  </nav>
+
+  <h2>{{ 'EMAIL_LOGS.TITLE' | translate }}</h2>
 
   @if (loading()) {
     <p class="page-loading">{{ 'LOADING' | translate }}</p>

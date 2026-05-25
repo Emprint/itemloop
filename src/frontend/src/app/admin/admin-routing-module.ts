@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { adminGuard } from './admin.guard';
 import { editorGuard } from './editor.guard';
+import { authGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -24,31 +25,35 @@ const routes: Routes = [
         redirectTo: 'settings/users',
         pathMatch: 'full',
       },
+    ],
+  },
+  {
+    path: 'settings',
+    canActivate: [authGuard],
+    children: [
       {
-        path: 'settings',
-        children: [
-          {
-            path: '',
-            loadComponent: () =>
-              import('./settings-dashboard/settings-dashboard.component').then(
-                (m) => m.SettingsDashboardComponent,
-              ),
-          },
-          {
-            path: 'general',
-            loadComponent: () =>
-              import('./app-settings/app-settings.component').then((m) => m.AppSettingsComponent),
-          },
-          {
-            path: 'email-logs',
-            loadComponent: () =>
-              import('./email-logs/email-logs.component').then((m) => m.EmailLogsComponent),
-          },
-          {
-            path: 'users',
-            loadComponent: () => import('./users-list/users-list').then((m) => m.UsersList),
-          },
-        ],
+        path: '',
+        loadComponent: () =>
+          import('./settings-dashboard/settings-dashboard.component').then(
+            (m) => m.SettingsDashboardComponent,
+          ),
+      },
+      {
+        path: 'general',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./app-settings/app-settings.component').then((m) => m.AppSettingsComponent),
+      },
+      {
+        path: 'email-logs',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./email-logs/email-logs.component').then((m) => m.EmailLogsComponent),
+      },
+      {
+        path: 'users',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./users-list/users-list').then((m) => m.UsersList),
       },
     ],
   },

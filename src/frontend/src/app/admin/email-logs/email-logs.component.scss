@@ -1,32 +1,3 @@
-.page-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
-
-  h2 {
-    margin: 0;
-  }
-}
-
-.back-link {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 14px;
-
-  svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  &:hover {
-    color: var(--text);
-  }
-}
-
 .table-wrap {
   overflow-x: auto;
 }

@@ -139,7 +139,11 @@
     "ACCOUNT_PENDING": "Your account is pending administrator approval.",
     "FAILED_VALIDATE_USER": "Failed to validate user.",
     "FAILED_DEACTIVATE_USER": "Failed to deactivate user.",
-    "SERVER_UNAVAILABLE": "Server unavailable. Please check your connection and try again."
+    "SERVER_UNAVAILABLE": "Server unavailable. Please check your connection and try again.",
+    "GENERIC": "An error occurred. Please try again.",
+    "PASSWORD_MIN": "Password must be at least 8 characters.",
+    "PASSWORD_PATTERN": "Password must contain at least one letter, one digit, and one special character.",
+    "REQUIRED": "This field is required."
   },
   "LOCATIONS_MANAGEMENT": "Location Management",
   "EDIT_LOCATION": "Edit Location",

@@ -2,6 +2,7 @@
   <h2>{{ 'SETTINGS_DASHBOARD.TITLE' | translate }}</h2>
 
   <div class="settings-cards">
+    @if (isAdmin()) {
     <a routerLink="general" class="settings-card">
       <svg
         class="settings-card-icon"
@@ -122,6 +123,8 @@
         <polyline points="9 18 15 12 9 6" />
       </svg>
     </a>
+
+    } <!-- /isAdmin -->
 
     <a routerLink="/profile" class="settings-card">
       <svg

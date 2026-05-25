@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -18,6 +18,7 @@ export class ResetPassword implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private translate = inject(TranslateService);
+  private cdr = inject(ChangeDetectorRef);
 
   form: FormGroup;
   loading = signal(false);
@@ -28,7 +29,14 @@ export class ResetPassword implements OnInit {
   constructor() {
     this.form = this.fb.group(
       {
-        password: ['', [Validators.required, Validators.minLength(8)]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/),
+          ],
+        ],
         confirmPassword: ['', Validators.required],
       },
       { validators: this.passwordsMatch },
@@ -44,6 +52,8 @@ export class ResetPassword implements OnInit {
   }
 
   submit() {
+    this.form.markAllAsTouched();
+    this.cdr.markForCheck();
     if (this.form.invalid || this.loading()) return;
     this.loading.set(true);
     this.error.set('');
@@ -57,8 +67,10 @@ export class ResetPassword implements OnInit {
         const code = err?.error?.error;
         if (code === 'RESET_LINK_EXPIRED') {
           this.error.set(this.translate.instant('RESET_LINK_EXPIRED'));
-        } else {
+        } else if (code === 'RESET_LINK_INVALID' || err?.status === 400) {
           this.error.set(this.translate.instant('RESET_LINK_INVALID'));
+        } else {
+          this.error.set(this.translate.instant('ERRORS.GENERIC'));
         }
       },
     });

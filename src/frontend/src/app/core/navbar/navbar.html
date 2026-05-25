@@ -128,7 +128,7 @@
           </a>
         </li>
       }
-      @if (isEditorOrAdmin()) {
+      @if (user()) {
         <li>
           <a [routerLink]="settingsLink()" routerLinkActive="active" (click)="closeSidebar()">
             <svg
