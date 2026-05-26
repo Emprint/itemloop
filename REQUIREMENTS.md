@@ -87,10 +87,6 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 
 ---
 
-- The frontend uses **Angular signals** for state management wherever possible, including authentication, navigation, and feature modules, to ensure modern, reactive, and efficient UI updates.
-
----
-
 ## 📌 Roadmap Ideas
 
 - Online payment integration
