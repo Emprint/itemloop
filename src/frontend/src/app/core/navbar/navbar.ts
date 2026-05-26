@@ -72,6 +72,11 @@ export class Navbar implements OnInit {
   readonly languageMode = computed(() => this.settings()['language_mode'] || 'multi');
   readonly openRegistrationEnabled = computed(() => this.settings()['open_registration'] === '1');
 
+  readonly supportedLangs: { code: string; label: string }[] = [
+    { code: 'en', label: 'EN' },
+    { code: 'fr', label: 'FR' },
+  ];
+
   get currentLang() {
     return this.translateService.currentLang;
   }

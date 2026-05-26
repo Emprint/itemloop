@@ -1,16 +1,41 @@
 <div class="pf-page" [class.pf-readonly]="readOnly">
   <!-- Page header -->
-  <div class="pf-header">
-    <h2>
-      {{
-        readOnly
-          ? ('VIEW_PRODUCT' | translate)
-          : product
-            ? ('EDIT_PRODUCT' | translate)
-            : ('NEW_PRODUCT' | translate)
-      }}
-    </h2>
-  </div>
+  @if (!readOnly) {
+    <div class="pf-header">
+      <h2>{{ product ? ('EDIT_PRODUCT' | translate) : ('NEW_PRODUCT' | translate) }}</h2>
+    </div>
+  }
+
+  <!-- Mobile image carousel (read-only, mobile only) -->
+  @if (readOnly && images().length > 0) {
+    <div
+      class="pf-carousel"
+      (touchstart)="onCarouselTouchStart($event)"
+      (touchend)="onCarouselTouchEnd($event)"
+    >
+      <div class="pf-carousel-track" [style.transform]="'translateX(-' + carouselIndex() * 100 + '%)'">
+        @for (img of images(); track img.id) {
+          <div class="pf-carousel-slide">
+            <img [src]="img.url" [alt]="img.path" (click)="openLightbox($index)" />
+          </div>
+        }
+      </div>
+      @if (images().length > 1) {
+        <button type="button" class="pf-carousel-btn pf-carousel-prev" (click)="prevCarousel()">‹</button>
+        <button type="button" class="pf-carousel-btn pf-carousel-next" (click)="nextCarousel()">›</button>
+        <div class="pf-carousel-dots">
+          @for (img of images(); track img.id; let i = $index) {
+            <button
+              type="button"
+              class="pf-carousel-dot"
+              [class.active]="i === carouselIndex()"
+              (click)="carouselIndex.set(i)"
+            ></button>
+          }
+        </div>
+      }
+    </div>
+  }
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="pf-layout">

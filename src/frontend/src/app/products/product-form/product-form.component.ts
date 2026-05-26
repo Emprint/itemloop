@@ -136,6 +136,24 @@ export class ProductFormComponent implements OnChanges, OnInit {
   lightboxOpen = signal(false);
   lightboxIndex = signal(0);
 
+  // Mobile carousel
+  carouselIndex = signal(0);
+  private carouselTouchStartX = 0;
+
+  prevCarousel() {
+    this.carouselIndex.update((i) => (i - 1 + this.images().length) % this.images().length);
+  }
+  nextCarousel() {
+    this.carouselIndex.update((i) => (i + 1) % this.images().length);
+  }
+  onCarouselTouchStart(e: TouchEvent) {
+    this.carouselTouchStartX = e.touches[0].clientX;
+  }
+  onCarouselTouchEnd(e: TouchEvent) {
+    const delta = e.changedTouches[0].clientX - this.carouselTouchStartX;
+    if (Math.abs(delta) > 40) delta < 0 ? this.nextCarousel() : this.prevCarousel();
+  }
+
   // Barcode scanner
   showBarcodeScanner = signal(false);
 
@@ -276,6 +294,7 @@ export class ProductFormComponent implements OnChanges, OnInit {
     if (changes['product']) {
       this.cartQty.set(1);
       this.cartAdded.set(false);
+      this.carouselIndex.set(0);
     }
   }
 

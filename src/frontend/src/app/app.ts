@@ -1,12 +1,12 @@
 import { Component, signal, inject, HostListener } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './auth/auth.service';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DropdownService } from './shared/dropdown.service';
 import { HttpClient } from '@angular/common/http';
 import { OfflineStorageService } from './shared/offline-storage.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, filter } from 'rxjs';
 import { SwUpdate } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
@@ -41,6 +41,20 @@ export class App {
     const translate = inject(TranslateService);
     this.initializeLanguage(translate);
     this.initServiceWorkerUpdates();
+
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    inject(Router)
+      .events.pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe(() => {
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        }, 0);
+      });
   }
 
   private initServiceWorkerUpdates(): void {

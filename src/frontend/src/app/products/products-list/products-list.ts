@@ -2,6 +2,8 @@ import { Component, signal, computed, inject, effect } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { ProductService, Product } from '../product.service';
@@ -137,6 +139,12 @@ export class ProductsList {
 
   constructor() {
     this.loadProducts();
+    // Close product detail panel when the Products nav link is clicked while already on /products
+    inject(Router)
+      .events.pipe(filter((e) => e instanceof NavigationEnd))
+      .subscribe(() => {
+        if (this.showForm()) this.onCancelProduct();
+      });
     // Reload products when sync completes (e.g. returning online, temp IDs replaced with real ones)
     effect(() => {
       const lastSync = this.syncService.lastSync();
@@ -168,6 +176,7 @@ export class ProductsList {
     this.selectedProduct = product;
     this.isReadOnlyForm = true;
     this.showForm.set(true);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
   onSwitchToEdit() {

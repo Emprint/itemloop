@@ -660,7 +660,91 @@ button:disabled {
   }
 }
 
-/* Read-only view mode */
+/* Mobile carousel (read-only, ≤1024px only) */
+.pf-carousel {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .pf-readonly .pf-carousel {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    background: #111827;
+    margin-bottom: 0;
+  }
+  .pf-carousel-track {
+    display: flex;
+    transition: transform 0.3s ease;
+  }
+  .pf-carousel-slide {
+    flex: 0 0 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #111827;
+    max-height: 65vw;
+  }
+  .pf-carousel-slide img {
+    width: 100%;
+    max-height: 65vw;
+    object-fit: contain;
+    display: block;
+    cursor: zoom-in;
+  }
+  .pf-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #fff;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 5;
+    transition: background 0.15s;
+  }
+  .pf-carousel-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+  }
+  .pf-carousel-prev { left: 0.5rem; }
+  .pf-carousel-next { right: 0.5rem; }
+  .pf-carousel-dots {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.375rem;
+  }
+  .pf-carousel-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .pf-carousel-dot.active {
+    background: #fff;
+  }
+  /* Hide right-col photo card in read-only mode on mobile (carousel replaces it) */
+  .pf-readonly .pf-right-col > .pf-card:first-child {
+    display: none;
+  }
+}
+
+
 .pf-readonly .pf-input,
 .pf-readonly textarea.pf-input {
   pointer-events: none;

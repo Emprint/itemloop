@@ -213,14 +213,18 @@
             d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"
           />
         </svg>
-        <select
-          [value]="currentLang"
-          (change)="switchLang($any($event.target).value)"
-          aria-label="Language"
-        >
-          <option value="en">English</option>
-          <option value="fr">Français</option>
-        </select>
+        <div class="sidebar-lang-btns">
+          @for (lang of supportedLangs; track lang.code) {
+            @if (!$first) {
+              <span class="lang-sep">·</span>
+            }
+            <button
+              class="lang-btn"
+              [class.active]="currentLang === lang.code"
+              (click)="switchLang(lang.code)"
+            >{{ lang.label }}</button>
+          }
+        </div>
       </div>
     }
     @if (user()) {
