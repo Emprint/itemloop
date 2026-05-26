@@ -37,7 +37,8 @@
     "@zxing/library": "^0.23.0",
     "chart.js": "^4.5.1",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@angular/build": "^20.1.6",

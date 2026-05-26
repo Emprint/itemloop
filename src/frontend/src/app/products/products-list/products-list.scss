@@ -596,3 +596,52 @@
     }
   }
 }
+
+.export-dropdown {
+  position: relative;
+
+  .btn-outline {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .chevron {
+    margin-left: 2px;
+    transition: transform 0.15s;
+  }
+
+  &.open .chevron {
+    transform: rotate(180deg);
+  }
+
+  .export-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 160px;
+    z-index: 200;
+    overflow: hidden;
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 0.5rem 1rem;
+      text-align: left;
+      background: none;
+      border: none;
+      border-radius: 0;
+      font-size: 0.875rem;
+      color: #374151;
+      cursor: pointer;
+
+      &:hover {
+        background: #f3f4f6;
+      }
+    }
+  }
+}

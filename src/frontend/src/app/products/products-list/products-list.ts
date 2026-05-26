@@ -1,9 +1,10 @@
-import { Component, signal, computed, inject, effect } from '@angular/core';
+import { Component, signal, computed, inject, effect, HostListener, ElementRef } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
+import * as XLSX from 'xlsx';
 import { AuthService } from '../../auth/auth.service';
 import { UserRole } from '../../auth/auth-response';
 import { ProductService, Product } from '../product.service';
@@ -15,6 +16,7 @@ import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
 import { BarcodeScannerComponent } from '../../shared/barcode-scanner/barcode-scanner.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SyncService } from '../../shared/sync-indicator/sync.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-products-list',
@@ -37,6 +39,7 @@ export class ProductsList {
   private translate = inject(TranslateService);
   private appSettingsService = inject(AppSettingsService);
   private syncService = inject(SyncService);
+  private elRef = inject(ElementRef);
 
   readonly settings = toSignal(this.appSettingsService.getAll(), {
     initialValue: {} as AppSettings,
@@ -51,10 +54,22 @@ export class ProductsList {
   showDeleteModal = signal(false);
   productToDelete: Product | null = null;
   saveSuccess = signal(false);
+  showExportMenu = signal(false);
   isEditorOrAdmin = computed(() => {
     const user = this.auth.user();
     return !!user && (user.role === UserRole.Admin || user.role === UserRole.Editor);
   });
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.elRef.nativeElement.contains(event.target)) {
+      this.showExportMenu.set(false);
+    }
+  }
+
+  toggleExportMenu() {
+    this.showExportMenu.update((v) => !v);
+  }
 
   searchQuery = signal('');
   selectedCondition = signal('');
@@ -359,15 +374,18 @@ export class ProductsList {
   }
 
   exportCsv() {
+    this.showExportMenu.set(false);
     const headers = [
       'Code',
       'Title',
       'Category',
       'Condition',
+      'Color',
       'Location',
       'Quantity',
       'Est. Value',
       'Barcode',
+      'Visibility',
       'Date Added',
     ];
     const lines = this.filteredProducts().map((p) =>
@@ -376,10 +394,12 @@ export class ProductsList {
         `"${p.title.replace(/"/g, '""')}"`,
         this.capitalize(p.category?.name),
         this.capitalize(p.condition?.name),
+        this.capitalize(p.color?.name),
         p.location ? `${p.location.building?.name ?? ''} / ${p.location.shelf ?? ''}` : '',
         p.quantity,
         p.estimated_value ?? '',
         p.barcode ?? '',
+        p.visibility ?? '',
         this.formatDate(p.created_at),
       ].join(','),
     );
@@ -391,6 +411,32 @@ export class ProductsList {
     });
     a.click();
     URL.revokeObjectURL(a.href);
+  }
+
+  exportExcel() {
+    this.showExportMenu.set(false);
+    const rows = this.filteredProducts().map((p) => ({
+      Code: this.productCode(p.id),
+      Title: p.title,
+      Category: this.capitalize(p.category?.name),
+      Condition: this.capitalize(p.condition?.name),
+      Color: this.capitalize(p.color?.name),
+      Location: p.location ? `${p.location.building?.name ?? ''} / ${p.location.shelf ?? ''}` : '',
+      Quantity: p.quantity,
+      'Est. Value': p.estimated_value ?? null,
+      Barcode: p.barcode ?? '',
+      Visibility: p.visibility ?? '',
+      'Date Added': this.formatDate(p.created_at),
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Products');
+    XLSX.writeFile(wb, 'products-inventory.xlsx');
+  }
+
+  exportPdf() {
+    this.showExportMenu.set(false);
+    window.open(environment.apiUrl + 'export/products.pdf', '_blank');
   }
 
   openBarcodeScanner() {

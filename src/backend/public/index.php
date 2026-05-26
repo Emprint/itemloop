@@ -23,6 +23,7 @@ use App\Controllers\DashboardController;
 use App\Controllers\OrderController;
 use App\Controllers\AppSettingsController;
 use App\Controllers\EmailLogController;
+use App\Controllers\ExportController;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -115,6 +116,10 @@ $app->get('/api/csrf-cookie', function ($request, $response) {
 $app->get('/api/settings', [AppSettingsController::class, 'getAll']);
 $app->put('/api/settings', [AppSettingsController::class, 'update'])->add(new AdminMiddleware())->add(new AuthMiddleware());
 $app->get('/api/admin/email-logs', [EmailLogController::class, 'index'])->add(new AdminMiddleware())->add(new AuthMiddleware());
+
+// Export (editor+)
+$app->get('/api/export/products.pdf', [ExportController::class, 'productsPdf'])->add(new EditorMiddleware())->add(new AuthMiddleware());
+$app->get('/api/export/orders.pdf',   [ExportController::class, 'ordersPdf'])->add(new EditorMiddleware())->add(new AuthMiddleware());
 
 // Auth
 $app->group('/api/auth', function (RouteCollectorProxy $group) {

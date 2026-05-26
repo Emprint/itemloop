@@ -1,11 +1,13 @@
-import { Component, OnInit, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed, HostListener, ElementRef } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import * as XLSX from 'xlsx';
 import { OrderService, Order } from '../order.service';
 import { AppSettingsService, AppSettings } from '../../admin/app-settings.service';
 import { LocaleDatePipe } from '../../shared/locale-date.pipe';
 import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-orders-list',
@@ -18,11 +20,13 @@ export class OrdersList implements OnInit {
   private orderService = inject(OrderService);
   private translate = inject(TranslateService);
   private appSettingsService = inject(AppSettingsService);
+  private elRef = inject(ElementRef);
 
   readonly orders = signal<Order[]>([]);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly expandedId = signal<number | null>(null);
+  readonly showExportMenu = signal(false);
 
   pendingOrder: Order | null = null;
   pendingStatus: Order['status'] | null = null;
@@ -34,6 +38,17 @@ export class OrdersList implements OnInit {
   readonly currency = computed(() => this.settings()['currency'] || 'EUR');
   readonly currencyDisplay = computed(() => this.settings()['currency_display'] || 'symbol');
   readonly currencyDigitsInfo = computed(() => this.settings()['currency_digits_info'] || '1.2-2');
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.elRef.nativeElement.contains(event.target)) {
+      this.showExportMenu.set(false);
+    }
+  }
+
+  toggleExportMenu() {
+    this.showExportMenu.update((v) => !v);
+  }
 
   ngOnInit() {
     this.loadOrders();
@@ -105,5 +120,27 @@ export class OrdersList implements OnInit {
 
   statusKey(status: Order['status']): string {
     return `ORDERS.STATUS_${status.toUpperCase()}`;
+  }
+
+  exportExcel() {
+    this.showExportMenu.set(false);
+    const rows = this.orders().map((o) => ({
+      '#': o.id,
+      Customer: o.user.name,
+      Email: o.user.email,
+      Date: new Date(o.created_at).toLocaleDateString(),
+      Status: o.status,
+      Items: o.items.map((i) => `${i.product_title} ×${i.quantity}`).join('; '),
+      Total: o.total ?? '',
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Orders');
+    XLSX.writeFile(wb, 'orders-export.xlsx');
+  }
+
+  exportPdf() {
+    this.showExportMenu.set(false);
+    window.open(environment.apiUrl + 'export/orders.pdf', '_blank');
   }
 }
