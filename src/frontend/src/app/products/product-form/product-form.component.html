@@ -13,7 +13,10 @@
       (touchstart)="onCarouselTouchStart($event)"
       (touchend)="onCarouselTouchEnd($event)"
     >
-      <div class="pf-carousel-track" [style.transform]="'translateX(-' + carouselIndex() * 100 + '%)'">
+      <div
+        class="pf-carousel-track"
+        [style.transform]="'translateX(-' + carouselIndex() * 100 + '%)'"
+      >
         @for (img of images(); track img.id) {
           <div class="pf-carousel-slide">
             <img [src]="img.url" [alt]="img.path" (click)="openLightbox($index)" />
@@ -21,8 +24,12 @@
         }
       </div>
       @if (images().length > 1) {
-        <button type="button" class="pf-carousel-btn pf-carousel-prev" (click)="prevCarousel()">‹</button>
-        <button type="button" class="pf-carousel-btn pf-carousel-next" (click)="nextCarousel()">›</button>
+        <button type="button" class="pf-carousel-btn pf-carousel-prev" (click)="prevCarousel()">
+          ‹
+        </button>
+        <button type="button" class="pf-carousel-btn pf-carousel-next" (click)="nextCarousel()">
+          ›
+        </button>
         <div class="pf-carousel-dots">
           @for (img of images(); track img.id; let i = $index) {
             <button
@@ -92,7 +99,15 @@
                 <span class="req">*</span>
               }
             </span>
-            <input type="number" formControlName="quantity" class="pf-input" min="0" />
+            <input
+              type="number"
+              formControlName="quantity"
+              class="pf-input"
+              min="0"
+              [attr.readonly]="product ? true : null"
+              [class.pf-input-readonly]="!!product"
+              [title]="product ? ('HISTORY.QTY_MANAGED_BY_MOVEMENTS' | translate) : ''"
+            />
           </label>
           <label class="pf-label pf-flex-1">
             <span>{{ 'PRODUCT_FORM.ESTIMATED_VALUE' | translate }}</span>
@@ -526,6 +541,62 @@
               </button>
             }
           </div>
+        }
+
+        <!-- Stock adjustment (editor/admin only, existing products only) -->
+        @if (product && isEditorOrAdmin()) {
+          <div class="pf-card pf-stock-adjust">
+            <div class="pf-stock-adjust-header">
+              <h3 class="pf-card-title">{{ 'HISTORY.ADJUST_STOCK' | translate }}</h3>
+              <button type="button" class="pf-btn-toggle" (click)="toggleAdjustmentForm()">
+                {{ (showAdjustmentForm() ? 'CANCEL' : 'HISTORY.ADJUST_STOCK_BTN') | translate }}
+              </button>
+            </div>
+            @if (showAdjustmentForm()) {
+              <div class="pf-adjust-form">
+                <label class="pf-label">
+                  <span>{{ 'HISTORY.DELTA' | translate }}</span>
+                  <input
+                    type="number"
+                    class="pf-input"
+                    [value]="adjustmentDelta()"
+                    (input)="adjustmentDelta.set(+$any($event.target).value)"
+                    placeholder="+2 or -3"
+                  />
+                </label>
+                <label class="pf-label">
+                  <span>{{ 'HISTORY.REASON' | translate }}</span>
+                  <input
+                    type="text"
+                    class="pf-input"
+                    [value]="adjustmentReason()"
+                    (input)="adjustmentReason.set($any($event.target).value)"
+                    [placeholder]="'HISTORY.REASON_PLACEHOLDER' | translate"
+                    maxlength="255"
+                  />
+                </label>
+                @if (adjustmentError()) {
+                  <p class="error">{{ adjustmentError()! | translate }}</p>
+                }
+                <button
+                  type="button"
+                  class="btn-primary"
+                  (click)="submitStockAdjustment()"
+                  [disabled]="adjustmentLoading() || !adjustmentDelta() || adjustmentDelta() === 0"
+                >
+                  {{ (adjustmentLoading() ? 'SAVING' : 'HISTORY.SUBMIT_ADJUSTMENT') | translate }}
+                </button>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Product history timeline (editor/admin, read-only view) -->
+        @if (product && readOnly && isEditorOrAdmin()) {
+          <app-product-history
+            [productId]="product.id"
+            [refreshTrigger]="historyRefreshCounter()"
+          />
         }
       </div>
     </div>

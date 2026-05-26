@@ -257,6 +257,11 @@ export class ProductsList {
     this.selectedProduct = null;
   }
 
+  onStockAdjusted(product: Product) {
+    this.selectedProduct = product;
+    this.loadProducts();
+  }
+
   private completeProductSave() {
     this.loadProducts();
     this.showForm.set(false);

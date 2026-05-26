@@ -1,0 +1,45 @@
+<section class="ph-section">
+  <h3 class="pf-card-title ph-title">{{ 'HISTORY.TITLE' | translate }}</h3>
+
+  @if (loading()) {
+    <p class="page-loading">{{ 'LOADING' | translate }}</p>
+  } @else if (error()) {
+    <p class="page-error">{{ 'ERROR_LOADING' | translate }}</p>
+  } @else if (entries().length === 0) {
+    <p class="page-empty">{{ 'HISTORY.EMPTY' | translate }}</p>
+  } @else {
+    <ol class="ph-timeline">
+      @for (entry of entries(); track entry.id) {
+        <li class="ph-item" [class.ph-qty-event]="isQuantityEvent(entry)">
+          <div class="ph-dot" [attr.data-type]="entry.event_type"></div>
+          <div class="ph-content">
+            <div class="ph-row">
+              <span class="ph-label">{{ eventKey(entry.event_type) | translate }}</span>
+              @if (isQuantityEvent(entry)) {
+                <span class="ph-delta" [class.ph-delta-pos]="entry.delta! > 0" [class.ph-delta-neg]="entry.delta! < 0">
+                  {{ deltaLabel(entry.delta) }}
+                </span>
+              }
+              @if (entry.meta?.order_id) {
+                <span class="ph-meta">#{{ entry.meta!.order_id }}</span>
+              }
+            </div>
+            @if (entry.meta?.reason) {
+              <p class="ph-reason">{{ entry.meta!.reason }}</p>
+            }
+            @if (entry.meta?.old_label && entry.meta?.new_label) {
+              <p class="ph-reason">{{ entry.meta!.old_label }} → {{ entry.meta!.new_label }}</p>
+            }
+            <div class="ph-byline">
+              @if (entry.user_name) {
+                <span>{{ entry.user_name }}</span>
+                <span class="ph-sep">·</span>
+              }
+              <time [dateTime]="entry.created_at">{{ entry.created_at | localeDate: 'd MMM y HH:mm' }}</time>
+            </div>
+          </div>
+        </li>
+      }
+    </ol>
+  }
+</section>

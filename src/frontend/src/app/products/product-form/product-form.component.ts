@@ -46,6 +46,7 @@ import { BarcodeScannerComponent } from '../../shared/barcode-scanner/barcode-sc
 import { OfflineStorageService } from '../../shared/offline-storage.service';
 import { SyncService } from '../../shared/sync-indicator/sync.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ProductHistoryComponent } from './product-history/product-history.component';
 
 @Component({
   selector: 'app-product-form',
@@ -58,6 +59,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     DragDropModule,
     LocaleDatePipe,
     BarcodeScannerComponent,
+    ProductHistoryComponent,
   ],
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css'],
@@ -81,6 +83,8 @@ export class ProductFormComponent implements OnChanges, OnInit {
   @Output() saveContinueEvent = new EventEmitter<Product>();
   @Output() editModeEvent = new EventEmitter<void>();
   @Output() deleteEvent = new EventEmitter<void>();
+  /** Emitted after a stock adjustment — parent should refresh local state only, NOT call updateProduct. */
+  @Output() stockAdjustedEvent = new EventEmitter<Product>();
 
   private fb = inject(FormBuilder);
   private locationService = inject(LocationService);
@@ -291,6 +295,13 @@ export class ProductFormComponent implements OnChanges, OnInit {
     if (changes['product'] && !this.product) {
       this.resetForm();
     }
+    if (changes['product'] && this.product) {
+      this.form.patchValue({
+        ...this.product,
+        location_id: this.product.location?.id ?? this.product.location_id ?? 0,
+      });
+      this.images.set(this.product.images ?? []);
+    }
     if (changes['product']) {
       this.cartQty.set(1);
       this.cartAdded.set(false);
@@ -457,9 +468,9 @@ export class ProductFormComponent implements OnChanges, OnInit {
       const updated = [...this.categories(), { id: 0, name: category }];
       this.categories.set(updated);
       if (!this.offlineStorage.isOnline() && this.isEditorOrAdmin()) {
-        this.offlineStorage.saveCategory({ id: -Date.now(), name: category }).then(() =>
-          this.syncService.refreshIDBCounts(),
-        );
+        this.offlineStorage
+          .saveCategory({ id: -Date.now(), name: category })
+          .then(() => this.syncService.refreshIDBCounts());
       }
     }
     this.form.get('category')?.setValue({ id: 0, name: category });
@@ -483,9 +494,9 @@ export class ProductFormComponent implements OnChanges, OnInit {
     if (!exists) {
       this.conditions.update((list) => [...list, { id: 0, name: cond }]);
       if (!this.offlineStorage.isOnline() && this.isEditorOrAdmin()) {
-        this.offlineStorage.saveCondition({ id: -Date.now(), name: cond }).then(() =>
-          this.syncService.refreshIDBCounts(),
-        );
+        this.offlineStorage
+          .saveCondition({ id: -Date.now(), name: cond })
+          .then(() => this.syncService.refreshIDBCounts());
       }
       this.form.get('condition_id')?.setValue(0);
     }
@@ -497,9 +508,9 @@ export class ProductFormComponent implements OnChanges, OnInit {
     if (!exists) {
       this.colors.update((list) => [...list, { id: 0, name: color }]);
       if (!this.offlineStorage.isOnline() && this.isEditorOrAdmin()) {
-        this.offlineStorage.saveColor({ id: -Date.now(), name: color }).then(() =>
-          this.syncService.refreshIDBCounts(),
-        );
+        this.offlineStorage
+          .saveColor({ id: -Date.now(), name: color })
+          .then(() => this.syncService.refreshIDBCounts());
       }
       this.form.get('color_id')?.setValue(0);
     }
@@ -553,6 +564,48 @@ export class ProductFormComponent implements OnChanges, OnInit {
       return zoneCode;
     }
     return '';
+  }
+
+  // Stock adjustment (editors/admins only — visible in edit mode)
+  showAdjustmentForm = signal(false);
+  adjustmentDelta = signal<number | null>(null);
+  adjustmentReason = signal('');
+  adjustmentLoading = signal(false);
+  adjustmentError = signal<string | null>(null);
+  historyRefreshCounter = signal(0);
+
+  toggleAdjustmentForm() {
+    this.showAdjustmentForm.update((v) => !v);
+    this.adjustmentError.set(null);
+  }
+
+  submitStockAdjustment() {
+    const delta = this.adjustmentDelta();
+    if (!delta || delta === 0 || !this.product) return;
+    this.adjustmentLoading.set(true);
+    this.adjustmentError.set(null);
+    this.productService
+      .createStockMovement(this.product.id, delta, this.adjustmentReason() || undefined)
+      .subscribe({
+        next: (updated) => {
+          // Propagate updated product to parent so quantity refreshes (no re-save)
+          this.stockAdjustedEvent.emit(updated);
+          this.historyRefreshCounter.update((n) => n + 1);
+          this.adjustmentLoading.set(false);
+          this.showAdjustmentForm.set(false);
+          this.adjustmentDelta.set(null);
+          this.adjustmentReason.set('');
+        },
+        error: (err) => {
+          const code = err?.error?.error;
+          this.adjustmentError.set(
+            code === 'INSUFFICIENT_STOCK'
+              ? 'HISTORY.ADJUST_NEGATIVE_STOCK'
+              : 'HISTORY.ADJUST_ERROR',
+          );
+          this.adjustmentLoading.set(false);
+        },
+      });
   }
 
   openBarcodeScanner() {

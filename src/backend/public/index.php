@@ -149,6 +149,8 @@ $app->group('/api', function (RouteCollectorProxy $group) {
     $group->post('/products/{id}/images',                    [ProductImageController::class, 'store'])->add(new EditorMiddleware());
     $group->patch('/products/{id}/images/reorder',           [ProductImageController::class, 'reorder'])->add(new EditorMiddleware());
     $group->delete('/products/{id}/images/{image_id}',       [ProductImageController::class, 'destroy'])->add(new EditorMiddleware());
+    $group->get('/products/{id}/history',                    [ProductController::class, 'getHistory'])->add(new EditorMiddleware());
+    $group->post('/products/{id}/stock-movement',            [ProductController::class, 'createStockMovement'])->add(new EditorMiddleware());
 
     // Taxonomy (editor+)
     $group->post('/product-categories',          [ProductCategoryController::class, 'store'])->add(new EditorMiddleware());

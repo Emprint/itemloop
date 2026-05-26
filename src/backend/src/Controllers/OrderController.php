@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Database;
 use App\Services\EmailService;
+use App\Controllers\ProductController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -71,6 +72,11 @@ class OrderController
             );
             foreach ($resolved as $r) {
                 $itemStmt->execute([$orderId, $r['product_id'], $r['quantity'], $r['unit_price']]);
+                // Deduct stock and log the movement
+                ProductController::applyStockMovement(
+                    $db, $r['product_id'], 'order_placed', -$r['quantity'], (int) $user['id'],
+                    ['order_id' => $orderId]
+                );
             }
 
             $db->commit();
@@ -115,6 +121,7 @@ class OrderController
         $db     = Database::get();
         $id     = (int) $args['id'];
         $body   = (array) $request->getParsedBody();
+        $user   = $request->getAttribute('user');
         $status = $body['status'] ?? '';
 
         $allowed = ['pending', 'completed', 'cancelled'];
@@ -122,11 +129,55 @@ class OrderController
             return $this->json($response, ['error' => 'INVALID_STATUS'], 422);
         }
 
-        $stmt = $db->prepare('UPDATE orders SET status = ? WHERE id = ?');
-        $stmt->execute([$status, $id]);
-
-        if ($stmt->rowCount() === 0) {
+        // Fetch order and its items before status change
+        $orderBefore = $this->findOrder($db, $id);
+        if (empty($orderBefore)) {
             return $this->json($response, ['error' => 'NOT_FOUND'], 404);
+        }
+
+        $db->beginTransaction();
+        try {
+            $stmt = $db->prepare('UPDATE orders SET status = ? WHERE id = ?');
+            $stmt->execute([$status, $id]);
+
+            $userId = (int) ($user['id'] ?? 0);
+
+            foreach ($orderBefore['items'] as $item) {
+                $productId = (int) $item['product_id'];
+                $qty       = (int) $item['quantity'];
+
+                if ($status === 'cancelled') {
+                    // Restore stock
+                    ProductController::applyStockMovement(
+                        $db, $productId, 'order_cancelled', +$qty, $userId,
+                        ['order_id' => $id]
+                    );
+                } elseif ($status === 'pending') {
+                    // Reopening: re-check and re-deduct stock
+                    $pStmt = $db->prepare('SELECT quantity FROM products WHERE id = ? FOR UPDATE');
+                    $pStmt->execute([$productId]);
+                    $product = $pStmt->fetch();
+                    if (!$product || (int) $product['quantity'] < $qty) {
+                        $db->rollBack();
+                        return $this->json($response, ['error' => 'INSUFFICIENT_STOCK', 'product_id' => $productId], 422);
+                    }
+                    ProductController::applyStockMovement(
+                        $db, $productId, 'order_reopened', -$qty, $userId,
+                        ['order_id' => $id]
+                    );
+                } else {
+                    // completed — qty already deducted at placement; just log the event
+                    ProductController::logHistory(
+                        $db, $productId, 'order_completed', null, $userId,
+                        ['order_id' => $id]
+                    );
+                }
+            }
+
+            $db->commit();
+        } catch (\Throwable $e) {
+            $db->rollBack();
+            return $this->json($response, ['error' => 'SERVER_ERROR'], 500);
         }
 
         $order = $this->findOrder($db, $id);

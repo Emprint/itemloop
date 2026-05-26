@@ -22,6 +22,24 @@ export interface Image {
   sort_order?: number;
 }
 
+export interface ProductHistoryMeta {
+  order_id?: number;
+  reason?: string;
+  old_code?: string;
+  new_code?: string;
+  old_label?: string;
+  new_label?: string;
+}
+
+export interface ProductHistoryEntry {
+  id: number;
+  event_type: string;
+  delta: number | null;
+  user_name: string | null;
+  meta: ProductHistoryMeta | null;
+  created_at: string;
+}
+
 export interface Product {
   id: number;
   title: string;
@@ -224,5 +242,15 @@ export class ProductService {
     return this.http.patch<{ success: boolean }>(`${this.apiUrl}/${productId}/images/reorder`, {
       ids,
     });
+  }
+
+  getHistory(productId: number): Observable<ProductHistoryEntry[]> {
+    return this.http.get<ProductHistoryEntry[]>(`${this.apiUrl}/${productId}/history`);
+  }
+
+  createStockMovement(productId: number, delta: number, reason?: string): Observable<Product> {
+    return this.http
+      .post<Product>(`${this.apiUrl}/${productId}/stock-movement`, { delta, reason })
+      .pipe(tap((updated) => this.offlineStorage.saveProduct(updated)));
   }
 }

@@ -1,0 +1,97 @@
+.ph-section {
+  margin-top: 1.5rem;
+}
+
+.ph-title {
+  margin-bottom: 0.75rem;
+}
+
+.ph-timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 2px solid var(--border);
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ph-item {
+  position: relative;
+  padding: 0.6rem 0;
+}
+
+.ph-dot {
+  position: absolute;
+  left: -1.375rem;
+  top: 0.85rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 2px solid var(--bg);
+}
+
+.ph-item.ph-qty-event .ph-dot {
+  background: var(--accent, #4a7cf7);
+}
+
+.ph-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.ph-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ph-label {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.ph-delta {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+.ph-delta-pos {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.ph-delta-neg {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.ph-meta {
+  font-size: 0.8125rem;
+  color: var(--text-muted, #6b7280);
+}
+
+.ph-reason {
+  font-size: 0.8125rem;
+  color: var(--text-muted, #6b7280);
+  margin: 0;
+  font-style: italic;
+}
+
+.ph-byline {
+  font-size: 0.75rem;
+  color: var(--text-muted, #9ca3af);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ph-sep {
+  opacity: 0.5;
+}

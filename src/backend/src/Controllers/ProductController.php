@@ -113,6 +113,9 @@ class ProductController
         $stmt->execute($data);
         $id = (int) $db->lastInsertId();
 
+        // Log the initial stock event
+        self::applyStockMovement($db, $id, 'initial_stock', (int) $data['quantity'], (int) $user['id']);
+
         return $this->json($response, $this->findProduct($db, $id), 201);
     }
 
@@ -123,9 +126,11 @@ class ProductController
         $id   = (int) $args['id'];
         $body = (array) $request->getParsedBody();
 
-        $stmt = $db->prepare('SELECT id FROM products WHERE id = ?');
+        // Fetch old row before update for comparison
+        $stmt = $db->prepare('SELECT id, quantity, location_id FROM products WHERE id = ?');
         $stmt->execute([$id]);
-        if (!$stmt->fetch()) {
+        $old = $stmt->fetch();
+        if (!$old) {
             return $this->json($response, ['error' => 'NOT_FOUND'], 404);
         }
 
@@ -134,6 +139,9 @@ class ProductController
             return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => $errors], 422);
         }
 
+        // Quantity is managed via stock movements only — remove it from direct edits
+        unset($data['quantity']);
+
         $this->resolveRelations($db, $body, $data);
 
         $data['updated_by'] = $user['id'];
@@ -141,6 +149,21 @@ class ProductController
         $sets = implode(', ', array_map(fn($k) => "`{$k}` = :{$k}", array_keys($data)));
         $data['id'] = $id;
         $db->prepare("UPDATE products SET {$sets}, updated_at = NOW() WHERE id = :id")->execute($data);
+
+        // Log history events for tracked field changes
+        $newLocationId = isset($body['location_id']) ? (int) $body['location_id'] : null;
+        if ($newLocationId !== null && $newLocationId !== (int) $old['location_id']) {
+            $oldLoc = $this->fetchLocationLabel($db, (int) $old['location_id']);
+            $newLoc = $this->fetchLocationLabel($db, $newLocationId);
+            self::logHistory($db, $id, 'location_move', null, (int) $user['id'], [
+                'old_code'  => $oldLoc['code']  ?? null,
+                'new_code'  => $newLoc['code']  ?? null,
+                'old_label' => $oldLoc['label'] ?? null,
+                'new_label' => $newLoc['label'] ?? null,
+            ]);
+        } else {
+            self::logHistory($db, $id, 'field_update', null, (int) $user['id']);
+        }
 
         return $this->json($response, $this->findProduct($db, $id));
     }
@@ -157,6 +180,139 @@ class ProductController
 
         $db->prepare('DELETE FROM products WHERE id = ?')->execute([$id]);
         return $this->json($response, ['success' => true]);
+    }
+
+    // -------------------------------------------------------------------------
+    // GET /api/products/{id}/history
+    // -------------------------------------------------------------------------
+    public function getHistory(Request $request, Response $response, array $args): Response
+    {
+        $db = Database::get();
+        $id = (int) $args['id'];
+
+        $stmt = $db->prepare('SELECT id FROM products WHERE id = ?');
+        $stmt->execute([$id]);
+        if (!$stmt->fetch()) {
+            return $this->json($response, ['error' => 'NOT_FOUND'], 404);
+        }
+
+        $stmt = $db->prepare('
+            SELECT ph.id, ph.event_type, ph.delta, ph.meta, ph.created_at,
+                   u.name AS user_name
+            FROM product_history ph
+            LEFT JOIN users u ON u.id = ph.user_id
+            WHERE ph.product_id = ?
+            ORDER BY ph.created_at DESC, ph.id DESC
+        ');
+        $stmt->execute([$id]);
+        $rows = $stmt->fetchAll();
+
+        $entries = array_map(fn($row) => [
+            'id'         => (int) $row['id'],
+            'event_type' => $row['event_type'],
+            'delta'      => $row['delta'] !== null ? (int) $row['delta'] : null,
+            'user_name'  => $row['user_name'] ?? null,
+            'meta'       => $row['meta'] ? json_decode($row['meta'], true) : null,
+            'created_at' => $row['created_at'],
+        ], $rows);
+
+        return $this->json($response, $entries);
+    }
+
+    // -------------------------------------------------------------------------
+    // POST /api/products/{id}/stock-movement
+    // -------------------------------------------------------------------------
+    public function createStockMovement(Request $request, Response $response, array $args): Response
+    {
+        $user = $request->getAttribute('user');
+        $db   = Database::get();
+        $id   = (int) $args['id'];
+        $body = (array) $request->getParsedBody();
+
+        $delta = isset($body['delta']) ? (int) $body['delta'] : null;
+        if ($delta === null || $delta === 0) {
+            return $this->json($response, ['error' => 'INVALID_DELTA', 'message' => 'delta must be a non-zero integer.'], 422);
+        }
+
+        $stmt = $db->prepare('SELECT id, quantity FROM products WHERE id = ? FOR UPDATE');
+        $db->beginTransaction();
+        try {
+            $stmt->execute([$id]);
+            $product = $stmt->fetch();
+            if (!$product) {
+                $db->rollBack();
+                return $this->json($response, ['error' => 'NOT_FOUND'], 404);
+            }
+
+            $newQty = (int) $product['quantity'] + $delta;
+            if ($newQty < 0) {
+                $db->rollBack();
+                return $this->json($response, ['error' => 'INSUFFICIENT_STOCK', 'message' => 'Adjustment would result in negative stock.'], 422);
+            }
+
+            $meta = [];
+            if (!empty($body['reason'])) {
+                $meta['reason'] = (string) $body['reason'];
+            }
+
+            self::applyStockMovement($db, $id, 'stock_adjustment', $delta, (int) $user['id'], $meta);
+            $db->commit();
+        } catch (\Throwable $e) {
+            $db->rollBack();
+            return $this->json($response, ['error' => 'SERVER_ERROR'], 500);
+        }
+
+        return $this->json($response, $this->findProduct($db, $id));
+    }
+
+    // -------------------------------------------------------------------------
+    // Stock movement helper — inserts history record and updates products.quantity
+    // atomically. Call inside a transaction for multi-step operations.
+    // -------------------------------------------------------------------------
+    public static function applyStockMovement(
+        \PDO $db,
+        int $productId,
+        string $eventType,
+        ?int $delta,
+        ?int $userId,
+        array $meta = []
+    ): void {
+        $db->prepare(
+            'INSERT INTO product_history (product_id, event_type, delta, user_id, meta, created_at)
+             VALUES (?, ?, ?, ?, ?, NOW())'
+        )->execute([
+            $productId,
+            $eventType,
+            $delta,
+            $userId,
+            $meta ? json_encode($meta) : null,
+        ]);
+
+        if ($delta !== null) {
+            $db->prepare('UPDATE products SET quantity = quantity + ? WHERE id = ?')
+               ->execute([$delta, $productId]);
+        }
+    }
+
+    // Log a non-quantity history event
+    public static function logHistory(
+        \PDO $db,
+        int $productId,
+        string $eventType,
+        ?int $delta,
+        ?int $userId,
+        array $meta = []
+    ): void {
+        $db->prepare(
+            'INSERT INTO product_history (product_id, event_type, delta, user_id, meta, created_at)
+             VALUES (?, ?, ?, ?, ?, NOW())'
+        )->execute([
+            $productId,
+            $eventType,
+            $delta,
+            $userId,
+            $meta ? json_encode($meta) : null,
+        ]);
     }
 
     // -------------------------------------------------------------------------
@@ -235,6 +391,19 @@ class ProductController
                 $data[$field] = null;
             }
         }
+    }
+
+    private function fetchLocationLabel(\PDO $db, int $locationId): array
+    {
+        $stmt = $db->prepare('
+            SELECT l.code, CONCAT(b.name, " › ", z.name, " › ", l.shelf) AS label
+            FROM locations l
+            JOIN zones z ON z.id = l.zone_id
+            JOIN buildings b ON b.id = z.building_id
+            WHERE l.id = ?
+        ');
+        $stmt->execute([$locationId]);
+        return $stmt->fetch() ?: [];
     }
 
     private function field(array $body, array &$data, array &$errors, string $key, bool $required, callable $validate, ?callable $cast = null): void
@@ -369,4 +538,5 @@ class ProductController
         $response->getBody()->write(json_encode($data));
         return $response->withStatus($status)->withHeader('Content-Type', 'application/json');
     }
+
 }
