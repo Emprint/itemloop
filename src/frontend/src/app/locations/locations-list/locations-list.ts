@@ -6,6 +6,7 @@ import { LocationService, Location, Building, Zone } from './location.service';
 import { ConfirmModal } from '../../shared/confirm-modal/confirm-modal';
 import { ListShellComponent } from '../../shared/list-shell/list-shell.component';
 import { DropdownService } from '../../shared/dropdown.service';
+import { LabelPrintService } from '../../shared/label-print.service';
 
 @Component({
   selector: 'app-locations-list',
@@ -33,6 +34,7 @@ export class LocationsList {
   private service = inject(LocationService);
   private fb = inject(FormBuilder);
   private dropdown = inject(DropdownService);
+  private labelPrint = inject(LabelPrintService);
   form = this.fb.group({
     shelf: ['', [Validators.required]],
     zone_id: [null as number | null, [Validators.required]],
@@ -251,6 +253,10 @@ export class LocationsList {
       [
         { label: this.translate.instant('EDIT'), action: () => this.editLocation(location) },
         {
+          label: this.translate.instant('PRINT_LABEL'),
+          action: () => this.printLocationLabel(location),
+        },
+        {
           label: this.translate.instant('DELETE'),
           danger: true,
           action: () => this.deleteLocation(location),
@@ -258,6 +264,16 @@ export class LocationsList {
       ],
       e,
     );
+  }
+
+  printLocationLabel(location: Location) {
+    const code = this.getFinalCode(location);
+    this.labelPrint.printLocationLabel({
+      code,
+      building: location.zone?.building?.name,
+      zone: location.zone?.name,
+      shelf: location.shelf,
+    });
   }
 
   cancel() {

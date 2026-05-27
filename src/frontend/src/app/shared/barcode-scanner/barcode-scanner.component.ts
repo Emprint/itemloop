@@ -131,7 +131,7 @@ export class BarcodeScannerComponent implements AfterViewInit, OnDestroy {
   }
 
   onBarcodeDetected(barcode: string) {
-    this.scanComplete.emit(barcode);
+    this.scanComplete.emit(barcode.trim());
     this.stopScanning();
   }
 

@@ -94,7 +94,9 @@
     "SELECT_ZONE": "Sélectionner une zone",
     "SELECT_SHELF": "Sélectionner un rayon",
     "SAVE_FIRST_FOR_PHOTOS": "Enregistrez d'abord le produit pour pouvoir ajouter des photos.",
-    "NO_PHOTOS": "Aucune photo pour ce produit."
+    "NO_PHOTOS": "Aucune photo pour ce produit.",
+    "GENERATE_BARCODE": "Générer un code-barres",
+    "PRINT_LABEL": "Imprimer l'étiquette"
   },
   "USER_MANAGEMENT": "Gestion des utilisateurs",
   "EDIT": "Modifier",
@@ -416,5 +418,6 @@
     "ADJUST_ERROR": "Échec de l'ajustement.",
     "ADJUST_NEGATIVE_STOCK": "Cet ajustement rendrait le stock négatif.",
     "QTY_MANAGED_BY_MOVEMENTS": "La quantité est gérée par les mouvements de stock"
-  }
+  },
+  "PRINT_LABEL": "Imprimer l'étiquette"
 }

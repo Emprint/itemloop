@@ -435,8 +435,8 @@ class ProductController
                     col.id AS color_id, col.name AS color_name,
                     cat.id AS category_id, cat.name AS category_name,
                     l.id AS location_id, l.shelf AS location_shelf, l.code AS location_code,
-                    z.id AS zone_id, z.name AS zone_name,
-                    b.id AS building_id, b.name AS building_name,
+                    z.id AS zone_id, z.name AS zone_name, z.code AS zone_code,
+                    b.id AS building_id, b.name AS building_name, b.code AS building_code,
                     cu.name AS created_by_name,
                     uu.name AS updated_by_name
                 FROM products p
@@ -513,8 +513,21 @@ class ProductController
                 'id'    => (int) $row['location_id'],
                 'shelf' => $row['location_shelf'],
                 'code'  => $row['location_code'],
-                'zone'  => $row['zone_id'] ? ['id' => (int) $row['zone_id'], 'name' => $row['zone_name']] : null,
-                'building' => $row['building_id'] ? ['id' => (int) $row['building_id'], 'name' => $row['building_name']] : null,
+                'zone'  => $row['zone_id'] ? [
+                    'id'       => (int) $row['zone_id'],
+                    'name'     => $row['zone_name'],
+                    'code'     => $row['zone_code'],
+                    'building' => $row['building_id'] ? [
+                        'id'   => (int) $row['building_id'],
+                        'name' => $row['building_name'],
+                        'code' => $row['building_code'],
+                    ] : null,
+                ] : null,
+                'building' => $row['building_id'] ? [
+                    'id'   => (int) $row['building_id'],
+                    'name' => $row['building_name'],
+                    'code' => $row['building_code'],
+                ] : null,
             ] : null,
             'images'          => array_map(fn($img) => [
                 'id'            => (int) $img['id'],

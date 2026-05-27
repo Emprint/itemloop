@@ -47,6 +47,8 @@ import { OfflineStorageService } from '../../shared/offline-storage.service';
 import { SyncService } from '../../shared/sync-indicator/sync.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ProductHistoryComponent } from './product-history/product-history.component';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { LabelPrintService } from '../../shared/label-print.service';
 
 @Component({
   selector: 'app-product-form',
@@ -96,6 +98,10 @@ export class ProductFormComponent implements OnChanges, OnInit {
   private appSettingsService = inject(AppSettingsService);
   private offlineStorage = inject(OfflineStorageService);
   private syncService = inject(SyncService);
+  private labelPrint = inject(LabelPrintService);
+  private sanitizer = inject(DomSanitizer);
+
+  barcodeSvg = signal<SafeHtml | null>(null);
 
   isEditorOrAdmin = computed(() => {
     const user = this.auth.user();
@@ -282,6 +288,18 @@ export class ProductFormComponent implements OnChanges, OnInit {
       next: (conds: IdNamePair[]) => this.conditions.set(conds),
       error: () => this.conditions.set([]),
     });
+
+    // Keep barcode SVG signal in sync with the form field
+    const updateBarcodeSvg = (v: string | null) => {
+      const trimmed = (v ?? '').trim();
+      this.barcodeSvg.set(
+        trimmed
+          ? this.sanitizer.bypassSecurityTrustHtml(this.labelPrint.generateBarcodeSvg(trimmed))
+          : null,
+      );
+    };
+    this.form.get('barcode')!.valueChanges.subscribe(updateBarcodeSvg);
+    updateBarcodeSvg(this.form.get('barcode')!.value);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -610,6 +628,25 @@ export class ProductFormComponent implements OnChanges, OnInit {
 
   openBarcodeScanner() {
     this.showBarcodeScanner.set(true);
+  }
+
+  generateBarcode() {
+    if (!this.product?.id) return;
+    const code = 'ITM-' + String(this.product.id).padStart(6, '0');
+    this.form.patchValue({ barcode: code });
+  }
+
+  printProductLabel() {
+    const barcode = this.form.value.barcode?.trim();
+    if (!barcode) return;
+    const location = this.product?.location;
+    const locationCode = location ? this.getFinalCode(location) : undefined;
+    this.labelPrint.printProductLabel({
+      id: this.product?.id ?? 0,
+      title: this.form.value.title?.trim() ?? '',
+      barcode,
+      locationName: locationCode || undefined,
+    });
   }
 
   onBarcodeScanned(barcode: string) {

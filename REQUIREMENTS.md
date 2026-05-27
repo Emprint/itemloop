@@ -71,7 +71,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 | US37 | Developer | As a developer, I want dates displayed throughout the app to respect the user's selected language (locale-aware formatting for month names, date order, etc.), so that French users see "28 avr. 2026" and English users see "28 Apr 2026". | Low | ⚪ Simple | ✅ | Shared `LocaleDatePipe`; product list, product form, My Orders, and Orders all use it |
 | US38 | Editor/Admin | As an editor or admin, I want to view the full history of each product — quantity changes, location moves, order events — with a timestamp and the responsible user, so the team has complete traceability over every item. | Medium | 🔴 Complex | ✅ | `product_history` table; stock adjustments (±N) via dedicated form; order events (placed/cancelled/reopened/completed) logged atomically; location moves logged on transfer; timeline in product form |
 | US39 | Admin | As an admin, I want to view reuse impact statistics (total kg recovered, number of items redistributed, estimated value) derived from existing product data and completed orders, so I can report on the center's environmental and social activity. | Low | 🟡 Medium | ✅ | Reuse impact statistics on dashboard for editors and admins |
-| US40 | Editor/Admin | As an editor or admin, I want to print or export shelf labels containing the location code (e.g. BG1-ZOA-001) as a barcode or QR code, so I can physically tag storage locations and scan them later. | Low | 🟡 Medium | ⚪ | |
+| US40 | Editor/Admin | As an editor or admin, I want to print or export shelf labels containing the location code (e.g. BG1-ZOA-001) as a barcode or QR code, so I can physically tag storage locations and scan them later. | Low | 🟡 Medium | ✅ | QR code label via browser print dialog; also covers product barcode label printing and "Generate barcode" (ITM-XXXXXX) for products without a barcode |
 | US41 | User/Admin | As a user or admin, I want to receive notifications (in-app or email) when an order is placed or its status changes, so the team and customers are always informed without having to check manually. | Medium | 🔴 Complex | ✅ | Email via PHPMailer: customer gets order confirmation + status updates; all opted-in admins (notify_admin_emails=1) get new-order notification each in their own locale (see US50); bilingual en/fr templates |
 | US42 | Admin | As an admin, I want to export inventory or order data as a formatted PDF report or an Excel spreadsheet (.xlsx), so I can share or archive summaries and perform further analysis in spreadsheet software. | Low | 🟡 Medium | ✅ | Products list: Export dropdown (CSV / Excel / PDF); Orders list: Export dropdown (Excel / PDF); PDF via Dompdf backend endpoint; Excel via SheetJS client-side |
 | US43 | User/Editor/Admin | As a user or editor, I want to see who added and last edited a product in the product's Quick Info panel, so I have traceability over inventory changes. | Low | 🟢 Simple | ✅ | |
@@ -93,7 +93,7 @@ Itemloop is licensed under the **GNU Affero General Public License v3 (AGPL-3.0)
 - PWA offline sync with conflict resolution (sync is implemented; conflict resolution is not)
 - Product history / audit trail → done (US38)
 - PDF + Excel export → done (US42)
-- Print/export shelf labels as barcode or QR code (US40)
+- Print/export shelf labels as barcode or QR code → done (US40)
 
 ---
 

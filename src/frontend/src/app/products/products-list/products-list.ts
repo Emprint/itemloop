@@ -444,12 +444,13 @@ export class ProductsList {
   }
 
   onBarcodeScanned(barcode: string) {
-    this.searchQuery.set(barcode);
+    const trimmed = barcode.trim();
+    this.searchQuery.set(trimmed);
     this.showBarcodeScanner.set(false);
     this.currentPage.set(1);
 
     // Check if there's a single matching product by barcode
-    const matchingProducts = this.products().filter((p) => p.barcode === barcode);
+    const matchingProducts = this.products().filter((p) => p.barcode === trimmed);
     if (matchingProducts.length === 1) {
       // Open the product in read-only view
       this.viewProduct(matchingProducts[0]);
