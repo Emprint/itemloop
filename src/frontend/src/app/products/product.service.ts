@@ -63,8 +63,8 @@ export interface Product {
     id: number;
     shelf?: string;
     code?: string;
-    zone?: { id: number; name: string };
-    building?: { id: number; name: string };
+    zone?: { id: number; name: string; code?: string; building?: { id: number; name: string; code?: string } };
+    building?: { id: number; name: string; code?: string };
   };
   barcode?: string;
   created_at?: string;

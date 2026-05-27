@@ -639,13 +639,21 @@ export class ProductFormComponent implements OnChanges, OnInit {
   printProductLabel() {
     const barcode = this.form.value.barcode?.trim();
     if (!barcode) return;
-    const location = this.product?.location;
-    const locationCode = location ? this.getFinalCode(location) : undefined;
+    const loc = this.product?.location;
+    const buildingCode = loc?.zone?.building?.code ?? '';
+    const zoneCode = loc?.zone?.code ?? '';
+    const shelfCode = loc?.code ?? '';
+    const locationCode =
+      buildingCode && zoneCode && shelfCode
+        ? `${buildingCode}-${zoneCode}-${shelfCode}`
+        : buildingCode && zoneCode
+          ? `${buildingCode}-${zoneCode}`
+          : zoneCode || shelfCode || undefined;
     this.labelPrint.printProductLabel({
       id: this.product?.id ?? 0,
       title: this.form.value.title?.trim() ?? '',
       barcode,
-      locationName: locationCode || undefined,
+      locationName: locationCode,
     });
   }
 
