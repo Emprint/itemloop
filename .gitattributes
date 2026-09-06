@@ -1,0 +1,5 @@
+# Files executed or parsed on the Linux server must keep LF endings. With Git's
+# core.autocrlf=true (the Windows default) they are checked out as CRLF, and bash
+# then fails with `/bin/bash^M: bad interpreter`.
+*.sh          text eol=lf
+deploy/*      text eol=lf

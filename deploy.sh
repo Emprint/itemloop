@@ -18,7 +18,11 @@
 #        STORAGE_PATH=/real/path/to/frontend/storage/products
 #      On OVH: PHP-FPM open_basedir uses the real path, NOT the /home/username alias.
 #      Run `echo $HOME` via SSH to find your real path.
-#   6. Create ~/.user.ini and ~/backend/public/.user.ini for PHP-FPM upload limits
+#   6. PHP upload limits: deploy.sh now ships .user.ini to ~/frontend/ and
+#      ~/frontend/api/ (see deploy/*.user.ini) — nothing to do by hand.
+#      PHP only reads .user.ini from the running script's directory up to the
+#      docroot, so ~/backend/public/.user.ini has no effect: the entry point is
+#      ~/frontend/api/index.php. OVH caches .user.ini for ~5 min (user_ini.cache_ttl).
 #   7. Import src/backend/sql/schema.sql via phpMyAdmin (one-time DB setup)
 #
 # Usage:
@@ -54,7 +58,7 @@ RSYNC="sshpass -p '$SSH_PASS' rsync -az --no-perms -e 'ssh -o StrictHostKeyCheck
 
 echo "🔨 Building Angular frontend..."
 cd src/frontend
-ng build --configuration production
+npx ng build --configuration production
 cd ../..
 
 echo "🧹 Cleaning local deploy package..."
@@ -66,6 +70,8 @@ cp -r src/frontend/dist/itemloop-frontend/browser/* deploy_package/frontend/
 cp deploy/frontend.htaccess deploy_package/frontend/.htaccess
 cp deploy/frontend-api.htaccess deploy_package/frontend/api/.htaccess
 cp deploy/frontend-api-index.php deploy_package/frontend/api/index.php
+cp deploy/frontend.user.ini deploy_package/frontend/.user.ini
+cp deploy/frontend-api.user.ini deploy_package/frontend/api/.user.ini
 
 echo "📦 Installing backend dependencies (production)..."
 cd src/backend
