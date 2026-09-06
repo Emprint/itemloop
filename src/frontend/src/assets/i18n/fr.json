@@ -96,7 +96,13 @@
     "SAVE_FIRST_FOR_PHOTOS": "Enregistrez d'abord le produit pour pouvoir ajouter des photos.",
     "NO_PHOTOS": "Aucune photo pour ce produit.",
     "GENERATE_BARCODE": "Générer un code-barres",
-    "PRINT_LABEL": "Imprimer l'étiquette"
+    "PRINT_LABEL": "Imprimer l'étiquette",
+    "PLACEHOLDER": {
+      "QUANTITY": "ex. 1",
+      "ESTIMATED_VALUE": "ex. 12,50",
+      "DIMENSION": "ex. 30",
+      "WEIGHT": "ex. 1,5"
+    }
   },
   "USER_MANAGEMENT": "Gestion des utilisateurs",
   "EDIT": "Modifier",
@@ -425,7 +431,8 @@
     "SUBMIT_ADJUSTMENT": "Valider l'ajustement",
     "ADJUST_ERROR": "Échec de l'ajustement.",
     "ADJUST_NEGATIVE_STOCK": "Cet ajustement rendrait le stock négatif.",
-    "QTY_MANAGED_BY_MOVEMENTS": "La quantité est gérée par les mouvements de stock"
+    "QTY_MANAGED_BY_MOVEMENTS": "La quantité est gérée par les mouvements de stock",
+    "DELTA_PLACEHOLDER": "ex. +2 ou -3"
   },
   "PRINT_LABEL": "Imprimer l'étiquette"
 }

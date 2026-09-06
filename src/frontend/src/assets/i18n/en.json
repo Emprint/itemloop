@@ -259,7 +259,13 @@
     "SAVE_FIRST_FOR_PHOTOS": "Save the product first, then you can upload photos.",
     "NO_PHOTOS": "No photos for this product.",
     "GENERATE_BARCODE": "Generate barcode",
-    "PRINT_LABEL": "Print label"
+    "PRINT_LABEL": "Print label",
+    "PLACEHOLDER": {
+      "QUANTITY": "e.g. 1",
+      "ESTIMATED_VALUE": "e.g. 12.50",
+      "DIMENSION": "e.g. 30",
+      "WEIGHT": "e.g. 1.5"
+    }
   },
   "PRODUCT": "Product",
   "ADD_PRODUCT": "Add Product",
@@ -425,7 +431,8 @@
     "SUBMIT_ADJUSTMENT": "Submit adjustment",
     "ADJUST_ERROR": "Failed to apply adjustment.",
     "ADJUST_NEGATIVE_STOCK": "This adjustment would make stock negative.",
-    "QTY_MANAGED_BY_MOVEMENTS": "Quantity is managed by stock movements"
+    "QTY_MANAGED_BY_MOVEMENTS": "Quantity is managed by stock movements",
+    "DELTA_PLACEHOLDER": "e.g. +2 or -3"
   },
   "PRINT_LABEL": "Print label"
 }

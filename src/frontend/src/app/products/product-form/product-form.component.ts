@@ -250,16 +250,18 @@ export class ProductFormComponent implements OnChanges, OnInit {
       description: [''],
       condition: [null, Validators.required],
       condition_id: [0],
-      quantity: [0, [Validators.required, Validators.min(0)]],
-      length: [0, [Validators.min(0)]],
-      width: [0, [Validators.min(0)]],
-      height: [0, [Validators.min(0)]],
+      // Numeric fields start empty rather than at 0: a prefilled zero has to be
+      // deleted before typing. Placeholders show the expected kind of value.
+      quantity: [null, [Validators.required, Validators.min(0)]],
+      length: [null, [Validators.min(0)]],
+      width: [null, [Validators.min(0)]],
+      height: [null, [Validators.min(0)]],
       color: [null],
       color_id: [0],
       category: [null, Validators.required],
       category_id: [0],
-      estimated_value: [0, [Validators.min(0)]],
-      weight: [0, [Validators.min(0)]],
+      estimated_value: [null, [Validators.min(0)]],
+      weight: [null, [Validators.min(0)]],
       destination: [''],
       visibility: ['private', Validators.required],
       location_id: [0, Validators.min(1)],
@@ -357,16 +359,16 @@ export class ProductFormComponent implements OnChanges, OnInit {
       description: '',
       condition: null,
       condition_id: 0,
-      quantity: 0,
-      length: 0,
-      width: 0,
-      height: 0,
+      quantity: null,
+      length: null,
+      width: null,
+      height: null,
       color: null,
       color_id: 0,
       category: null,
       category_id: 0,
-      weight: 0,
-      estimated_value: 0,
+      weight: null,
+      estimated_value: null,
       destination: '',
       visibility: 'private',
       location_id: 0,
@@ -620,6 +622,12 @@ export class ProductFormComponent implements OnChanges, OnInit {
   // Stock adjustment (editors/admins only — visible in edit mode)
   showAdjustmentForm = signal(false);
   adjustmentDelta = signal<number | null>(null);
+
+  /** Empty input stays empty: `+''` would be 0, which the binding writes back. */
+  onAdjustmentDeltaInput(value: string): void {
+    this.adjustmentDelta.set(value.trim() === '' ? null : +value);
+  }
+
   adjustmentReason = signal('');
   adjustmentLoading = signal(false);
   adjustmentError = signal<string | null>(null);

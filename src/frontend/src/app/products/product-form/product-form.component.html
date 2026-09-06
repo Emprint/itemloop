@@ -104,6 +104,7 @@
               formControlName="quantity"
               class="pf-input"
               min="0"
+              [placeholder]="'PRODUCT_FORM.PLACEHOLDER.QUANTITY' | translate"
               [attr.readonly]="product ? true : null"
               [class.pf-input-readonly]="!!product"
               [title]="product ? ('HISTORY.QTY_MANAGED_BY_MOVEMENTS' | translate) : ''"
@@ -117,6 +118,7 @@
               class="pf-input"
               min="0"
               step="0.01"
+              [placeholder]="'PRODUCT_FORM.PLACEHOLDER.ESTIMATED_VALUE' | translate"
             />
           </label>
         </div>
@@ -284,7 +286,14 @@
                   >?</span
                 ></span
               >
-              <input type="number" formControlName="length" class="pf-input" min="0" step="0.1" />
+              <input
+                type="number"
+                formControlName="length"
+                class="pf-input"
+                min="0"
+                step="0.1"
+                [placeholder]="'PRODUCT_FORM.PLACEHOLDER.DIMENSION' | translate"
+              />
             </label>
             <label class="pf-label pf-flex-1">
               <span class="pf-label-with-hint"
@@ -293,7 +302,14 @@
                   >?</span
                 ></span
               >
-              <input type="number" formControlName="width" class="pf-input" min="0" step="0.1" />
+              <input
+                type="number"
+                formControlName="width"
+                class="pf-input"
+                min="0"
+                step="0.1"
+                [placeholder]="'PRODUCT_FORM.PLACEHOLDER.DIMENSION' | translate"
+              />
             </label>
             <label class="pf-label pf-flex-1">
               <span class="pf-label-with-hint"
@@ -302,14 +318,28 @@
                   >?</span
                 ></span
               >
-              <input type="number" formControlName="height" class="pf-input" min="0" step="0.1" />
+              <input
+                type="number"
+                formControlName="height"
+                class="pf-input"
+                min="0"
+                step="0.1"
+                [placeholder]="'PRODUCT_FORM.PLACEHOLDER.DIMENSION' | translate"
+              />
             </label>
           </div>
 
           <!-- Weight -->
           <label class="pf-label">
             <span>{{ 'PRODUCT_FORM.WEIGHT' | translate }}</span>
-            <input type="number" formControlName="weight" class="pf-input" min="0" step="0.01" />
+            <input
+              type="number"
+              formControlName="weight"
+              class="pf-input"
+              min="0"
+              step="0.01"
+              [placeholder]="'PRODUCT_FORM.PLACEHOLDER.WEIGHT' | translate"
+            />
           </label>
         </div>
 
@@ -596,8 +626,8 @@
                     type="number"
                     class="pf-input"
                     [value]="adjustmentDelta()"
-                    (input)="adjustmentDelta.set(+$any($event.target).value)"
-                    placeholder="+2 or -3"
+                    (input)="onAdjustmentDeltaInput($any($event.target).value)"
+                    [placeholder]="'HISTORY.DELTA_PLACEHOLDER' | translate"
                   />
                 </label>
                 <label class="pf-label">
