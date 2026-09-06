@@ -792,6 +792,7 @@ button:disabled {
   max-width: 90vw;
   max-height: 90vh;
   cursor: default;
+  overflow: hidden;
 }
 .pf-lb-img-wrap img {
   max-width: 90vw;

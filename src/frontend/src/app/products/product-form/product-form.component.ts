@@ -47,6 +47,7 @@ import { OfflineStorageService } from '../../shared/offline-storage.service';
 import { SyncService } from '../../shared/sync-indicator/sync.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ProductHistoryComponent } from './product-history/product-history.component';
+import { PinchZoomDirective } from '../../shared/pinch-zoom.directive';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LabelPrintService } from '../../shared/label-print.service';
@@ -62,6 +63,7 @@ import { LabelPrintService } from '../../shared/label-print.service';
     DragDropModule,
     LocaleDatePipe,
     BarcodeScannerComponent,
+    PinchZoomDirective,
     ProductHistoryComponent,
   ],
   templateUrl: './product-form.component.html',
