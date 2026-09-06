@@ -146,10 +146,18 @@ export class PinchZoomDirective implements OnChanges, OnDestroy {
   }
 
   private apply(): void {
-    // Never let the image be dragged away from its frame.
-    const rect = this.host.getBoundingClientRect();
-    const maxX = Math.max(0, (rect.width * this.scale - rect.width) / 2);
-    const maxY = Math.max(0, (rect.height * this.scale - rect.height) / 2);
+    // Bound the pan by the frame the image sits in, not by the image itself: the
+    // frame is usually taller than a landscape photo, and that spare room is
+    // exactly what a zoomed image should be allowed to use.
+    // offsetWidth/Height are layout sizes — getBoundingClientRect would already
+    // include the transform and compound the scale.
+    const frame = this.host.parentElement;
+    const width = this.host.offsetWidth;
+    const height = this.host.offsetHeight;
+    const frameWidth = frame?.clientWidth ?? width;
+    const frameHeight = frame?.clientHeight ?? height;
+    const maxX = Math.max(0, (width * this.scale - frameWidth) / 2);
+    const maxY = Math.max(0, (height * this.scale - frameHeight) / 2);
     this.tx = Math.min(maxX, Math.max(-maxX, this.tx));
     this.ty = Math.min(maxY, Math.max(-maxY, this.ty));
 
