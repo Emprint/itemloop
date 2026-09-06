@@ -145,7 +145,15 @@
     "GENERIC": "An error occurred. Please try again.",
     "PASSWORD_MIN": "Password must be at least 8 characters.",
     "PASSWORD_PATTERN": "Password must contain at least one letter, one digit, and one special character.",
-    "REQUIRED": "This field is required."
+    "REQUIRED": "This field is required.",
+    "UPLOAD_TOO_LARGE": "The image is too large for the server (limit: {{limit}}).",
+    "UPLOAD_FAILED": "Image upload failed.",
+    "UPLOAD_NO_IMAGE": "The server stored no image.",
+    "IMAGE_FORMAT": "Unsupported image format ({{got}}). Allowed: JPEG, PNG, WebP, GIF.",
+    "IMAGE_TOO_LARGE": "Each image must be under {{limit}}.",
+    "FAILED_DELETE_IMAGE": "Failed to delete image.",
+    "FAILED_REORDER_IMAGES": "Failed to save image order.",
+    "UPLOAD_NOTHING_STORED": "The server answered without storing any image."
   },
   "LOCATIONS_MANAGEMENT": "Location Management",
   "EDIT_LOCATION": "Edit Location",

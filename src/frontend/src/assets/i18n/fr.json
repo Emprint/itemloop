@@ -221,7 +221,15 @@
     "GENERIC": "Une erreur est survenue. Veuillez réessayer.",
     "PASSWORD_MIN": "Le mot de passe doit contenir au moins 8 caractères.",
     "PASSWORD_PATTERN": "Le mot de passe doit contenir au moins une lettre, un chiffre et un caractère spécial.",
-    "REQUIRED": "Ce champ est obligatoire."
+    "REQUIRED": "Ce champ est obligatoire.",
+    "UPLOAD_TOO_LARGE": "L'image est trop volumineuse pour le serveur (limite : {{limit}}).",
+    "UPLOAD_FAILED": "Échec de l'envoi de l'image.",
+    "UPLOAD_NO_IMAGE": "Le serveur n'a enregistré aucune image.",
+    "IMAGE_FORMAT": "Format d'image non pris en charge ({{got}}). Formats acceptés : JPEG, PNG, WebP, GIF.",
+    "IMAGE_TOO_LARGE": "Chaque image doit faire moins de {{limit}}.",
+    "FAILED_DELETE_IMAGE": "Échec de la suppression de l'image.",
+    "FAILED_REORDER_IMAGES": "Échec de l'enregistrement de l'ordre des images.",
+    "UPLOAD_NOTHING_STORED": "Le serveur a répondu sans enregistrer d'image."
   },
   "LOCATIONS_MANAGEMENT": "Gestion des emplacements",
   "EDIT_LOCATION": "Modifier l'emplacement",

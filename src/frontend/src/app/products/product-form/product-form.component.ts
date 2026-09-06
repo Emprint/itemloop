@@ -31,7 +31,7 @@ import { inject } from '@angular/core';
 import { LocationService, Location } from '../../locations/locations-list/location.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ComboboxComponent } from '../../shared/combobox/combobox.component';
 import { ProductColorService } from '../product-color.service';
 import { ProductCategoryService } from '../product-category.service';
@@ -48,6 +48,7 @@ import { SyncService } from '../../shared/sync-indicator/sync.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ProductHistoryComponent } from './product-history/product-history.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { HttpErrorResponse } from '@angular/common/http';
 import { LabelPrintService } from '../../shared/label-print.service';
 
 @Component({
@@ -100,6 +101,7 @@ export class ProductFormComponent implements OnChanges, OnInit {
   private syncService = inject(SyncService);
   private labelPrint = inject(LabelPrintService);
   private sanitizer = inject(DomSanitizer);
+  private translate = inject(TranslateService);
 
   barcodeSvg = signal<SafeHtml | null>(null);
 
@@ -440,6 +442,12 @@ export class ProductFormComponent implements OnChanges, OnInit {
     this.imageError.set(null);
     this.productService.uploadImages(this.product.id, files).subscribe({
       next: (res) => {
+        // A 2xx with no image means the server dropped every file (e.g. over its upload
+        // limits) — treat it as a failure instead of silently doing nothing.
+        if (!res.images?.length) {
+          this.imageError.set(this.translate.instant('ERRORS.UPLOAD_NOTHING_STORED'));
+          return;
+        }
         const updated = [...this.images(), ...res.images];
         this.images.set(updated);
         // Persist temp images to IDB so they show when reopening the product offline
@@ -447,15 +455,48 @@ export class ProductFormComponent implements OnChanges, OnInit {
           this.offlineStorage.saveProduct({ ...this.product, images: updated });
         }
       },
-      error: () => this.imageError.set('Image upload failed.'),
+      error: (err: HttpErrorResponse) => this.imageError.set(this.uploadErrorMessage(err)),
     });
+  }
+
+  // The API answers with a stable error code (UPLOAD_TOO_LARGE, IMAGE_FORMAT, ...) plus
+  // the values to interpolate, so the message is shown in the user's own language.
+  private uploadErrorMessage(err: HttpErrorResponse): string {
+    const body = err?.error ?? {};
+    const known = [
+      'UPLOAD_TOO_LARGE',
+      'UPLOAD_FAILED',
+      'UPLOAD_NO_IMAGE',
+      'IMAGE_FORMAT',
+      'IMAGE_TOO_LARGE',
+    ];
+    if (body.error === 'UPLOAD_NO_IMAGE' && body.diagnostics) {
+      // Temporary aid while chasing the production-only failure: the raw server facts
+      // are appended so they can be read straight from the phone.
+      return (
+        this.translate.instant('ERRORS.UPLOAD_NO_IMAGE') +
+        ' [' +
+        JSON.stringify(body.diagnostics) +
+        ']'
+      );
+    }
+    if (known.includes(body.error)) {
+      return this.translate.instant('ERRORS.' + body.error, {
+        limit: body.limit,
+        got: body.got,
+        sent: body.sent,
+      });
+    }
+    if (err?.status === 413)
+      return this.translate.instant('ERRORS.UPLOAD_TOO_LARGE', { limit: '?' });
+    return this.translate.instant('ERRORS.UPLOAD_FAILED');
   }
 
   deleteImage(imageId: number) {
     if (!this.product) return;
     this.productService.deleteImage(this.product.id, imageId).subscribe({
       next: () => this.images.update((imgs) => imgs.filter((i) => i.id !== imageId)),
-      error: () => this.imageError.set('Failed to delete image.'),
+      error: () => this.imageError.set(this.translate.instant('ERRORS.FAILED_DELETE_IMAGE')),
     });
   }
 
@@ -466,7 +507,7 @@ export class ProductFormComponent implements OnChanges, OnInit {
     this.images.set(imgs);
     const ids = imgs.map((i) => i.id);
     this.productService.reorderImages(this.product.id, ids).subscribe({
-      error: () => this.imageError.set('Failed to save image order.'),
+      error: () => this.imageError.set(this.translate.instant('ERRORS.FAILED_REORDER_IMAGES')),
     });
   }
 

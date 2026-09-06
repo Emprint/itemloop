@@ -27,7 +27,42 @@ class ProductImageController
         }
 
         if (empty($files)) {
-            return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['images' => ['No images provided.']]], 422);
+            // When the request body exceeds post_max_size, PHP discards it entirely: no
+            // uploaded files and no POST fields survive, only the Content-Length header.
+            // Without this check the request looks like "no image was selected".
+            $contentLength = (int) ($request->getServerParams()['CONTENT_LENGTH'] ?? 0);
+            $postMax       = self::iniBytes((string) ini_get('post_max_size'));
+            if ($contentLength > 0 && $postMax > 0 && $contentLength > $postMax) {
+                return $this->json($response, [
+                    'error'  => 'UPLOAD_TOO_LARGE',
+                    'limit'  => (string) ini_get('post_max_size'),
+                    'sent'   => self::formatBytes($contentLength),
+                    'errors' => ['images' => [sprintf(
+                        'Upload too large for the server: %s sent, but post_max_size is %s.',
+                        self::formatBytes($contentLength),
+                        (string) ini_get('post_max_size')
+                    )]],
+                ], 413);
+            }
+
+            // The body reached PHP but carried no file. Report enough server-side facts to
+            // tell the possible causes apart (uploads disabled, body stripped by a proxy,
+            // wrong field name) — these are ini values and counts only, never user data.
+            return $this->json($response, [
+                'error'       => 'UPLOAD_NO_IMAGE',
+                'errors'      => ['images' => ['No images provided.']],
+                'diagnostics' => [
+                    'content_length'      => $contentLength,
+                    'content_type'        => $request->getHeaderLine('Content-Type'),
+                    'post_max_size'       => (string) ini_get('post_max_size'),
+                    'upload_max_filesize' => (string) ini_get('upload_max_filesize'),
+                    'file_uploads'        => (bool) ini_get('file_uploads'),
+                    'max_file_uploads'    => (string) ini_get('max_file_uploads'),
+                    'upload_tmp_dir'      => (string) ini_get('upload_tmp_dir') ?: sys_get_temp_dir(),
+                    'files_keys'          => array_keys($request->getUploadedFiles()),
+                    'post_keys'           => array_keys((array) $request->getParsedBody()),
+                ],
+            ], 422);
         }
 
         $storageDir = $_ENV['STORAGE_PATH'] ?? __DIR__ . '/../../public/storage/products';
@@ -44,8 +79,15 @@ class ProductImageController
         $createdImages = [];
 
         foreach ($files as $file) {
+            // Never skip a rejected file silently — the client would get 201 with an empty
+            // list and show no error at all (typical with phone photos over the PHP limits).
             if ($file->getError() !== UPLOAD_ERR_OK) {
-                continue;
+                $tooLarge = in_array($file->getError(), [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true);
+                return $this->json($response, array_filter([
+                    'error'  => $tooLarge ? 'UPLOAD_TOO_LARGE' : 'UPLOAD_FAILED',
+                    'limit'  => $tooLarge ? (string) ini_get('upload_max_filesize') : null,
+                    'errors' => ['images' => [self::uploadErrorMessage($file->getError())]],
+                ]), $tooLarge ? 413 : 422);
             }
 
             $allowed  = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
@@ -55,12 +97,23 @@ class ProductImageController
             $finfo = new \finfo(FILEINFO_MIME_TYPE);
             $mime  = $finfo->buffer($content);
             if (!in_array($mime, $allowed, true)) {
-                return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['images' => ['Only jpeg, png, webp and gif images are allowed.']]], 422);
+                return $this->json($response, [
+                    'error'  => 'IMAGE_FORMAT',
+                    'got'    => $mime ?: 'unknown',
+                    'errors' => ['images' => [sprintf(
+                        'Unsupported image format (%s). Allowed: jpeg, png, webp, gif.',
+                        $mime ?: 'unknown'
+                    )]],
+                ], 422);
             }
 
             $maxBytes = 10 * 1024 * 1024; // 10 MB
             if ($file->getSize() > $maxBytes) {
-                return $this->json($response, ['error' => 'ERROR_VALIDATION', 'errors' => ['images' => ['Each image must be under 10 MB.']]], 422);
+                return $this->json($response, [
+                    'error'  => 'IMAGE_TOO_LARGE',
+                    'limit'  => '10 MB',
+                    'errors' => ['images' => ['Each image must be under 10 MB.']],
+                ], 422);
             }
 
             $img = $manager->read($content);
@@ -108,6 +161,52 @@ class ProductImageController
         }
 
         return $this->json($response, ['images' => $createdImages], 201);
+    }
+
+    // -------------------------------------------------------------------------
+    // Upload helpers
+    // -------------------------------------------------------------------------
+
+    private static function uploadErrorMessage(int $code): string
+    {
+        return match ($code) {
+            UPLOAD_ERR_INI_SIZE  => sprintf(
+                'Image too large for the server: upload_max_filesize is %s.',
+                (string) ini_get('upload_max_filesize')
+            ),
+            UPLOAD_ERR_FORM_SIZE => 'Image too large for this form.',
+            UPLOAD_ERR_PARTIAL   => 'The image was only partially uploaded, please retry.',
+            UPLOAD_ERR_NO_FILE   => 'No image was uploaded.',
+            UPLOAD_ERR_NO_TMP_DIR,
+            UPLOAD_ERR_CANT_WRITE => 'The server could not store the image.',
+            UPLOAD_ERR_EXTENSION  => 'The upload was blocked by a server extension.',
+            default               => 'The image could not be uploaded.',
+        };
+    }
+
+    // Converts a php.ini shorthand size ("20M", "2G") to bytes.
+    private static function iniBytes(string $value): int
+    {
+        $value = trim($value);
+        if ($value === '') {
+            return 0;
+        }
+
+        $number = (int) $value;
+
+        return match (strtolower($value[strlen($value) - 1])) {
+            'g'     => $number * 1024 * 1024 * 1024,
+            'm'     => $number * 1024 * 1024,
+            'k'     => $number * 1024,
+            default => $number,
+        };
+    }
+
+    private static function formatBytes(int $bytes): string
+    {
+        return $bytes >= 1024 * 1024
+            ? round($bytes / (1024 * 1024), 1) . ' MB'
+            : round($bytes / 1024) . ' kB';
     }
 
     public function reorder(Request $request, Response $response, array $args): Response
