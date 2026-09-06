@@ -109,12 +109,25 @@ class ProductController
                     (:title, :description, :quantity, :estimated_value, :location_id, :barcode,
                      :length, :width, :height, :weight, :destination, :visibility,
                      :condition_id, :color_id, :category_id, :created_by, :updated_by, NOW(), NOW())';
-        $stmt = $db->prepare($sql);
-        $stmt->execute($data);
-        $id = (int) $db->lastInsertId();
+        // products.quantity is derived from the stock ledger: insert at 0 and let the
+        // initial_stock movement below apply the quantity, so it is not counted twice.
+        $initialQuantity  = (int) $data['quantity'];
+        $data['quantity'] = 0;
 
-        // Log the initial stock event
-        self::applyStockMovement($db, $id, 'initial_stock', (int) $data['quantity'], (int) $user['id']);
+        $db->beginTransaction();
+        try {
+            $stmt = $db->prepare($sql);
+            $stmt->execute($data);
+            $id = (int) $db->lastInsertId();
+
+            // Log the initial stock event
+            self::applyStockMovement($db, $id, 'initial_stock', $initialQuantity, (int) $user['id']);
+
+            $db->commit();
+        } catch (\Throwable $e) {
+            $db->rollBack();
+            throw $e;
+        }
 
         return $this->json($response, $this->findProduct($db, $id), 201);
     }
