@@ -15,6 +15,7 @@ interface IdNamePair {
 
 import {
   Component,
+  OnDestroy,
   Input,
   Output,
   EventEmitter,
@@ -52,6 +53,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LabelPrintService } from '../../shared/label-print.service';
 
+const LIGHTBOX_CHROME_DELAY_MS = 3000;
+
 @Component({
   selector: 'app-product-form',
   standalone: true,
@@ -69,7 +72,7 @@ import { LabelPrintService } from '../../shared/label-print.service';
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.css'],
 })
-export class ProductFormComponent implements OnChanges, OnInit {
+export class ProductFormComponent implements OnChanges, OnInit, OnDestroy {
   destinationOptions = Object.values(DestinationOption);
   private categoryService = inject(ProductCategoryService);
 
@@ -149,6 +152,8 @@ export class ProductFormComponent implements OnChanges, OnInit {
   // Lightbox
   lightboxOpen = signal(false);
   lightboxIndex = signal(0);
+  lightboxChromeVisible = signal(true);
+  private chromeTimer?: ReturnType<typeof setTimeout>;
 
   // Mobile carousel
   carouselIndex = signal(0);
@@ -174,10 +179,29 @@ export class ProductFormComponent implements OnChanges, OnInit {
   openLightbox(index: number) {
     this.lightboxIndex.set(index);
     this.lightboxOpen.set(true);
+    this.revealLightboxChrome();
+  }
+
+  /**
+   * Keeps the close button, arrows and counter out of the way: they fade out a
+   * few seconds after the last interaction and come back on the next touch.
+   */
+  revealLightboxChrome() {
+    this.lightboxChromeVisible.set(true);
+    clearTimeout(this.chromeTimer);
+    this.chromeTimer = setTimeout(
+      () => this.lightboxChromeVisible.set(false),
+      LIGHTBOX_CHROME_DELAY_MS,
+    );
   }
 
   closeLightbox() {
     this.lightboxOpen.set(false);
+    clearTimeout(this.chromeTimer);
+  }
+
+  ngOnDestroy() {
+    clearTimeout(this.chromeTimer);
   }
 
   prevLightbox() {

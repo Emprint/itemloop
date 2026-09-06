@@ -767,8 +767,10 @@
   @if (lightboxOpen()) {
     <div
       class="pf-lightbox"
+      [class.pf-lb-idle]="!lightboxChromeVisible()"
       role="presentation"
       (click)="closeLightbox()"
+      (pointerdown)="revealLightboxChrome()"
       (keydown.escape)="closeLightbox()"
     >
       <button type="button" class="pf-lb-close" (click)="closeLightbox()">✕</button>

@@ -715,8 +715,12 @@ button:disabled {
   .pf-carousel-btn:hover {
     background: rgba(255, 255, 255, 0.35);
   }
-  .pf-carousel-prev { left: 0.5rem; }
-  .pf-carousel-next { right: 0.5rem; }
+  .pf-carousel-prev {
+    left: 0.5rem;
+  }
+  .pf-carousel-next {
+    right: 0.5rem;
+  }
   .pf-carousel-dots {
     position: absolute;
     bottom: 0.5rem;
@@ -743,7 +747,6 @@ button:disabled {
     display: none;
   }
 }
-
 
 .pf-readonly .pf-input,
 .pf-readonly textarea.pf-input {
@@ -793,6 +796,18 @@ button:disabled {
   max-height: 90vh;
   cursor: default;
   overflow: hidden;
+}
+/* Chrome fades out after a few seconds of stillness and returns on touch. */
+.pf-lightbox .pf-lb-close,
+.pf-lightbox .pf-lb-nav,
+.pf-lightbox .pf-lb-counter {
+  transition: opacity 0.25s ease;
+}
+.pf-lightbox.pf-lb-idle .pf-lb-close,
+.pf-lightbox.pf-lb-idle .pf-lb-nav,
+.pf-lightbox.pf-lb-idle .pf-lb-counter {
+  opacity: 0;
+  pointer-events: none;
 }
 .pf-lb-img-wrap img {
   max-width: 90vw;
@@ -910,7 +925,9 @@ button:disabled {
   color: var(--text-muted, #6b7280);
   width: 100%;
   text-align: left;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
 }
 .pf-btn-generate-barcode:hover {
   background: var(--bg-secondary, #f3f4f6);
@@ -949,10 +966,29 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
   align-self: center;
 }
 .pf-btn-print-label:hover {
   background: #f3f4f6;
   border-color: #9ca3af;
+}
+
+/* On phones the photo fills the screen: no margin, no rounded corners. */
+@media (max-width: 640px) {
+  .pf-lb-img-wrap,
+  .pf-lb-img-wrap img {
+    max-width: 100vw;
+    max-height: 100vh;
+    max-height: 100dvh;
+  }
+  .pf-lb-img-wrap img {
+    border-radius: 0;
+  }
+  .pf-lb-close {
+    top: calc(0.75rem + env(safe-area-inset-top, 0px));
+    right: calc(0.75rem + env(safe-area-inset-right, 0px));
+  }
 }
