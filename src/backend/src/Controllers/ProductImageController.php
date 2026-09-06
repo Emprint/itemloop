@@ -45,24 +45,7 @@ class ProductImageController
                 ], 413);
             }
 
-            // The body reached PHP but carried no file. Report enough server-side facts to
-            // tell the possible causes apart (uploads disabled, body stripped by a proxy,
-            // wrong field name) — these are ini values and counts only, never user data.
-            return $this->json($response, [
-                'error'       => 'UPLOAD_NO_IMAGE',
-                'errors'      => ['images' => ['No images provided.']],
-                'diagnostics' => [
-                    'content_length'      => $contentLength,
-                    'content_type'        => $request->getHeaderLine('Content-Type'),
-                    'post_max_size'       => (string) ini_get('post_max_size'),
-                    'upload_max_filesize' => (string) ini_get('upload_max_filesize'),
-                    'file_uploads'        => (bool) ini_get('file_uploads'),
-                    'max_file_uploads'    => (string) ini_get('max_file_uploads'),
-                    'upload_tmp_dir'      => (string) ini_get('upload_tmp_dir') ?: sys_get_temp_dir(),
-                    'files_keys'          => array_keys($request->getUploadedFiles()),
-                    'post_keys'           => array_keys((array) $request->getParsedBody()),
-                ],
-            ], 422);
+            return $this->json($response, ['error' => 'UPLOAD_NO_IMAGE', 'errors' => ['images' => ['No images provided.']]], 422);
         }
 
         $storageDir = $_ENV['STORAGE_PATH'] ?? __DIR__ . '/../../public/storage/products';

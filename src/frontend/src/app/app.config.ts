@@ -14,6 +14,7 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { routes } from './app.routes';
 import { XsrfInterceptor } from './auth/xsrf.interceptor';
 import { MethodOverrideInterceptor } from './auth/method-override.interceptor';
+import { NgswBypassInterceptor } from './shared/ngsw-bypass.interceptor';
 import { environment } from '../environments/environment';
 
 registerLocaleData(localeFr);
@@ -23,7 +24,9 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withRouterConfig({ onSameUrlNavigation: 'reload' })),
-    provideHttpClient(withInterceptors([XsrfInterceptor, MethodOverrideInterceptor])),
+    provideHttpClient(
+      withInterceptors([NgswBypassInterceptor, XsrfInterceptor, MethodOverrideInterceptor]),
+    ),
     provideTranslateService({
       loader: provideTranslateHttpLoader({
         prefix: '/assets/i18n/',

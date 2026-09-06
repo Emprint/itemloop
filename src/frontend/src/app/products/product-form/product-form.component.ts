@@ -470,16 +470,6 @@ export class ProductFormComponent implements OnChanges, OnInit {
       'IMAGE_FORMAT',
       'IMAGE_TOO_LARGE',
     ];
-    if (body.error === 'UPLOAD_NO_IMAGE' && body.diagnostics) {
-      // Temporary aid while chasing the production-only failure: the raw server facts
-      // are appended so they can be read straight from the phone.
-      return (
-        this.translate.instant('ERRORS.UPLOAD_NO_IMAGE') +
-        ' [' +
-        JSON.stringify(body.diagnostics) +
-        ']'
-      );
-    }
     if (known.includes(body.error)) {
       return this.translate.instant('ERRORS.' + body.error, {
         limit: body.limit,
