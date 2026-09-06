@@ -71,7 +71,7 @@ itemloop/
 
 - PHP 8.2+ with the **GD extension** enabled
 - Composer
-- Node.js 18+ and npm
+- Node.js 20.19+ (or 22.12+) and npm — required by Angular 20
 - MySQL 5.7+
 
 ### 1. Clone the repository
@@ -103,8 +103,12 @@ mysql -u youruser -p yourdb < src/backend/sql/schema.sql
 Start the backend dev server:
 
 ```sh
-php -S localhost:8000 -t public
+php -d upload_max_filesize=20M -d post_max_size=25M -S localhost:8000 -t public
 ```
+
+> The `-d` flags matter: PHP's built-in server defaults to `upload_max_filesize=2M`, which
+> silently rejects most phone photos. They mirror the production limits shipped in
+> [`deploy/frontend-api.user.ini`](deploy/frontend-api.user.ini).
 
 ### 3. Frontend setup
 
@@ -130,14 +134,27 @@ ng lint
 
 All routes are prefixed with `/api`.
 
+Write requests (`POST`, `PUT`, `PATCH`, `DELETE`) must carry the `X-XSRF-TOKEN` header — call `GET /csrf-cookie` first to obtain it.
+
 ### Authentication
 
 | Method | Path | Auth required | Description |
 |--------|------|:---:|-------------|
-| POST | `/register` | — | Register a new account |
-| POST | `/login` | — | Login |
-| GET | `/logout` | ✅ | Logout |
-| GET | `/me` | — | Returns current user info (or `null`) |
+| GET | `/csrf-cookie` | — | Sets the `XSRF-TOKEN` cookie — call before any write request |
+| POST | `/auth/register` | — | Register a new account |
+| POST | `/auth/login` | — | Login |
+| POST | `/auth/logout` | ✅ | Logout |
+| POST | `/auth/forgot-password` | — | Send a password reset email |
+| POST | `/auth/reset-password` | — | Reset the password from a token |
+| GET | `/me` | ✅ | Returns current user info |
+
+### Profile *(self-service)*
+
+| Method | Path | Auth required | Description |
+|--------|------|:---:|-------------|
+| GET | `/me/profile` | ✅ | Get own profile |
+| PATCH | `/me/profile` | ✅ | Update own profile |
+| POST | `/me/change-password` | ✅ | Change own password |
 
 ### Products
 
@@ -148,6 +165,8 @@ All routes are prefixed with `/api`.
 | POST | `/products` | Editor+ | Create product |
 | PUT | `/products/{id}` | Editor+ | Update product |
 | DELETE | `/products/{id}` | Editor+ | Delete product |
+| GET | `/products/{id}/history` | Editor+ | Stock movement / change ledger for a product |
+| POST | `/products/{id}/stock-movement` | Editor+ | Record a stock movement |
 
 ### Product Images
 
@@ -161,18 +180,27 @@ All routes are prefixed with `/api`.
 
 | Method | Path | Auth required | Description |
 |--------|------|:---:|-------------|
-| GET | `/buildings` | — | List buildings |
+| GET | `/buildings` | ✅ | List buildings |
 | POST | `/buildings` | Editor+ | Create building |
 | PUT | `/buildings/{id}` | Editor+ | Update building |
 | DELETE | `/buildings/{id}` | Editor+ | Delete building |
-| GET | `/zones` | — | List zones |
+| GET | `/zones` | ✅ | List zones |
 | POST | `/zones` | Editor+ | Create zone |
 | PUT | `/zones/{id}` | Editor+ | Update zone |
 | DELETE | `/zones/{id}` | Editor+ | Delete zone |
-| GET | `/locations` | — | List locations (shelf level) |
+| GET | `/locations` | ✅ | List locations (shelf level) |
 | POST | `/locations` | Editor+ | Create location |
 | PUT | `/locations/{id}` | Editor+ | Update location |
 | DELETE | `/locations/{id}` | Editor+ | Delete location |
+
+### Orders
+
+| Method | Path | Auth required | Description |
+|--------|------|:---:|-------------|
+| POST | `/orders` | ✅ | Place an order (reserves stock) |
+| GET | `/orders/mine` | ✅ | List own orders |
+| GET | `/orders` | Editor+ | List all orders |
+| PATCH | `/orders/{id}/status` | Editor+ | Update an order's status |
 
 ### Users *(Admin only)*
 
@@ -181,18 +209,41 @@ All routes are prefixed with `/api`.
 | GET | `/users` | Admin | List all users |
 | POST | `/users/save` | Admin | Create or update a user |
 | POST | `/users/delete` | Admin | Delete a user |
+| GET | `/users/pending` | Admin | List users awaiting validation |
+| GET | `/users/pending/count` | Admin | Count of users awaiting validation |
+| PATCH | `/users/{id}/validate` | Admin | Activate a pending user |
+| PATCH | `/users/{id}/deactivate` | Admin | Deactivate a user |
 
 ### Metadata
 
 | Method | Path | Auth required | Description |
 |--------|------|:---:|-------------|
-| GET | `/product-conditions` | — | List conditions |
-| POST | `/product-conditions` | — | Create condition |
-| GET | `/product-colors` | — | List colors |
-| POST | `/product-colors` | — | Create color |
-| GET | `/dashboard` | Editor+ | Dashboard statistics (total products, qty, estimated value, category breakdown) |
+| GET | `/product-categories` | — | List categories |
+| POST | `/product-categories` | Editor+ | Create category |
+| PUT | `/product-categories/{id}` | Editor+ | Update category |
+| DELETE | `/product-categories/{id}` | Editor+ | Delete category |
+| GET | `/product-conditions` | ✅ | List conditions |
+| POST | `/product-conditions` | Editor+ | Create condition |
+| PUT | `/product-conditions/{id}` | Editor+ | Update condition |
+| DELETE | `/product-conditions/{id}` | Editor+ | Delete condition |
+| GET | `/product-colors` | ✅ | List colors |
+| POST | `/product-colors` | Editor+ | Create color |
+| PUT | `/product-colors/{id}` | Editor+ | Update color |
+| DELETE | `/product-colors/{id}` | Editor+ | Delete color |
+| GET | `/dashboard` | optional | Dashboard statistics (total products, qty, estimated value, category breakdown) |
 
-> **Cart**: The cart is entirely client-side (`localStorage`) — no backend endpoints. The "Place Order" button is a UI stub; order submission is on the roadmap.
+### Settings, logs and exports
+
+| Method | Path | Auth required | Description |
+|--------|------|:---:|-------------|
+| GET | `/settings` | — | Read application settings (`app_name`, `currency`, `public_mode`, `shop_mode`, …) |
+| PUT | `/settings` | Admin | Update application settings |
+| GET | `/admin/email-logs` | Admin | List sent emails |
+| GET | `/export/products.pdf` | Editor+ | Export the product list as PDF |
+| GET | `/export/orders.pdf` | Editor+ | Export the order list as PDF |
+
+> **Cart**: The cart is entirely client-side (`localStorage`) — no backend endpoints. Checkout posts the cart to `POST /orders`.
+> **Excel export** is generated client-side (`xlsx`) — there is no server-side endpoint for it.
 
 ---
 
@@ -225,7 +276,9 @@ All routes are prefixed with `/api`.
   > **Recommended alternative:** set up SSH key authentication on your server and remove the `sshpass -p "$SSH_PASS"` wrapper from `deploy.sh`. SSH keys are more secure and don't require `sshpass` at all.
 
 - **`rsync`** — usually pre-installed on macOS and Linux.
-- **`ng`** (Angular CLI) and **`composer`** — must be available in your `PATH`.
+- **`composer`** — must be available in your `PATH`. The Angular CLI is run through `npx`, so the project-local one in `node_modules` is used; no global install needed.
+
+> **On Windows:** `deploy.sh` is a POSIX shell script and needs `rsync` + `sshpass`, neither of which Git Bash ships with (and there is no reliable `sshpass` build for Windows). Run the whole toolchain from **WSL** instead — install `php-cli php-gd php-mysql php-mbstring php-curl php-zip php-xml composer nodejs npm rsync sshpass` there, and install `node_modules` from WSL too (the native `esbuild` binary is platform-specific, so a `node_modules` installed from Windows will not work under WSL and vice versa).
 
 ### One-time server setup
 
@@ -248,11 +301,14 @@ These steps configure the server directory layout and only need to be done once:
    ```
    > **OVH note:** PHP-FPM's `open_basedir` uses the real filesystem path, not the `/home/username` alias. Run `echo $HOME` via SSH to get the real path (e.g. `/homez.NNN/account/sitename`).
 
-6. **Set PHP upload limits** via `~/.user.ini` and `~/backend/public/.user.ini`:
+6. **PHP upload limits** — nothing to do by hand: `deploy.sh` ships [`deploy/frontend.user.ini`](deploy/frontend.user.ini) and [`deploy/frontend-api.user.ini`](deploy/frontend-api.user.ini) to `~/frontend/.user.ini` and `~/frontend/api/.user.ini`:
    ```ini
    upload_max_filesize = 20M
    post_max_size = 25M
    ```
+   > PHP reads `.user.ini` from the running script's directory up to the docroot. The entry point is `~/frontend/api/index.php`, so **`~/backend/public/.user.ini` has no effect** — `~/frontend/api/.user.ini` is the file that matters. The default 2 MB limit silently truncates phone photos.
+   >
+   > Changes take up to `user_ini.cache_ttl` (5 min on OVH) to apply.
 
 7. **Import the database schema** once via phpMyAdmin (or `mysql` CLI):
    ```sh
@@ -283,8 +339,9 @@ SSH_PASS=yourpassword ./deploy.sh
 The script will:
 1. Build the Angular app to `deploy_package/frontend/`
 2. Run `composer install --no-dev` in `src/backend/`
-3. rsync `deploy_package/frontend/` → `~/frontend/` on the server (skips `.htaccess`)
-4. rsync `src/backend/` → `~/backend/` on the server (skips `.env`)
+3. rsync `deploy_package/frontend/` → `~/frontend/` on the server (`--delete`, but keeps `storage/`)
+4. rsync `src/backend/` → `~/backend/` on the server (skips `.env` and `public/`)
+5. copy `src/backend/public/index.php` separately — it is the only file from `public/` the API needs
 
 > **OVH cache note:** `.htaccess` changes may take 35–60 seconds to take effect due to PHP-FPM opcode caching.
 

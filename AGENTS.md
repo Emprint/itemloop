@@ -13,7 +13,7 @@ Itemloop is a full-stack inventory management app for community reuse centers:
 
 ### Backend (`cd src/backend`)
 ```sh
-php -S localhost:8000 -t public            # Start dev server on :8000
+php -d upload_max_filesize=20M -d post_max_size=25M -S localhost:8000 -t public   # Dev server on :8000 (flags = prod upload limits)
 composer install                           # Install dependencies (run locally before FTP deploy)
 ```
 
